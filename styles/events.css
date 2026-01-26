@@ -1,0 +1,279 @@
+/* =========================================================
+   PAGE LAYOUT
+   ========================================================= */
+
+.page-events .events-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* =========================================================
+   HERO / HEADER
+   ========================================================= */
+
+.page-events .events-content .events-header {
+  background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.55));
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.25rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.page-events .events-content .events-header .events-hero-inner h1 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin-bottom: 0.35rem;
+	color: var(--primary);
+	text-align: center;
+}
+
+.page-events .events-content .events-header .events-hero-inner p {
+  color: var(--muted);
+  text-align: center;
+}
+
+/* =========================================================
+   CARD (CALENDAR CONTAINER)
+   NOTE: scoped to .page-events so it won't affect other pages
+   ========================================================= */
+
+.page-events .events-content .card {
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+/* =========================================================
+   CALENDAR HEADER (Title + Filters + Subscribe)
+   ========================================================= */
+
+.page-events .events-content .card .calendar-header {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-events .events-content .card .calendar-header .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.page-events .events-content .card .calendar-header .header-left h2 {
+  font-size: 1.1rem;
+}
+
+.page-events .events-content .card .calendar-header .hint {
+  color: var(--events-muted);
+  font-size: 0.95rem;
+}
+
+.page-events .events-content .card .calendar-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   FILTER PILLS
+   ========================================================= */
+
+.page-events .events-content .card .calendar-header .filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.page-events .events-content .card .calendar-header .filters .filter-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.65);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  padding: 0.45rem 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 0.95rem;
+}
+
+.page-events .events-content .card .calendar-header .filters .filter-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+}
+
+.page-events .events-content .card .calendar-header .filters .filter-pill.is-active {
+  background: rgba(255, 215, 0, 0.78);
+  border-color: rgba(255, 215, 0, 0.55);
+  box-shadow: 0 12px 26px rgba(255, 215, 0, 0.22), 0 10px 22px rgba(0,0,0,0.10);
+}
+
+/* =========================================================
+   SUBSCRIBE BUTTON (Yellow glass)
+   ========================================================= */
+
+.page-events .events-content .card .calendar-header .glass-yellow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 215, 0, 0.78);
+  border: 1px solid rgba(255, 215, 0, 0.55);
+  box-shadow: 0 10px 24px rgba(255, 215, 0, 0.25), 0 10px 22px rgba(0,0,0,0.10);
+  font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.page-events .events-content .card .calendar-header .glass-yellow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(255, 215, 0, 0.28), 0 14px 28px rgba(0,0,0,0.12);
+}
+
+/* =========================================================
+   CALENDAR BODY
+   ========================================================= */
+
+.page-events .events-content .card #calendar {
+  padding: 0.75rem 0.9rem 1rem;
+}
+
+/* Bigger calendar experience */
+.page-events .events-content .card .fc .fc-view-harness {
+  min-height: 650px;
+}
+
+/* FullCalendar toolbar title */
+.page-events .events-content .card .fc .fc-toolbar-title {
+  font-size: 1.15rem;
+}
+
+/* FullCalendar buttons (scoped) */
+.page-events .events-content .card .fc .fc-button {
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.65);
+  color: var(--text);
+  padding: 0.45rem 0.75rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-events .events-content .card .fc .fc-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.page-events .events-content .card .fc .fc-button-primary:not(:disabled).fc-button-active,
+.page-events .events-content .card .fc .fc-button-primary:not(:disabled):active {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(0,0,0,0.12);
+  color: var(--text);
+}
+
+/* =========================================================
+   DETAILS PANEL (inside the same card, below calendar)
+   ========================================================= */
+
+.page-events .events-content .card .events-details {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 0;
+}
+
+.page-events .events-content .card .events-details .events-details-header {
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-events .events-content .card .events-details .events-details-header h3 {
+  font-size: 1.05rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body {
+  padding: 0.25rem 1.1rem 1.1rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body .empty {
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-meta {
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-desc {
+  font-size: 0.98rem;
+  white-space: pre-wrap;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.65);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+  font-weight: 650;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-events .events-content .card .events-details .events-details-body .detail-actions .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.page-events .events-content .card .events-details .events-details-note {
+  padding: 0.95rem 1.1rem 1.1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 720px) {
+  .page-events .events-content .card .fc .fc-view-harness {
+    min-height: 560px;
+  }
+}

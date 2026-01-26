@@ -1,0 +1,12 @@
+# Force consistent line endings for text files
+* text=auto
+
+# Always use LF for JSON / Geo files
+*.json text eol=lf
+*.geojson text eol=lf
+
+# Scripts
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.py text eol=lf

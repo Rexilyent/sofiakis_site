@@ -1,0 +1,91 @@
+.page-endorsements .endorsements-content {
+	max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.page-endorsements .endorsements-header h1 {
+	color: var(--primary);
+	font-weight: 800;
+	margin-bottom: 0.5rem;
+	text-align: center;
+}
+
+.page-endorsements .endorsements-header p {
+	font-size: 1.1rem;
+	color: var(--muted);
+	margin-top: 0;
+	text-align: center;
+}
+
+/* ===========================
+	 Endorsement summary cards grid
+	 =========================== */
+.page-endorsements .endorsement-cards {
+	display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+	.page-endorsements .endorsement-cards {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 600px) {
+	.page-endorsements .endorsement-cards {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+.page-endorsements .endorsement-card h4 {
+	color: var(--primary);
+	margin: 0.5rem 0;
+}
+
+.page-endorsements .endorsement-card {
+	background: #f7fbf7;
+	border-radius: 14px;
+	border: 1px solid #d6ead6;
+	padding: 1rem;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	align-items: center;
+	text-align: center;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.page-endorsements .endorsement-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* Logo frame */
+/* Keep container invisible */
+/* Do not add background or border to container, as it will interfere with cropping */
+/* Do not add effects to container, as it will interfere with cropping */
+.page-endorsements .endorsement-card .endorsement-icon {
+  width: 160px;
+  height: 110px;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Crop the image itself */
+.page-endorsements .endorsement-card .endorsement-icon img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;      /* crops cleanly */
+  border-radius: 16px;    /* shape control */
+
+  display: block;
+}

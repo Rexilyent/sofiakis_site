@@ -1,0 +1,149 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Events for Alexandria Sofiakis for Illinois' 10th Congressional District">
+    <meta name="author" content="Alexandria Sofiakis">
+    <title>Events | Alexandria Sofiakis for IL-10</title>
+
+    <!-- Font Styles -->
+    <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+		<!-- FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+
+    <link rel="stylesheet" href="styles/base.css">
+		<link rel="stylesheet" href="styles/events.css">
+
+		<!-- FullCalendar JS -->
+		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
+
+		<!-- Page JS -->
+		<script src="scripts/events.js" defer></script>
+</head>
+<body class="page-events">
+	<!-- Shared site header -->
+	<header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html" >Issues</a>
+        <a href="events.html" class="active">Events</a>
+        <a href="il10.html" >IL-10</a>
+				<div class="nav-dropdown">
+					<a href="vote.html" class="nav-vote">Vote</a>
+
+					<div class="dropdown-menu">
+						<a href="endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="volunteer.html" >Volunteer</a>
+      </div>
+
+      <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+	<!-- Main Content -->
+	<main class="events-content">
+
+		<section class="events-header">
+			<div class="events-hero-inner">
+				<h1>Events</h1>
+				<p>
+					Stay updated with the latest events and appearances for Alexandria Sofiakis. Use the filters to find what matters most to you.
+				</p>
+				<p>
+					Want to host an event? Sign up under the volunteer section <a href="volunteer.html">here</a>, or 
+					<a href="contact.html">contact us</a> for more information.
+				</p>
+			</div>
+		</section>
+
+		<!-- FullCalendar Container -->
+		<section class="card">
+			<div class="calendar-header">
+				<div class="header-left">
+					<h2>Upcoming Events</h2>
+					<span class="hint">Click an event for details</span>
+				</div>
+
+				<div class="header-right">
+					<div class="filters" aria-label="Event filters">
+						<button class="filter-pill is-active" data-filter="ALL" type="button">All</button>
+						<button class="filter-pill" data-filter="TOWN_HALL" type="button">Town Halls</button>
+						<button class="filter-pill" data-filter="VOLUNTEER" type="button">Volunteer</button>
+						<button class="filter-pill" data-filter="FUNDRAISER" type="button">Fundraisers</button>
+						<button class="filter-pill" data-filter="CANVASS" type="button">Canvassing</button>
+					</div>
+
+					<button id="subscribeBtn" class="glass-yellow" type="button">Subscribe</button>
+				</div>
+			</div>
+
+			<div id="calendar"></div>
+		</section>
+
+	</main>
+
+	<!-- Shared site footer -->
+	<footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
+        <div class="disclaimer">P.O. Placeholder</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html">Issues</a>
+        <a href="events.html">Events</a>
+				<a href="il10.html">IL-10</a>
+				<a href="vote.html">Vote</a>
+        <a href="volunteer.html">Get Involved</a>
+      </div>
+
+      <div class="footer-social" aria-label="Footer Social Links">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alexandria Sofiakis for IL-10">
+  <meta name="author" content="Alexandria Sofiakis">
+  <title>Home | Alexandria Sofiakis for IL-10</title>
+
+  <!-- Font Styles -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+  <!-- Shared Base Styles -->
+  <link rel="stylesheet" href="styles/base.css">
+	<link rel="stylesheet" href="styles/home.css">
+
+	<script src="scripts/home.js" defer></script>
+</head>
+<body class="page-home">
+	<main class="home-content">
+		<!-- Join the Campaign Form -->
+  	<section class="home-join-header">
+			<div class="home-join-cloud">
+				<div class="home-join-cloud-inner">
+					<h2>Join Alexandria's Campaign</h2>
+				</div>
+
+				<div class="home-join-form">
+					<form aria-label="Join the Campaign Form">
+						<div class="form-group">
+							<label for="join-name" class="sr-only">Full Name</label>
+							<input type="text" id="join-name" name="join-name" placeholder="Full Name" required>
+						</div>
+
+						<div class="form-group">
+							<label for="join-email" class="sr-only">Email Address</label>
+							<input type="email" id="join-email" name="join-email" placeholder="Email Address" required>
+						</div>
+
+						<div class="form-group">
+							<label for="join-phone" class="sr-only">Phone Number</label>
+							<input type="tel" id="join-phone" name="join-phone" placeholder="Phone Number (optional)">
+						</div>
+
+						<div class="form-group">
+							<label for="join-zip" class="sr-only">Zip Code</label>
+							<input type="text" id="join-zip" name="join-zip" placeholder="Zip Code" required>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Join Now</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="home-cloud"></div>
+		</section>
+
+		<!-- Shared site header -->
+  	<header class="site-header">
+    	<nav class="nav">
+      	<div class="nav-left">
+        	<div class="nav-badge"></div>
+        	<span>Alexandria Sofiakis</span>
+      	</div>
+
+      	<button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        	☰
+				</button>
+
+      	<div class="nav-links" id="nav-links">
+        	<a href="index.html" class="active">Home</a>
+        	<a href="about.html">About</a>
+        	<a href="issues.html" >Issues</a>
+        	<a href="events.html" >Events</a>
+        	<a href="il10.html" >IL-10</a>
+					<div class="nav-dropdown">
+					<a href="vote.html" class="nav-vote">Vote</a>
+
+					<div class="dropdown-menu">
+						<a href="endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        	<a href="volunteer.html" >Volunteer</a>
+      	</div>
+
+      	<!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      	<div class="nav-social">
+        	<a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          	<i class="fab fa-facebook-f"></i>
+					</a>
+        	<a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          	<i class="fab fa-twitter"></i>
+        	</a>
+        	<a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          	<i class="fab fa-instagram"></i>
+        	</a>
+      	</div>
+    	</nav>
+  	</header>
+
+		<section class="hero-embed" aria-label="Campaign Hero Video">
+			<div class="hero-header">
+				<h2>Placeholder</h2>
+			</div>
+
+			<iframe
+				src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+				title="YouTube video player"
+				frameborder="0"
+				allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowfullscreen
+			></iframe>
+		</section>
+
+		<!-- Meet Candidate Section -->
+		<section class="meet-candidate" aria-label="Meet the Candidate">
+			<div class="candidate-photo">
+				<img src="images/candidate_photo.jpg" alt="Photo of Alexandria Sofiakis">
+			</div>
+			<div class="candidate-bio">
+				<h2>Meet Alexandria Sofiakis</h2>
+				<p>
+					Alexandria Sofiakis is a dedicated public servant committed to making a positive impact in congress.
+					She's not the typical corpo-politician; Unlike career politicians, Alexandria brings a fresh perspective
+					and a genuine passion for serving her community. She also doesn't take corporate PAC money, ensuring her
+					decisions are made with the best interests of her constituents in mind.
+				</p>
+				<p>
+					Her platform centers around key issues such as affordable healthcare, quality education, environmental sustainability, and economic development. Alexandria believes in the power of grassroots movements and is dedicated to fostering community engagement to create lasting change.
+				</p>
+				<a class="btn btn-secondary" href="about.html">Learn More About Alexandria</a>
+			</div>
+		</section>
+
+		<!-- Issue Cards Section -->
+		<section class="values-section" aria-label="Key Issues">
+			<h2>Alexandria's Values</h2>
+			<div class="issue-cards">
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-heartbeat"></i>
+					</div>
+					<div class="title-container">
+						<h3>Healthcare for All</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+
+				<!-- R.A.D (Revitalize American Democracy) -->
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-vote-yea"></i>
+					</div>
+					<div class="title-container">
+						<h3>Revitalize American Democracy</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+
+				<!-- Housing As A Human Right -->
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-home"></i>
+					</div>
+					<div class="title-container">
+						<h3>Housing As A Human Right</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+
+				<!-- Green New Deal -->
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-leaf"></i>
+					</div>
+					<div class="title-container">
+						<h3>Green New Deal</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+
+				<!-- Education -->
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-book"></i>
+					</div>
+					<div class="title-container">
+						<h3>Quality Education</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+
+				<!-- Environmental Protections -->
+				<div class="issue-card">
+					<div class="issue-icon">
+						<i class="fas fa-recycle"></i>
+					</div>
+					<div class="title-container">
+						<h3>Environmental Protections</h3>
+					</div>
+
+					<div class="description">
+						<p>
+
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- View All Issues Button -->
+			<a class="btn btn-primary" href="issues.html">View All Issues</a>
+		</section>
+
+		<!-- Call to Action Section -->
+		<section class="cta-hero" aria-label="Get Involved in IL-10">
+    	<div class="cta-hero-inner">
+      	<h2>Your Voice Matters</h2>
+      	<a class="cta-hero-btn" href="volunteer.html">Get Involved</a>
+    	</div>
+  	</section>
+
+		<!-- News Section -->
+		<section class="news-section" aria-label="Latest News">
+			<h2>Latest News</h2>
+			<div class="news-articles">
+				<!-- News Article 1 -->
+				<article class="news-article">
+					<h3>Placeholder News Title 1</h3>
+					<p class="news-date">June 1, 2024</p>
+					<p class="news-summary">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</p>
+					<a href="#" class="read-more">Read More</a>
+				</article>
+
+				<!-- News Article 2 -->
+				<article class="news-article">
+					<h3>Placeholder News Title 2</h3>
+					<p class="news-date">May 15, 2024</p>
+					<p class="news-summary">
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					</p>
+					<a href="#" class="read-more">Read More</a>
+				</article>
+
+				<!-- News Article 3 -->
+				<article class="news-article">
+					<h3>Placeholder News Title 3</h3>
+					<p class="news-date">April 30, 2024</p>
+					<p class="news-summary">
+						Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+					</p>
+					<a href="#" class="read-more">Read More</a>
+				</article>
+			</div>
+		</section>
+	</main>
+
+	<!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
+        <div class="disclaimer">P.O. Placeholder</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html">Issues</a>
+        <a href="events.html">Events</a>
+				<a href="il10.html">IL-10</a>
+				<a href="vote.html">Vote</a>
+        <a href="volunteer.html">Get Involved</a>
+      </div>
+
+      <div class="footer-social" aria-label="Footer Social Links">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alexandria Sofiakis for IL-10">
+  <meta name="author" content="Alexandria Sofiakis">
+  <title>Volunteer | Alexandria Sofiakis for IL-10</title>
+
+  <!-- Font Styles -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+  <!-- Shared Base Styles -->
+  <link rel="stylesheet" href="styles/base.css">
+	<link rel="stylesheet" href="styles/volunteer.css">
+
+	<script src="scripts/volunteer.js" defer></script>
+</head>
+<body class="page-volunteer">
+	<!-- Shared site header -->
+	<header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html" >Issues</a>
+        <a href="events.html" >Events</a>
+        <a href="il10.html" >IL-10</a>
+				<div class="nav-dropdown">
+					<a href="vote.html" class="nav-vote">Vote</a>
+
+					<div class="dropdown-menu">
+						<a href="endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="volunteer.html" class="active">Volunteer</a>
+      </div>
+
+      <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+  <main class="volunteer-content">
+		<section class="volunteer-hero">
+			<h1>Join the crew</h1>
+		</section>
+
+		<section class="volunteer-intro">
+			<div class="intro-header">
+				<h2>Be a supporter and take action</h2>
+			</div>
+			<div class="intro-text">
+				<p>
+					Our campaign is powered by volunteers like you! Which means we are entirely grassroots! Whether you have a few hours
+					a week or just a few hours a month, live in-district or out of state, there are many ways to get involved and help
+					us create change in the country.
+				</p>
+
+				<p>
+					Take a look at some of the ways you can help below, and sign up using the form to get started. 
+					<strong>Action is needed now more than ever!</strong>
+				</p>
+			</div>
+		</section>
+
+		<!-- Types of volunteer help-->
+		<section class="volunteer-cards">
+			<!-- Volunteer Card 1 -->
+			<section class="volunteer-card card-phone-banking">
+				<div class="volunteer-card-icon">
+					<i class="fas fa-phone-alt"></i>
+				</div>
+
+				<div class="title-container">
+					<h3>Phone Banking</h3>
+				</div>
+			</section>
+
+			<!-- Volunteer Card 2 -->
+			<section class="volunteer-card card-text-banking">
+				<div class="volunteer-card-icon">
+					<i class="fas fa-envelope-open-text"></i>
+				</div>
+
+				<div class="title-container">
+					<h3>Text Banking</h3>
+				</div>
+			</section>
+
+			<!-- Volunteer Card 3 -->
+			<section class="volunteer-card card-door-knocking">
+				<div class="volunteer-card-icon">
+					<i class="fas fa-door-open"></i>
+				</div>
+
+				<div class="title-container">
+					<h3>Door Knocking</h3>
+				</div>
+			</section>
+
+			<!-- Volunteer Card 4 -->
+			<section class="volunteer-card card-events">
+				<div class="volunteer-card-icon">
+					<i class="fas fa-calendar-check"></i>
+				</div>
+
+				<div class="title-container">
+					<h3>Events</h3>
+				</div>
+			</section>
+
+			<!-- Volunteer Card 5 -->
+			<section class="volunteer-card card-social">
+				<div class="volunteer-card-icon">
+					<i class="fas fa-laptop"></i>
+				</div>
+
+				<div class="title-container">
+					<h3>Social Media</h3>
+				</div>
+			</section>
+
+			<!-- Insert More Cards Below Here-->
+		</section>
+
+		<!-- Volunteer Form -->
+		<section class="volunteer-form-section">
+			<div class="form-header">
+				<div class="form-header-inner">
+					<h2>Sign Up to Volunteer</h2>
+				</div>
+				<div class="form-subheader-inner">
+					<p>
+						With the <strong>current unpredictable climate</strong>, we understand if you are unsure about physically volunteering.
+						There are many virtual opportunities available as well. In the "Interests" dropdown, select any option
+						that you'd be comfortable with, if you're unsure-select "I'm not sure" and we will reach out to
+						discuss options with you.
+					</p>
+			</div>
+
+			<form class="volunteer-form" action="https://formspree.io/f/your-form-id" method="POST">
+				<div class="form-grid">
+					<!-- Row 1 -->
+					<div class="field">
+						<label for="name">Full Name *</label>
+						<input type="text" id="name" name="name" required>
+					</div>
+
+					<div class="field">
+						<label for="zip">Zip Code *</label>
+						<input 
+							type="text"
+							id="zip"
+							name="zip"
+							inputmode="numeric"
+							pattern="[0-9]{5}(-[0-9]{4})?"
+							placeholder="##### or #####-####"
+							required
+						>
+					</div>
+
+					<!-- Row 2 -->
+					<div class="field span-2">
+						<label for="email">Email Address *</label>
+						<input type="email" id="email" name="email" required>
+					</div>
+
+					<div class="field span-2">
+						<label for="phone">Phone Number</label>
+						<input type="tel" id="phone" name="phone">
+					</div>
+
+					<!-- Row 3 -->
+					<div class="field span-2">
+						<label for="language-dropdown-btn">Are you able to help with outreach in other languages?</label>
+						<!-- Checkbox dropdown inputs for languages -->
+						<div class="language-dropdown" id="language-dropdown">
+							<button 
+								type="button"
+								class="language-dropdown-btn"
+								id="language-dropdown-btn"
+								aria-haspopup="listbox"
+								aria-expanded="false"
+							>
+								<span class="dropdown-btn-text" id="language-btn-text">Select Languages</span>
+								<span class="caret">▾</span>
+						</button>
+						<div class="language-dropdown-menu" id="language-dropdown-menu" role="listbox"></div>
+					</div>
+				
+					<div class="field span-2">
+						<!-- Checkbox dropdown inputs for interests -->
+						<label for="interest-dropdown-btn">What volunteer activities are you interested in? <span aria-hidden="true">*</span></label>
+						<div class="interest-dropdown" id="interest-dropdown">
+							<button 
+								type="button"
+								class="interest-dropdown-btn"
+								id="interest-dropdown-btn"
+								aria-haspopup="listbox"
+								aria-expanded="false"
+								>
+									<span class="dropdown-btn-text" id="interest-btn-text">Select Interests</span>
+									<span class="caret">▾</span>
+							</button>
+
+							<div class="interest-dropdown-menu" id="interest-dropdown-menu" role="listbox">
+						</div>
+
+						<!-- Error Message -->
+						<p class="field-error" id="interest-error" aria-live="polite"></p>
+					</div>
+
+					<div class="actions span-2">
+						<button class="btn-submit" type="submit">Submit</button>
+					</div>
+				</div>
+			</form>
+		</section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
+        <div class="disclaimer">P.O. Placeholder</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html">Issues</a>
+        <a href="events.html">Events</a>
+				<a href="il10.html">IL-10</a>
+				<a href="vote.html">Vote</a>
+        <a href="volunteer.html">Get Involved</a>
+      </div>
+
+      <div class="footer-social" aria-label="Footer Social Links">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

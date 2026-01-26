@@ -1,0 +1,31 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.env
+server.py
+
+# Node / frontend
+node_modules/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# FEC Bulk Data
+seeds/
+
+# Databases
+supporters.db
+
+# Misc
+New Text Document.txt

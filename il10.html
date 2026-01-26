@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alexandria Sofiakis for IL-10">
+  <meta name="author" content="Alexandria Sofiakis">
+  <title>Illinois 10th Congressional District | Alexandria Sofiakis for IL-10</title>
+
+  <!-- Font Styles -->
+  <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/il10.css">
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
+  </script>
+  <script src="scripts/il10-map.js" defer></script>
+</head>
+<body class="page-il10">
+  <!-- Shared site header -->
+  <header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html" >Issues</a>
+        <a href="events.html" >Events</a>
+        <a href="il10.html" class="active">IL-10</a>
+				<div class="nav-dropdown">
+					<a href="vote.html" class="nav-vote">Vote</a>
+
+					<div class="dropdown-menu">
+						<a href="endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="volunteer.html" >Volunteer</a>
+      </div>
+
+      <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+        	<i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="il10-content">
+    <section class="il10-hero" aria-label="IL-10 Hero">
+      <div class="hero-image-wrapper">
+        <img src="assets/images/il10-banner.jpg" alt="Illinois 10th Congressional Banner Image">
+        <div class="hero-text">
+          <h1>Illinois' 10th Congressional District</h1>
+        </div>
+      </div>
+
+    </section>
+
+      <section class="il10-body" aria-label="About IL-10">
+        <header class="il10-body-header">
+          <h2>About IL-10</h2>
+        </header>
+
+			  <section class="il10-map" aria-label="Interactive Map of Illinois Congressional Districts">
+          <div id="il10LeafletMap" class="leaflet-map"></div>
+			  </section>
+
+        <div class="il10-prose">
+					<section class="il10-block" aria-label="Intro">
+          	<p>
+    			  	Illinois’ 10th Congressional District sits in the northeastern corner of the state and includes many of the
+            	North Shore and northwest suburban communities of the Chicago region. The district is predominantly suburban,
+            	characterized by established neighborhoods, busy commercial corridors, protected open space,
+            	and lakefront areas along Lake Michigan. At the same time, parts of IL-10 extend into lower-density
+            	communities where farmland, forest preserves, and agricultural operations remain an active part of the local landscape.
+  			  	</p>
+
+          	<p>
+            	Congressional districts are drawn to ensure roughly equal population representation in the U.S. House of Representatives,
+            	which means Illinois’ 10th District brings together communities with shared regional ties, even when their local character differs.
+    			  	This mix of suburban development, open land, and semi-rural areas gives the district a unique character and shapes the wide
+            	range of needs represented within its boundaries.
+  			  	</p>
+					</section>
+
+          <section class="il10-block" aria-label="Communities and Character">
+  			    <h3>Communities & Character</h3>
+  			    <p>
+   				    IL-10 includes a broad blend of communities, ranging from walkable downtowns and lakefront neighborhoods to family-centered suburbs,
+              growing retail hubs, and areas with working farmland and preserved open space. While each community has its own identity, residents
+              across the district often share common priorities such as affordability, safe neighborhoods, quality infrastructure, environmental
+              preservation, and a strong local economy.
+            </p>
+
+            <p>
+              The district is known for high civic engagement and strong public institutions, including schools, libraries, and local governments.
+              Residents come from diverse professional backgrounds and household structures, contributing to a community that values participation,
+              responsiveness, and long-term planning.
+  			    </p>
+          </section>
+          
+          <section class="il10-block" aria-label="Economy and Daily Life">
+            <h3>Economy & Daily Life</h3>
+            <p>
+              The district’s workforce spans healthcare, education, small business, professional services, technology, and advanced manufacturing.
+              In less densely populated areas, agriculture, land stewardship, and conservation also play an important role in the local economy and
+              community identity.
+            </p>
+
+            <p>
+              Many residents commute to work using major highways and Metra rail lines, while others work locally in schools, hospitals, small businesses,
+              farms, and regional employers. This combination of commuter and locally based work influences transportation needs, land-use planning,
+              and economic development priorities throughout the district.
+            </p>
+          </section>
+
+          <section class="il10-block" aria-label="What Matters in IL-10">
+  			    <h3>What Matters in IL-10</h3>
+  			    <p>
+              These shared priorities help shape the federal policies and funding decisions that affect daily life in the district, from infrastructure investments to healthcare access.
+    			    Because Illinois’ 10th District brings together residential neighborhoods, employment centers, transportation corridors, and agricultural land,
+              its priorities reflect that diversity. Common concerns across the district include:
+  			    </p>
+
+            <ul>
+              <li>Access to affordable and reliable healthcare</li>
+              <li>Housing affordability and childcare costs</li>
+              <li>Well-funded public schools and educational opportunities</li>
+              <li>Reliable public transportation and road maintenance</li>
+              <li>Climate resilience, including flooding, extreme weather, and land conservation</li>
+              <li>Support for small businesses, workers, and family farms</li>
+            </ul>
+
+            <p>
+              Balancing growth with sustainability — while maintaining quality of life — remains a central challenge and opportunity for
+              communities across IL-10.
+            </p>
+          </section>
+
+          <section class="il10-block" aria-label="History and Representation">
+            <h3>A Brief History & Political Evolution</h3>
+            <p>
+              Illinois’ 10th Congressional District has evolved alongside the growth of the Chicago metropolitan area. Originally shaped by postwar suburban expansion
+              and commuter rail development, the district historically consisted largely of suburban communities with strong local institutions and stable residential growth.
+            </p>
+
+            <p>
+              Over time, redistricting and population changes expanded the district’s geographic and economic diversity, incorporating a broader mix of suburban, exurban,
+              and semi-rural areas. Politically, IL-10 was long considered competitive, with voters often favoring pragmatic, issue-focused candidates.
+            </p>
+
+            <p>
+              In recent decades, demographic shifts and changing policy priorities have led the district to trend more consistently Democratic, while maintaining a strong
+              tradition of civic participation and moderate, problem-solving-oriented representation. The district’s political evolution reflects its growing
+              diversity and the wide range of perspectives held by its residents.
+            </p>
+          </section>
+
+          <section class="il10-block" aria-label="Current Representation">
+            <h3>Current Representation</h3>
+            <p>
+              Each congressional district elects one representative to the U.S. House of Representatives,
+              one of the two chambers of Congress responsible for passing federal laws.
+              Illinois’ 10th Congressional District is currently represented in the U.S. House of Representatives by Brad Schneider,
+              who has served the district since 2017. He also served from 2013 to 2015 prior to a brief hiatus.
+            </p>
+
+            <p>
+              The role of a member of Congress includes voting on federal legislation, serving on congressional committees, and representing
+              district interests at the national level. Members of Congress also provide constituent services, assisting residents with matters
+              involving federal agencies such as Social Security, Medicare, veterans’ benefits, and immigration services.
+            </p>
+
+            <p>
+              Regardless of political affiliation, understanding who represents IL-10 and how congressional representation functions is an
+              important part of civic awareness. Residents may contact their representative’s office, attend public meetings, and participate
+              in elections to express their priorities and concerns.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <section class="cta-hero" aria-label="Get Involved in IL-10">
+        <div class="cta-hero-inner">
+          <h2>Your Voice Matters in IL-10</h2>
+          <a class="cta-hero-btn" href="volunteer.html">Get Involved</a>
+        </div>
+      </section>
+    </main>
+
+  <!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
+        <div class="disclaimer">P.O. Placeholder</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="issues.html">Issues</a>
+        <a href="events.html">Events</a>
+				<a href="il10.html">IL-10</a>
+				<a href="vote.html">Vote</a>
+        <a href="volunteer.html">Get Involved</a>
+      </div>
+
+      <div class="footer-social" aria-label="Footer Social Links">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

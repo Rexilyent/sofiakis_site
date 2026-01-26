@@ -1,0 +1,459 @@
+/* =========================================
+   styles/money-tracker.css (FULL)
+   Scoped to .page-money-tracker
+   - App shell wraps controls + grid
+   - Controls outside grid (no overlap)
+   - Side-by-side compare cards
+========================================= */
+
+.page-money-tracker .money-tracker-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Hero */
+.page-money-tracker .money-tracker-header {
+  margin: 1rem 0 1.25rem;
+}
+
+.page-money-tracker .money-tracker-hero-inner {
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.page-money-tracker .money-tracker-hero-inner h1 {
+  color: var(--primary);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: .5rem;
+}
+
+.page-money-tracker .money-tracker-hero-inner .lead {
+  font-size: 1.05rem;
+  color: var(--text);
+  margin-bottom: .75rem;
+}
+
+.page-money-tracker .money-tracker-hero-inner p {
+  color: var(--text);
+  margin: .6rem 0;
+}
+
+.page-money-tracker .money-tracker-hero-inner .data-note {
+  margin-top: 1rem;
+  padding-top: .75rem;
+  border-top: 1px solid rgba(0,0,0,.08);
+  color: var(--muted);
+}
+
+/* App shell */
+.page-money-tracker .money-app {
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.page-money-tracker .muted { color: var(--muted); }
+.page-money-tracker .small { font-size: 0.9rem; }
+
+/* Controls */
+.page-money-tracker .money-controls {
+  display: grid;
+  grid-template-columns: 120px 150px 1fr auto;
+  gap: .75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+@media (max-width: 900px) {
+  .page-money-tracker .money-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .page-money-tracker .control--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.page-money-tracker .control label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: .35rem;
+}
+
+.page-money-tracker .control input,
+.page-money-tracker .control select {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 12px;
+  padding: .7rem .75rem;
+  background: rgba(255,255,255,.8);
+  backdrop-filter: blur(10px);
+}
+
+.page-money-tracker .control input:focus,
+.page-money-tracker .control select:focus {
+  outline: 2px solid rgba(0, 168, 75, 0.25);
+  border-color: rgba(0, 168, 75, 0.35);
+}
+
+/* Buttons */
+.page-money-tracker .btn {
+  border: 0;
+  border-radius: 12px;
+  padding: .75rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.page-money-tracker .btn--ghost {
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+.page-money-tracker .btn--danger {
+  background: rgba(255, 77, 77, 0.12);
+  border: 1px solid rgba(255, 77, 77, 0.35);
+}
+
+/* Grid */
+.page-money-tracker .money__grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .page-money-tracker .money__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel */
+.page-money-tracker .money__panel {
+  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.page-money-tracker .panel__header {
+  padding: 1rem 1rem .5rem;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.page-money-tracker .status {
+  padding: .75rem 1rem 0;
+  min-height: 1.25rem;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.page-money-tracker .candidateList {
+  list-style: none;
+  margin: 0;
+  padding: .5rem;
+  display: grid;
+  gap: .5rem;
+}
+
+.page-money-tracker .candidateRow {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+  padding: .6rem;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.6);
+}
+
+.page-money-tracker .candidateRow:hover {
+  border-color: rgba(0, 168, 75, 0.35);
+}
+
+.page-money-tracker .candidateRow.isPrimary {
+  border-color: rgba(0, 168, 75, 0.55);
+  outline: 2px solid rgba(0, 168, 75, 0.18);
+}
+
+.page-money-tracker .candidateRow.isSecondary {
+  border-color: rgba(255, 215, 0, 0.55);
+  outline: 2px solid rgba(255, 215, 0, 0.18);
+}
+
+.page-money-tracker .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.03);
+}
+
+.page-money-tracker .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-money-tracker .candMeta .name { font-weight: 900; }
+.page-money-tracker .candMeta .sub { font-size: .85rem; color: var(--muted); }
+
+.page-money-tracker .addBtn {
+  border-radius: 12px;
+  padding: .55rem .75rem;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.85);
+  cursor: pointer;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* Compare area */
+.page-money-tracker .money__compare {
+  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.page-money-tracker .compare__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .75rem;
+}
+
+.page-money-tracker .compare__actions {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.page-money-tracker .emptyState {
+  padding: 1.25rem;
+  border: 1px dashed rgba(0,0,0,.18);
+  border-radius: 16px;
+  background: rgba(255,255,255,.55);
+}
+
+/* Two-card layout when comparing */
+.page-money-tracker .compareCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: .75rem;
+}
+
+@media (max-width: 800px) {
+  .page-money-tracker .compareCards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.page-money-tracker .card {
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.70);
+  overflow: hidden;
+}
+
+.page-money-tracker .card__top {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+  padding: .8rem;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.page-money-tracker .card__top .avatar { width: 56px; height: 56px; }
+.page-money-tracker .card__top .title { font-weight: 900; }
+.page-money-tracker .card__top .subtitle { font-size: .85rem; color: var(--muted); }
+
+.page-money-tracker .card__topRight {
+  display: grid;
+  justify-items: end;
+  gap: .35rem;
+}
+
+.page-money-tracker .removeBtn {
+  border-radius: 12px;
+  padding: .45rem .6rem;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.85);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+/* Toggle */
+.page-money-tracker .toggle {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  user-select: none;
+  font-size: .85rem;
+  color: var(--muted);
+  padding: .2rem .35rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.55);
+}
+
+.page-money-tracker .toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.page-money-tracker .card__body {
+  padding: .8rem;
+  display: grid;
+  gap: .6rem;
+}
+
+.page-money-tracker .kpis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .5rem;
+}
+
+.page-money-tracker .kpi {
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  padding: .6rem .7rem;
+  background: rgba(255,255,255,.60);
+}
+
+.page-money-tracker .kpi .label { font-size: .85rem; color: var(--muted); }
+.page-money-tracker .kpi .value { font-size: 1.05rem; font-weight: 900; }
+
+/* Breakdown + chart */
+.page-money-tracker .chartBox {
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.60);
+  padding: .6rem .7rem;
+}
+
+.page-money-tracker .chartBox canvas {
+  width: 100% !important;
+  height: 180px !important;
+}
+
+.page-money-tracker .breakdown {
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.55);
+  padding: .6rem .7rem;
+}
+
+.page-money-tracker .breakdown .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .25rem 0;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.page-money-tracker .breakdown .row:last-child { border-bottom: 0; }
+
+/* PAC panel */
+.page-money-tracker .pacPanel {
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.55);
+  padding: .6rem .7rem;
+}
+
+.page-money-tracker .pacHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .5rem;
+}
+
+.page-money-tracker .pacList {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: .35rem;
+}
+
+.page-money-tracker .pacRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-money-tracker .pacName {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-money-tracker .pacAmt {
+  font-weight: 900;
+}
+
+.page-money-tracker .pacActions {
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+  margin-top: .5rem;
+}
+
+.page-money-tracker .pacBtn {
+  border-radius: 12px;
+  padding: .45rem .6rem;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.85);
+  cursor: pointer;
+  font-weight: 900;
+  font-size: .85rem;
+}
+
+/* Compare table */
+.page-money-tracker .tableWrap { margin-top: 1rem; }
+.page-money-tracker .hidden { display: none; }
+
+.page-money-tracker .tableScroll {
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.10);
+}
+
+.page-money-tracker .compareTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.page-money-tracker .compareTable th,
+.page-money-tracker .compareTable td {
+  padding: .7rem .75rem;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  text-align: left;
+}
+
+.page-money-tracker .compareTable thead th {
+  background: rgba(0,0,0,.03);
+  font-weight: 900;
+}
