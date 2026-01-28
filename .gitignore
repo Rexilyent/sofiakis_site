@@ -24,8 +24,12 @@ Thumbs.db
 # FEC Bulk Data
 seeds/
 
+# SQL
+bulk_fec_database_creation.sql
+
 # Databases
 supporters.db
 
 # Misc
 New Text Document.txt
+
