@@ -167,6 +167,21 @@
 	text-align: left;
 }
 
+.page-issues .rad-list {
+	margin: 0.6rem 0 0;
+	padding-left: 1.25rem;
+}
+
+.page-issues .rad-item {
+	margin: 0 0 0.9rem;
+}
+
+.page-issues .rad-title {
+	display: block;
+	font-weight: 800;
+	margin-bottom: 0.25rem;
+}
+
 .page-issues .issue-detail.open .issue-detail-body {
   display: block;
 }
