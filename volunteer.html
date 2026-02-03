@@ -37,12 +37,16 @@
       <div class="nav-links" id="nav-links">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="issues.html" >Issues</a>
+				<div class="nav-dropdown">
+					<a href="issues.html" class="nav-issues">Issues</a>
+					<div class="dropdown-menu">
+						<a href="money_tracker.html">Money Tracker</a>
+					</div>
+				</div>
         <a href="events.html" >Events</a>
         <a href="il10.html" >IL-10</a>
 				<div class="nav-dropdown">
 					<a href="vote.html" class="nav-vote">Vote</a>
-
 					<div class="dropdown-menu">
 						<a href="endorsements.html">Endorsements</a>
 					</div>
@@ -67,7 +71,12 @@
   </header>
   <main class="volunteer-content">
 		<section class="volunteer-hero">
-			<h1>Join the crew</h1>
+			<div class="volunteer-hero header-image-wrapper">
+				<img src="images/volunteer-hero.jpg" alt="Volunteers campaigning for Alexandria Sofiakis">
+				<div class="volunteer-hero hero-text">
+					<h1>Join The Crew</h1>
+				</div>
+			</div>
 		</section>
 
 		<section class="volunteer-intro">
@@ -241,35 +250,51 @@
 				</div>
 			</form>
 		</section>
+
+		<section class="about-il10">
+			<div class="about-il10 hero-image-wrapper">
+				<img src="images/il10-volunteer-hero.jpg" alt="Volunteers campaigning in IL-10">
+				<div class="about-il10 hero-text">
+					<h1>10th Congressional District of Illinois</h1>
+				</div>
+				<a class="btn-il10" href="il10.html">About the district</a>
+			</div>
+		</section>
   </main>
+  
+	<!-- Shared site footer -->
   <footer class="site-footer">
-    <div class="footer-inner">
-      <div>
-        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
-        <div class="disclaimer">P.O. Placeholder</div>
-      </div>
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+				<i class="fab fa-youtube"></i>
+			</a>
+			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<i class="fab fa-bluesky"></i>
+			</a>
+			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+				<i class="fab fa-tiktok"></i>
+			</a>
+			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+				<i class="fab fa-discord"></i>
+			</a>
+    </div>
 
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="issues.html">Issues</a>
-        <a href="events.html">Events</a>
-				<a href="il10.html">IL-10</a>
-				<a href="vote.html">Vote</a>
-        <a href="volunteer.html">Get Involved</a>
-      </div>
+		<div class="footer-links">
+      <a href="accessibility.html">Accessibility</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
 
-      <div class="footer-social" aria-label="Footer Social Links">
-        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
+		<div class="footer-paid-for">
+			<strong>Paid for by Alexandria Sofiakis</strong>
     </div>
   </footer>
 </body>

@@ -34,17 +34,21 @@
       <div class="nav-links" id="nav-links">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="issues.html" >Issues</a>
+				<div class="nav-dropdown">
+					<a href="issues.html" class="nav-issues">Issues</a>
+					<div class="dropdown-menu">
+						<a href="money_tracker.html">Money Tracker</a>
+					</div>
+				</div>
         <a href="events.html" >Events</a>
         <a href="il10.html" >IL-10</a>
 				<div class="nav-dropdown">
-					<a href="endorsements.html" class="nav-vote active">Endorsements</a>
-
+					<a href="vote.html" class="nav-vote">Vote</a>
 					<div class="dropdown-menu">
-						<a href="vote.html">Vote</a>
+						<a href="endorsements.html" class="active">Endorsements</a>
 					</div>
 				</div>
-        <a href="volunteer.html" >Volunteer</a>
+        <a href="volunteer.html">Volunteer</a>
       </div>
 
       <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
@@ -78,61 +82,77 @@
 		<section class="endorsement-cards" aria-label="Endorsement Cards">
 			
 			<!-- Endorsement 1 -->
-			<div class="endorsement-card lake-county-green-party">
+			<a href=""
+				 class="endorsement-card lake-county-greens"
+				 target="_blank"
+				 rel="noopener noreferrer">
+				
 				<div class="endorsement-icon">
-					<img src="images/endorsements/lake-county-green-party.png" alt="Illinois Lake County Green Party Logo">
+					<img src="assets/images/endorsements/lake-county-greens.jpg" alt="Lake County Greens Logo">
 				</div>
+				
 				<div class="title-container">
 					<h4>Illinois Lake County Green Party</h4>
 				</div>
-			</div>
+			</a>
 
+			<!-- Copy this for other endorsements, ensures entire card is clickable link-->
 			<!-- Endorsement 2 -->
-			<div class="endorsement-card movement-4-freedom">
-				<div class="endorsement-icon">
-					<img src="assets/images/endorsements/movement-4-freedom.jpg" alt="Movement4Freedom Logo">
+			<a href="https://www.movement4freedom.com/"
+				 class="endorsement-card movement-4-freedom"
+				 target="_blank"
+				 rel="noopener noreferrer">
+
+				 <div class="endorsement-icon">
+					<img src="assets/images/endorsements/movement-4-freedom.jpg" alt="Movement 4 Freedom Logo">
 				</div>
+
 				<div class="title-container">
-					<h4>Movement4Freedom</h4>
+					<h4>Movement 4 Freedom</h4>
 				</div>
+
 				<div class="link">
-					<a href="https://www.movement4freedom.com/" target="_blank" rel="noopener noreferrer">Visit Website</a>
+					<span>Visit Website</span>
 				</div>
-			</div>
+			</a>
 
 			<!-- Add more endorsements here -->
 		</section>
 	</main>
 
 	<!-- Shared site footer -->
-	<footer class="site-footer">
-    <div class="footer-inner">
-      <div>
-        <div><strong>Paid for by Alexandria Sofiakis</strong></div>
-        <div class="disclaimer">P.O. Placeholder</div>
-      </div>
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+				<i class="fab fa-youtube"></i>
+			</a>
+			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<i class="fab fa-bluesky"></i>
+			</a>
+			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+				<i class="fab fa-tiktok"></i>
+			</a>
+			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+				<i class="fab fa-discord"></i>
+			</a>
+    </div>
 
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="issues.html">Issues</a>
-        <a href="events.html">Events</a>
-				<a href="il10.html">IL-10</a>
-				<a href="vote.html">Vote</a>
-        <a href="volunteer.html">Get Involved</a>
-      </div>
+		<div class="footer-links">
+      <a href="accessibility.html">Accessibility</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
 
-      <div class="footer-social" aria-label="Footer Social Links">
-        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
+		<div class="footer-paid-for">
+			<strong>Paid for by Alexandria Sofiakis</strong>
     </div>
   </footer>
 </body>
