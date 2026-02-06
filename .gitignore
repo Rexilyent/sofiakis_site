@@ -27,14 +27,12 @@ seeds/
 
 # SQL
 bulk_fec_database_creation.sql
-app_facing_database_creation.sql
 
 # Databases
 supporters.db
 
-# Wrangler
+# Secrets
 wrangler.toml
-.wrangler/
 
 # Misc
 New Text Document.txt
