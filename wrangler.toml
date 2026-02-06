@@ -1,0 +1,8 @@
+name = "money-tracker"
+compatibility_date = "2026-02-06"
+pages_build_output_dir = "public"
+
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "dev-moneytracker-db"
+# database_id = "f3534884-57ec-4279-bb40-ca3bba6a3456"
