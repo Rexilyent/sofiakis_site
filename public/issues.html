@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alexandria Sofiakis for IL-10">
+    <meta name="author" content="Alexandria Sofiakis">
+    <title>Issues | Alexandria Sofiakis for IL-10</title>
+
+    <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/issues.css">
+
+    <script src="/scripts/issues.js" defer></script>
+</head>
+<body class="page-issues">
+	<!-- Shared site header -->
+	<header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="/index.html" >Home</a>
+        <a href="/about.html">About</a>
+				<div class="nav-dropdown">
+					<a href="/issues.html" class="nav-issues active">Issues</a>
+					<div class="dropdown-menu">
+						<a href="/money_tracker.html">Money Tracker</a>
+					</div>
+				</div>
+        <a href="/events.html" >Events</a>
+        <a href="/il10.html" >IL-10</a>
+				<div class="nav-dropdown">
+					<a href="/vote.html" class="nav-vote">Vote</a>
+					<div class="dropdown-menu">
+						<a href="/endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="/volunteer.html" >Volunteer</a>
+      </div>
+
+      <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrapper issues-page">
+
+  <!-- TOP SUMMARY CARDS -->
+  <section class="top-issues">
+    <div class="header">
+      <h1>Top Issues</h1>
+    </div>
+
+    <div class="issue-cards">
+      <!-- Issue Card 1 -->
+      <!-- Healthcare -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <i class="fas fa-notes-medical"></i>
+        </div>
+        <div class="title-container">
+          <h4 class="title">Medicare for All</h4>
+        </div>
+        <div class="description">
+          Guarantee quality healthcare for every person, not just those who can afford it.
+        </div>
+        <div class="link">
+          <a href="#issue-healthcare" onclick="scrollToIssue('issue-healthcare'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 2 -->
+      <!-- Housing -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/housing.jpg" alt="Housing icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Housing as a Human Right</h4>
+        </div>
+        <div class="description">
+          Protect renters, repair public housing, and build truly affordable homes.
+        </div>
+        <div class="link">
+          <a href="#issue-housing" onclick="scrollToIssue('issue-housing'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 3 -->
+      <!-- Climate / Green New Deal -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/green-new-deal.jpg" alt="Climate icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Green New Deal</h4>
+        </div>
+        <div class="description">
+          Create millions of good jobs while rapidly transitioning to clean energy.
+        </div>
+        <div class="link">
+          <a href="#issue-climate" onclick="scrollToIssue('issue-climate'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 4 -->
+      <!-- Agriculture -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/Agriculture.jpg" alt="Agriculture icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Agriculture</h4>
+        </div>
+        <div class="description">
+          Support farmers and sustainable practices to ensure food security and environmental health.
+        </div>
+          <div class="link">
+            <a href="#issue-agriculture" onclick="scrollToIssue('issue-agriculture'); return false;">
+              Learn more
+            </a>
+          </div>
+        </div>
+
+      <!-- Issue Card 5 -->
+      <!-- Workers / Unions -->
+      <!-- This Card will also house the unions section -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/workers.jpg" alt="Workers icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Justice for Workers & Small Businesses</h4>
+        </div>
+        <div class="description">
+          Raise wages, prevent megacorporations from exploiting workers-tax payer money with government bailouts, 
+					and support small businesses.
+        </div>
+        <div class="link">
+          <a href="#issue-workers" onclick="scrollToIssue('issue-workers'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 6 -->
+      <!-- Criminal Justice Reform -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/criminaljustice.jpg" alt="Criminal Justice icon" />
+        </div>
+      	<div class="title-container">
+        	<h4 class="title">Criminal Justice Reform</h4>
+        </div>
+        <div class="description">
+          End mass incarceration, eliminate the war on drugs, and promote rehabilitation over punishment.
+        </div>
+        <div class="link">
+          <a href="#issue-criminaljustice" onclick="scrollToIssue('issue-criminaljustice'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 7 -->
+      <!-- Education -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/education.jpg" alt="Education icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Education</h4>
+        </div>
+        <div class="description">
+          Invest in public education, reduce student debt, and ensure equal access to quality learning opportunities.
+        </div>
+        <div class="link">
+          <a href="#issue-education" onclick="scrollToIssue('issue-education'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 8 -->
+      <!-- Environmental Protection -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/environmental.jpg" alt="Environmental icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Environmental Protection</h4>
+        </div>
+        <div class="description">
+          Safeguard natural resources, combat pollution, and promote sustainable development.
+        </div>
+        <div class="link">
+          <a href="#issue-environmental" onclick="scrollToIssue('issue-environmental'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 9 -->
+      <!-- Human Rights -->
+      <div class="issue-card">
+        <div class="issue-icon">
+      		<img class="icon" src="/images/humanrights.jpg" alt="Human Rights icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Human Rights</h4>
+        </div>
+        <div class="description">
+          Advocate for equality, justice, and dignity for all individuals, regardless of background.
+        </div>
+        <div class="link">
+          <a href="#issue-humanrights" onclick="scrollToIssue('issue-humanrights'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 10 -->
+      <!-- Immigration Reform -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/immigration.jpg" alt="Immigration icon" />
+        </div>
+        <div class="title-container">
+        	<h4 class="title">Immigration Reform</h4>
+        </div>
+        <div class="description">
+          Create a fair and humane immigration system that respects the rights of all individuals.
+        </div>
+        <div class="link">
+          <a href="#issue-immigration" onclick="scrollToIssue('issue-immigration'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 11 -->
+      <!-- International Relations -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/international.jpg" alt="international icon" />
+        </div>
+      	<div class="title-container">
+          <h4 class="title">International Relations</h4>
+        </div>
+        <div class="description">
+          Promote diplomacy, global cooperation, and peaceful conflict resolution.
+        </div>
+        <div class="link">
+          <a href="#issue-international" onclick="scrollToIssue('issue-international'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 12 -->
+      <!-- Public Transit -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/publictransit.jpg" alt="Public Transit icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Public Transit</h4>
+        </div>
+        <div class="description">
+          Expand and improve public transportation systems to enhance accessibility and reduce environmental impact.
+        </div>
+        <div class="link">
+          <a href="#issue-publictransit" onclick="scrollToIssue('issue-publictransit'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 13 -->
+      <!-- Reproductive Rights -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/reproductiverights.jpg" alt="Reproductive Rights icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">Reproductive Rights</h4>
+        </div>
+        <div class="description">
+          Ensure access to comprehensive reproductive healthcare and protect bodily autonomy for all individuals.
+        </div>
+        <div class="link">
+          <a href="#issue-reproductiverights" onclick="scrollToIssue('issue-reproductiverights'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 14 -->
+      <!-- Democracy Revitalization -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/Revitalization.jpg" alt="Revitalization icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">R.A.D (Revitalizate American Democracy)</h4>
+        </div>
+        <div class="description">
+          Strengthen democratic institutions, promote civic engagement, and ensure fair representation for all citizens.
+        </div>
+        <div class="link">
+          <a href="#issue-revitalization" onclick="scrollToIssue('issue-revitalization'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <!-- Issue Card 15 -->
+      <!-- LGBTQ+ Rights -->
+      <div class="issue-card">
+        <div class="issue-icon">
+          <img class="icon" src="/images/lgbtq.jpg" alt="LGBTQ+ icon" />
+        </div>
+        <div class="title-container">
+          <h4 class="title">LGBTQ+ Rights</h4>
+        </div>
+        <div class="description">
+          Advocate for equal rights, protections, and acceptance for LGBTQ+ individuals in all aspects of society.
+        </div>
+        <div class="link">
+          <a href="#issue-lgbtq" onclick="scrollToIssue('issue-lgbtq'); return false;">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DETAILED ISSUE SECTIONS -->
+  <section class="issues-details">
+		<!-- Issue Detail 1 -->
+    <!-- Medicare for All detail -->
+    <article id="issue-healthcare" class="issue-detail">
+      <h3>Medicare for All</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+        	Healthcare is a human right, not a privilege tied to employment, income, or geography. Medicare for All would
+					guarantee comprehensive, universal healthcare coverage to every person in the United States—no premiums, no
+					deductibles, no surprise bills. By prioritizing patient care over corporate profit, a single-payer system lowers costs,
+					expands access, and ensures that medical decisions are made by patients and doctors—not insurance companies.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            The United States spends more on healthcare than any other nation, yet millions remain uninsured or underinsured,
+						and countless families delay care due to cost. This is not a failure of medicine—it is a failure of policy.
+          </p>
+					<p>
+						Healthcare should serve people, not profit. Medicare for All provides a clear and proven solution: a universal,
+						publicly funded healthcare system that guarantees care for everyone, regardless of employment, income, age, or
+						pre-existing conditions.
+					</p>
+					<h4>Universal Coverage Without Barriers</h4>
+					<p>
+						Under Medicare for All, every person in the United States would be covered automatically. Coverage would not depend
+						on employment status, marital status, or financial means.
+					</p>
+					<p>
+						This system eliminates:
+					</p>
+					<ul>
+						<li>Premiums, deductibles, and copays</li>
+						<li>Surprise medical bills</li>
+						<li>Network restrictions</li>
+						<li>Denials based on pre-existing conditions</li>
+					</ul>
+					<p>
+						No one should have to choose between rent and seeing a doctor.
+					</p>
+					<h4>Comprehensive, Evidence-Based Care</h4>
+					<p>
+						Medicare for All must provide comprehensive coverage that reflects real healthcare needs, including:
+					</p>
+					<ul>
+						<li>Primary and preventive care</li>
+						<li>Hospitalization and emergency services</li>
+						<li>Prescription drugs</li>
+						<li>Mental health and substance abuse treatment</li>
+						<li>Reproductive health services</li>
+						<li>Dental, vision, and hearing care</li>
+						<li>Long-term and disability care</li>
+						<li>Gender-affirming care and other medically necessary services</li>
+					</ul>
+					<p>
+						Healthcare decisions should be guided by medical expertise and patient needs—not political ideology or corporate
+						profit margins.
+					</p>
+					<h4>Lower Costs, Better Outcomes</h4>
+					<p>
+						A single-payer system dramatically reduces administrative waste by replacing thousands of private insurance plans
+						with one streamlined public program. This efficiency allows us to:
+					</p>
+					<ul>
+						<li>Negotiate lower prescription drug prices</li>
+						<li>Reduce administrative overhead</li>
+						<li>Lower overall healthcare costs</li>
+						<li>Improve health outcomes for all</li>
+					</ul>
+					<p>
+						Medicare for All is not only more humane—it is <strong>more cost-effective</strong>.
+					</p>
+					<h4>Healthcare Freedom and Economic Security</h4>
+					<p>
+						Tying healthcare to employment traps workers in jobs they can’t afford to leave and discourages entrepreneurship.
+						Medicare for All restores freedom by:
+					</p>
+					<ul>
+						<li>Allowing people to change jobs without losing healthcare coverage</li>
+						<li>Supporting small businesses and entrepreneurs</li>
+						<li>Strengthening labor bargaining power</li>
+						<li>Reducing financial stress and medical debt</li>
+					</ul>
+					<p>
+						Healthcare security strengthens economic security for individuals and families alike.
+					</p>
+					<h4>Ending Insurance Company Control</h4>
+					<p>
+						Private insurance companies exist to maximize profit, often by denying care or limiting coverage. Medicare for All
+						puts patients first by:
+					</p>
+					<ul>
+						<li>Removing profit incentives from healthcare decisions</li>
+						<li>Ending coverage denials for medically necessary care</li>
+						<li>Simplifying access to care</li>
+						<li>Ensuring transparency and accountability in healthcare delivery</li>
+					</ul>
+					<p>
+						Doctors and patients—not insurance executives—should make medical decisions.
+					</p>
+					<h4>Public Health, Not Just Sick Care</h4>
+					<p>
+						A universal healthcare system allows us to shift focus from crisis response to prevention. Medicare for All enables:
+					</p>
+					<ul>
+						<li>Earlier diagnoses</li>
+						<li>Better management of chronic conditions</li>
+						<li>Expanded mental health services</li>
+						<li>Stronger public health infrastructure</li>
+					</ul>
+					<p>
+						Preventive care saves lives and reduces long-term costs.
+					</p>
+					<h4>A System That Includes Everyone</h4>
+					<p>
+						Healthcare is inseparable from civil rights. A universal system must serve everyone equitably, without discrimination
+						based on gender, sexuality, disability, race, or income. Medicare for All ensures that:
+					</p>
+					<ul>
+						<li>No group is excluded or singled out</li>
+						<li>Medically necessary care is covered for all</li>
+						<li>Personal medical decisions remain private</li>
+					</ul>
+					<p>
+						Healthcare is about fairness, dignity, and equal access for everyone.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 2 -->
+    <!-- Housing detail -->
+    <article id="issue-housing" class="issue-detail">
+      <h3>Housing as a Human Right</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+        	Stable housing is essential to health, economic security, and community well-being. Yet across the country,
+					rising rents, housing shortages, and speculative development have pushed working families, seniors, and young
+					people into housing insecurity. Treating housing as a human right means ensuring access to safe, affordable,
+					and stable homes through smart policy, responsible development, and protections that prioritize people over
+					speculation—without placing additional strain on local taxpayers.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Housing is the foundation upon which families build stability, health, and opportunity. Without secure housing,
+						access to education, employment, and healthcare becomes harder, and entire communities suffer. Yet today, too
+						many people are being priced out of their own neighborhoods due to rising costs, limited supply, and policies
+						that prioritize speculation over livability.
+          </p>
+					<p>
+						A serious housing strategy must focus on <strong>affordability, stability, and long-term community health.</strong>
+					</p>
+					<h4>Expanding Affordable Housing Supply</h4>
+					<p>
+						The lack of affordable housing is driven in part by underbuilding and restrictive policies that fail to meet community
+						needs. Addressing this requires:
+					</p>
+					<ul>
+						<li>Increased investment in affordable and mixed-income housing</li>
+						<li>Support for responsible, community-centered development</li>
+						<li>Incentives for converting vacant or underused properties into housing</li>
+						<li>Coordination between local, state, and federal housing efforts</li>
+					</ul>
+					<p>
+						Expanding supply—done thoughtfully—reduces pressure on rents and increases housing options for families.
+					</p>
+					<h4>Protecting Renters and Homeowners</h4>
+					<p>
+						Housing policy must protect both renters and homeowners from instability and displacement. This includes:
+					</p>
+					<ul>
+						<li>Reasonable tenant protections that prevent sudden displacement</li>
+						<li>Transparency in rental practices and fee structures</li>
+						<li>Support for first-time homebuyers</li>
+						<li>Safeguards against predatory lending and foreclosure</li>
+					</ul>
+					<p>
+						Stable communities depend on housing security for all residents.
+					</p>
+					<h4>Preventing Speculation and Displacement</h4>
+					<p>
+						Speculative investment in housing has increasingly treated homes as financial assets rather than places to live. Policy should:
+					</p>
+					<ul>
+						<li>Discourage housing speculation that drives up prices</li>
+						<li>Protect long-term residents from displacement</li>
+						<li>Encourage owner-occupied and community-based housing models</li>
+						<li>Preserve naturally occurring affordable housing</li>
+					</ul>
+					<p>
+						Homes should serve people first—not speculative markets.
+					</p>
+					<h4>Housing, Health, and Public Safety</h4>
+					<p>
+						Housing stability is directly linked to physical and mental health, educational success, and public safety.
+						When people are securely housed:
+					</p>
+					<ul>
+						<li>Emergency healthcare costs decline</li>
+						<li>Children perform better in school</li>
+						<li>Crime rates decrease</li>
+					</ul>
+					<p>
+						Investing in housing is an investment in community well-being.
+					</p>
+					<h4>Addressing Homelessness Through Housing Stability</h4>
+					<p>
+						Homelessness is most effectively addressed by <strong>providing housing first</strong>, paired with supportive
+						services as needed. Evidence shows that stable housing:
+					</p>
+					<ul>
+						<li>Reduces long-term public costs</li>
+						<li>Improves health outcomes</li>
+						<li>Increases pathways to employment and stability</li>
+					</ul>
+					<p>
+						Housing stability must be the foundation of any effective homelessness strategy.
+					</p>
+					<h4>Responsible Investment Without Overburdening Taxpayers</h4>
+					<p>
+						Housing solutions must be fiscally responsible. By prioritizing smart investment, reducing inefficiencies, and aligning
+						federal resources with local needs, it is possible to:
+					</p>
+					<ul>
+						<li>Expand housing access</li>
+						<li>Stabilize communities</li>
+						<li>Reduce long-term public costs</li>
+					</ul>
+					<p>
+						Housing security strengthens the economy and reduces strain on social services.
+					</p>
+					<p>
+						Housing is not a luxury—it is a necessity. Treating housing as a human right means ensuring that everyone has
+						access to safe, stable, and affordable homes through policies that prioritize people, protect communities, and
+						invest responsibly. Strong housing policy strengthens families, supports economic mobility, and builds healthier,
+						more resilient communities.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 3 -->
+    <!-- Climate / Green New Deal detail -->
+    <article id="issue-climate" class="issue-detail">
+      <h3>Green New Deal & Bold Climate Action</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+        	The Green New Deal is a comprehensive plan to modernize America’s economy while addressing climate change,
+					strengthening energy independence, and creating good-paying jobs. By investing in clean energy, resilient
+					infrastructure, and domestic manufacturing, we can reduce pollution, lower long-term costs, and build a
+					stronger economy—without leaving workers or communities behind.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Climate change is already affecting our economy, infrastructure, and public health. The question is not whether we
+						respond, but whether we do so in a way that strengthens American workers, communities, and industry.
+          </p>
+					<p>
+						The Green New Deal is a forward-looking economic strategy designed to meet this challenge by pairing climate responsibility
+						with job creation, infrastructure investment, and long-term economic stability.
+					</p>
+					<h4>Job Creation and Workforce Transition</h4>
+					<p>
+						A successful climate strategy must be built around workers. The Green New Deal prioritizes:
+					</p>
+					<ul>
+						<li>Millions of good-paying jobs in clean energy, construction, manufacturing, and maintenance</li>
+						<li>Strong labor standards, including prevailing wages and the right to organize</li>
+						<li>Job training and apprenticeships to prepare workers for emerging industries</li>
+						<li>A just transition for workers in fossil fuel–dependent communities</li>
+					</ul>
+					<p>
+						No worker should be sacrificed in the name of progress. Economic transition must be fair, planned, and inclusive.
+					</p>
+					<h4>Energy Independence and Security</h4>
+					<p>
+						Investing in domestic clean energy reduces reliance on foreign fuel sources and strengthens national security.
+						A modern energy strategy includes:
+					</p>
+					<ul>
+						<li>Expanding renewable energy generation</li>
+						<li>Modernizing the electric grid for reliability and efficiency</li>
+						<li>Improving energy storage and transmission</li>
+						<li>Supporting local and community-based energy projects</li>
+					</ul>
+					<p>
+						Energy independence is not just an environmental goal—it is a strategic and economic one.
+					</p>
+					<h4>Infrastructure for the 21st Century</h4>
+					<p>
+						Much of America’s infrastructure is outdated and vulnerable to extreme weather. The Green New Deal calls for:
+					</p>
+					<ul>
+						<li>Upgrading transportation systems</li>
+						<li>Improving water and wastewater infrastructure</li>
+						<li>Strengthening flood control and disaster resilience</li>
+						<li>Expanding energy-efficient public buildings and housing</li>
+					</ul>
+					<p>
+						These investments reduce long-term costs while improving safety and quality of life.
+					</p>
+					<h4>Cleaner Air, Healthier Communities</h4>
+					<p>
+						Reducing pollution improves public health and lowers healthcare costs. A cleaner economy means:
+					</p>
+					<ul>
+						<li>Fewer asthma and respiratory illnesses</li>
+						<li>Reduced environmental health risks</li>
+						<li>Safer workplaces and neighborhoods</li>
+						<li>Lower long-term medical expenses</li>
+					</ul>
+					<p>
+						Protecting health and protecting the economy go hand in hand.
+					</p>
+					<h4>Innovation and American Manufacturing</h4>
+					<p>
+						The Green New Deal is an opportunity to rebuild American manufacturing leadership by:
+					</p>
+					<ul>
+						<li>Investing in domestic production of clean energy technology</li>
+						<li>Supporting research and development</li>
+						<li>Strengthening supply chains at home</li>
+						<li>Keeping innovation, jobs, and profits in the United States</li>
+					</ul>
+					<p>
+						America should lead the global clean energy economy—not outsource it.
+					</p>
+					<h4>Fiscal Responsibility and Smart Investment</h4>
+					<p>
+						Addressing climate challenges now is more affordable than paying the costs of inaction later. Strategic investment:
+					</p>
+					<ul>
+						<li>Reduces disaster recovery expenses</li>
+						<li>Lowers healthcare spending</li>
+						<li>Prevents infrastructure failures</li>
+						<li>Generates long-term economic returns</li>
+					</ul>
+					<p>
+						These policies can be structured to prioritize efficiency, accountability, and long-term savings—without placing
+						additional burdens on working families.
+					</p>
+					<h4>Working Alongside Environmental Protection</h4>
+					<p>
+						The Green New Deal complements broader environmental protection efforts by focusing on economic transformation,
+						while conservation and stewardship remain essential to preserving natural ecosystems and public lands.
+					</p>
+					<p>
+						Together, these approaches ensure that economic growth does not come at the expense of public health,
+						natural beauty, or future generations.
+					</p>
+					<p>
+						The Green New Deal is about building an economy that works for today and tomorrow—one that creates jobs,
+						strengthens infrastructure, improves public health, and prepares the country for a changing climate.
+						By investing wisely and planning responsibly, we can meet environmental challenges while expanding opportunity
+						and protecting working families.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 4 -->
+		<!-- Agriculture detail -->
+    <article id="issue-agriculture" class="issue-detail">
+      <h3>Agriculture</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Farmers are the backbone of our food system and rural economy, yet too many are squeezed by corporate consolidation,
+					government overreach, and exploitative business practices. A strong agricultural policy must protect farmers’ independence,
+					preserve farmland, prevent corporate control over seeds and equipment, and support a voluntary transition to sustainable
+					practices. By standing with farmers—not against them—we can strengthen rural communities, food security, and long-term
+					stewardship of the land.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Farmers deserve the freedom to work their land without being trapped by corporate monopolies, excessive regulation,
+						or systems designed to extract profit from their labor. A healthy agricultural system depends on <strong>independent farmers,
+						protected farmland, fair markets, and practical policy.</strong>
+          </p>
+					<p>
+						Agricultural policy should serve those who grow our food—not multinational corporations seeking control over land, seeds, or equipment.
+					</p>
+					<h4>Protecting Farmers’ Independence</h4>
+					<p>
+						Farmers possess deep knowledge of their land, equipment, and operations. Public policy should respect that expertise and support their
+						ability to make informed, independent decisions.
+					</p>
+					<p>
+						That requires:
+					</p>
+					<ul>
+						<li>Limiting unnecessary government intrusion on privately owned agricultural land</li>
+						<li>Developing practical, transparent regulations with meaningful farmer input</li>
+						<li>Ensuring policies do not force farmers into dependency on corporate systems</li>
+					</ul>
+					<p>
+						Independence is essential to a resilient food system.
+					</p>
+					<h4>Restoring Fairness in Agricultural Markets</h4>
+					<p>
+						Corporate consolidation has shifted power away from farmers and toward multinational agribusiness and petrochemical
+						companies that control pricing, inputs, and contracts. These dynamics:
+					</p>
+					<ul>
+						<li>Reduce profit margins</li>
+						<li>Limit choice and competition</li>
+						<li>Encourage practices that degrade long-term soil health</li>
+						<li>Push small and mid-sized farms out of operation</li>
+					</ul>
+					<p>
+						Agricultural policy should promote competition, transparency, and fair market access, ensuring farmers retain control
+						over their livelihoods and the value of their labor.
+					</p>
+					<h4>Defending the Right to Repair Farm Equipment</h4>
+					<p>
+						Modern farm equipment is increasingly designed with software restrictions and proprietary systems that prevent farmers
+						from repairing their own machinery. These limitations force reliance on authorized dealers, resulting in excessive costs,
+						delayed repairs, and lost productivity during critical planting and harvest periods.
+					</p>
+					<p>
+						Farmers should retain full ownership rights over the equipment they purchase, including:
+					</p>
+					<ul>
+						<li>Access to diagnostic tools, repair manuals, and necessary tools</li>
+						<li>The ability to perform repairs independently</li>
+						<li>The freedom to use local or independent mechanics</li>
+					</ul>
+					<p>
+						Right-to-repair protections strengthen rural economies, reduce unnecessary costs, and keep control in the hands of
+						farmers—not manufacturers.
+					</p>
+					<h4>Preventing the Patenting of Life and Protecting Seed Rights</h4>
+					<p>
+						No corporation should be able to claim ownership over life itself. The patenting of seeds and other life forms has
+						been used to restrict traditional farming practices, punish seed saving, and force long-term dependence on
+						corporate-controlled inputs. This has reduced farmer autonomy and increased costs across the agricultural economy.
+					</p>
+					<p>
+						Policy should:
+					</p>
+					<ul>
+						<li>Prohibit the patenting of life forms</li>
+						<li>Protect farmers’ ability to save, reuse, and exchange seeds</li>
+						<li>Ensure farmers are not penalized for natural cross-pollination</li>
+						<li>Prevent intellectual property frameworks from being weaponized to strip farmers of their rights</li>
+					</ul>
+					<p>
+						Seeds are a shared agricultural foundation. Farmers and communities—not monopolies—should control the building blocks of our food system.
+					</p>
+					<h4>Preserving Farmland and Responsible Land Use</h4>
+					<p>
+						Agricultural land is finite and irreplaceable. The use of public authority—particularly eminent domain—must meet a clear and
+						legitimate public-interest standard. Productive farmland should not be permanently removed for speculative or sprawling
+						development.
+					</p>
+					<p>
+						Large infrastructure proposals, including the Peotone Airport (often referred to as the “third airport”), must be evaluated based on:
+					</p>
+					<ul>
+						<li>Long-term food security</li>
+						<li>Environmental impact</li>
+						<li>Community displacement and economic disruption</li>
+						<li>Responsible land-use planning</li>
+					</ul>
+					<p>
+						Farmland should be treated as a strategic resource essential to regional and national resilience.
+					</p>
+					<h4>Supporting a Farmer-Led Transition to Sustainable Practices</h4>
+					<p>
+						Sustainable agricultural practices improve soil health, protect water quality, and strengthen long-term productivity.
+						However, transitions must be voluntary, practical, and financially supported—especially for small and mid-sized farms.
+					</p>
+					<p>
+						Effective policy includes:
+					</p>
+					<ul>
+						<li>Financial assistance and grants for sustainable upgrades</li>
+						<li>Technical support and education</li>
+						<li>Incentives that reward stewardship and conservation</li>
+						<li>Flexibility to reflect local conditions and farm size</li>
+					</ul>
+					<p>
+						Environmental responsibility and farm profitability are not competing goals—they advance together when policy is designed responsibly.
+					</p>
+					<p>
+						Agricultural policy should strengthen farmer independence, protect farmland, restore fair markets, and support long-term
+						stewardship. By defending the right to repair, preventing the patenting of life, protecting seed rights, ensuring responsible
+						land use, and supporting farmer-led sustainability, we can build an agricultural system that supports rural communities,
+						food security, and the land we all depend on.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 5 -->
+    <!-- Workers & Small Businesses detail -->
+    <article id="issue-workers" class="issue-detail">
+      <h3>Justice for Workers & Small Businesses</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+        	A strong economy is built from the ground up—by workers, unions, and locally rooted small businesses.
+					Yet corporate consolidation, weakened labor protections, and misguided government priorities have tilted
+					the economic playing field in favor of multinational corporations that are not invested in the long-term
+					health of local communities. Rebuilding a fair economy requires supporting small businesses, protecting the
+					right to organize, enforcing labor laws, and ensuring public policy serves working people and community-based
+					enterprises—not corporate bailouts.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Economic policy should prioritize the people and businesses that sustain local communities. Small businesses, workers,
+						and labor organizations form the backbone of the economy, yet too often public policy favors large multinational
+						corporations whose interests are disconnected from the communities in which they operate.
+          </p>
+					<p>
+						A fair and resilient economy depends on <strong>strong labor rights, thriving local businesses, and accountable
+							corporate behavior.</strong>
+					</p>
+					<h4>Supporting Small Businesses and Local Economies</h4>
+					<p>
+						Small and locally owned businesses are deeply invested in their communities. They create local jobs, circulate wealth
+						within the region, and contribute to the long-term economic health.
+					</p>
+					<p>
+						Economic policy should:
+					</p>
+					<ul>
+						<li>Center small and community-based businesses in economic development strategies</li>
+						<li>Avoid public bailouts of failing mega-corporations that privatize profits and socialize losses</li>
+						<li>Ensure government resources are not used to prop up corporations that offshore jobs or undermine local economies</li>
+						<li>Provide stability and predictability for small business owners</li>
+					</ul>
+					<p>
+						Public investment should strengthen local economies—not reward corporate failure.
+					</p>
+					<h4>Responsible Economic Policy Without Burdening Small Businesses</h4>
+					<p>
+						Economic advocacy must be grounded in fiscal responsibility. Programs and policies should be paired <strong>with clear,
+						realistic funding strategies</strong> that do not rely on raising taxes on already overburdened small businesses or
+						local employers.
+					</p>
+					<p>
+						Sound policy requires:
+					</p>
+					<ul>
+						<li>Transparent and sustainable funding mechanisms</li>
+						<li>Efficient use of public resources</li>
+						<li>Long-term sustainability rather than short-term corporate subsidies</li>
+					</ul>
+					<p>
+						Small businesses should not be asked to shoulder the cost of policies that primarily benefit large corporations.
+					</p>
+					<h4>Protecting the Right to Organize</h4>
+					<p>
+						The decline in union membership and internal divisions among labor organizations have weakened worker protections
+						and allowed corporate interests to erode hard-won rights. A strong labor movement is essential to ensuring fair wages,
+						safe working conditions, and economic security.
+					</p>
+					<p>
+						Public policy should:
+					</p>
+					<ul>
+						<li>Protect workers’ right to organize without employer interference</li>
+						<li>Strengthen collective bargaining rights</li>
+						<li>Support unity and solidarity across labor organizations</li>
+					</ul>
+					<p>
+						Empowering workers strengthens the entire economy.
+					</p>
+					<h4>Modernizing Labor Law and Enforcement</h4>
+					<p>
+						Outdated labor laws and underenforcement have left workers vulnerable to unfair practices. Reform is necessary to
+						restore balance between employers and employees.
+					</p>
+					<p>
+						Key priorities include:
+					</p>
+					<ul>
+						<li>Repealing the Taft-Hartley Act to remove barriers to organizing</li>
+						<li>Fully funding the National Labor Relations Board (NLRB), including its investigative and enforcement divisions</li>
+						<li>Ensuring labor law violations are investigated promptly and enforced effectively</li>
+					</ul>
+					<p>
+						Labor rights are only meaningful when they are enforced.
+					</p>
+					<h4>Holding Corporations Accountable Under the Law</h4>
+					<p>
+						Accountability must apply equally—regardless of wealth, size, or corporate structure. Too often, large corporations face
+						minimal consequences for actions that cause widespread harm, while individuals committing similar offenses face severe
+						penalties.
+					</p>
+					<p>
+						This imbalance undermines public trust and incentivizes misconduct.
+					</p>
+					<p>
+						Corporate accountability policy should ensure that:
+					</p>
+					<ul>
+						<li>
+							Environmental crimes that pollute land, water, or air—and cause long-term health impacts—are treated as serious offenses,
+							not administrative costs
+						</li>
+						<li>
+							Corporate fraud and financial crimes face consequences proportionate to the harm caused
+						</li>
+						<li>
+							Executives and decision-makers responsible for criminal conduct are subject to personal accountability—not just
+							corporate fines
+						</li>
+						<li>
+							Penalties are strong enough to deter wrongdoing, not absorbed as a cost of doing business
+						</li>
+					</ul>
+					<p>
+						A system where corporations can harm thousands of people and face only minor fines is not justice—it is failure of enforcement.
+					</p>
+					<h4>Accountability Strengthens Workers and Communities</h4>
+					<p>
+						Strong enforcement protects workers, small businesses, and communities that play by the rules. When corporations are held
+						accountable:
+					</p>
+					<ul>
+						<li>Workers face fewer unsafe conditions</li>
+						<li>Communities are better protected from pollution and health risks</li>
+						<li>Small businesses are no longer undercut by competitors who profit from illegal practices</li>
+						<li>Trust in institutions is restored</li>
+					</ul>
+					<p>
+						Equal justice under the law is essential to a functioning economy.
+					</p>
+					<p>
+						A fair economy requires more than growth—it requires accountability. By prioritizing small businesses, strengthening
+						labor rights, enforcing workplace protections, and holding corporations fully accountable for criminal conduct,
+						economic policy can serve workers and communities rather than corporate consolidation. Equal enforcement of the law
+						strengthens trust, fairness, and long-term prosperity.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 6 -->
+    <!-- Criminal Justice Reform detail -->
+    <article id="issue-criminaljustice" class="issue-detail">
+      <h3>Criminal Justice Reform</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: 6 Mins</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					America’s criminal justice system has relied too heavily on punishment and incarceration
+					at the expense of public health, human dignity, and economic fairness. Failed “war on drugs”
+					policies have overcrowded prisons, harmed working communities, and allowed private interests
+					to profit from incarceration and forced labor. True reform requires treating substance abuse
+					as a public health issue, prioritizing rehabilitation over punishment, and confronting
+					constitutional loopholes that permit exploitation. A justice system rooted in dignity and
+					accountability makes communities safer and stronger.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            For decades, the United States has pursued a punitive model of criminal justice that
+						prioritizes incarceration over prevention, treatment, and rehabilitation. While framed as
+						a public safety strategy, this approach has led to overcrowded prisons, fractured families,
+						and weakened communities—without delivering lasting safety.
+          </p>
+					<p>
+						Around the world, countries that take a public health–centered and rehabilitative approach
+						to justice have demonstrated lower crime rates and safer streets. The evidence is clear:
+						punishment alone does not prevent harm—rehabilitation and opportunity do.
+					</p>
+					<h4>The Cost of the War on Drugs</h4>
+					<p>
+						The so-called “war on drugs” has failed to curb substance abuse while inflicting lasting damage on working communities:
+					</p>
+					<ul>
+						<li><strong>Mass incarceration</strong>, particularly for nonviolent offenses</li>
+						<li><strong>Civil asset forfeiture</strong>, enabling property seizure without due process</li>
+						<li><strong>Profit-driven incarceration</strong> incentivizing higher prison populations</li>
+						<li><strong>Racial disparities</strong> in arrests, sentencing, and incarceration rates</li>
+						<li><strong>Exploitation of prison labor</strong> undermining unions, wage standards, and local employment</li>
+					</ul>
+					<p>
+						These policies strip people from their communities and replace real jobs with coerced labor—damaging workers both
+						inside and outside prison walls.
+					</p>
+					<h4>Rehabilitation Over Retribution</h4>
+					<p>
+						For individuals convicted of violent or serious crimes, accountability must include rehabilitation, not permanent punishment.
+						A system focused solely on retribution increases recidivism and leaves people unprepared to reintegrate into society.
+					</p>
+					<p>
+						Effective rehabilitation includes:
+					</p>
+					<ul>
+						<li><strong>Mental health and substance abuse treatment</strong></li>
+						<li><strong>Educational and vocational training</strong></li>
+						<li><strong>Restorative accountability</strong></li>
+						<li><strong>Supportive reentry programs</strong></li>
+					</ul>
+					<p>
+						Countries that invest in rehabilitation consistently experience safer communities and lower reoffense rates.
+					</p>
+					<h4>Ending Forced Labor: Amending the 13th Amendment</h4>
+					<p>
+						While the 13th Amendment abolished slavery, it includes a loophole allowing involuntary servitude “as a punishment for crime”.
+						This exception has enabled the continuation of forced labor within the prison system and has been used to justify exploitative
+						practices that benefit private enterprise and government institutions alike.
+					</p>
+					<p>
+						A truly just system must confront this contradiction. Amending the 13th Amendment to remove this exception would:
+					</p>
+					<ul>
+						<li>Affirm that slavery has no place in any form in modern America</li>
+						<li>End the constitutional justification for coerced prison labor</li>
+						<li>Strengthen labor protections and wage standards nationwide</li>
+						<li>Align our justice system with basic human dignity and fairness</li>
+					</ul>
+					<p>
+						Accountability should never come at the cost of fundamental human rights. Rehabilitation, education, and voluntary,
+						fairly compensated work—not coercion—are what prepare people for successful reintegration into society.
+					</p>
+					<h4>A Justice System That Works for Everyone</h4>
+					<p>
+						Criminal justice reform is not about being “soft on crime”—it is about being smart, fair, and effective.
+						A system that prioritizes dignity, rehabilitation, and evidence-based policy:
+					</p>
+					<ul>
+						<li>Reduces recidivism and enhances public safety</li>
+						<li>Strengthens families and communities</li>
+						<li>Protects workers and labor standards</li>
+						<li>Restores trust in our institutions</li>
+					</ul>
+					<p>
+						By treating substance abuse as a health issue, ending profit-driven incarceration, and closing constitutional
+						loopholes that permit exploitation, we can build a criminal justice system that truly serves justice—and keeps
+						our communities safe.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 7 -->
+    <!-- Education detail -->
+    <article id="issue-education" class="issue-detail">
+      <h3>Education</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Students today face rising costs and increasing financial pressure, while educators are asked to do more with fewer
+					resources and less autonomy. At the same time, the United States is falling behind its international peers in
+					educational outcomes. Rebuilding a world-class education system requires empowering educators and experts, expanding
+					support for trade and technical education, and prioritizing education funding through responsible federal
+					budgeting—without increasing the burden on local taxpayers or working families.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Education is the foundation of opportunity, economic strength, and democratic participation. Yet across the country,
+						students are experiencing <strong>significant financial strain</strong>, educators are constrained by political interference,
+						and educational outcomes continue to lag behind international standards.
+          </p>
+					<p>
+						Addressing these challenges requires a <strong>comprehensive, evidence-based approach</strong> that restores educational
+						excellence, respects professional expertise, and ensures affordability across all levels of learning.
+					</p>
+					<h4>Centering Educators and Educational Expertise</h4>
+					<p>
+						Education policy is most effective when guided by those with experience and expertise in the classroom. Teachers,
+						education professionals, and subject-matter experts should play a leading role in shaping curriculum and
+						instructional standards—rather than political lobbyists or shifting partisan priorities.
+					</p>
+					<p>
+						Placing expertise at the center of decision-making:
+					</p>
+					<ul>
+						<li>Improves instructional quality</li>
+						<li>Encourages evidence-based curriculum development</li>
+						<li>Strengthens student outcomes</li>
+						<li>Helps restore global competitiveness</li>
+					</ul>
+					<p>
+						Classrooms function best when education policy is driven by knowledge, not politics.
+					</p>
+					<h4>Restoring Educational Excellence</h4>
+					<p>
+						The United States once set the global standard for education. Reclaiming that leadership requires sustained
+						investment and thoughtful reform, including:
+					</p>
+					<ul>
+						<li>Modernized curricula aligned with international benchmarks</li>
+						<li>Strong emphasis on critical thinking, science, technology, and civic literacy</li>
+						<li>Support for innovation in teaching and learning methods</li>
+						<li>Protection of classrooms from ideological interference</li>
+					</ul>
+					<p>
+						Education should prepare students to navigate a complex, changing world—not serve as a political battleground.
+					</p>
+					<h4>Expanding Support for Trade and Technical Education</h4>
+					<p>
+						A strong education system must reflect the diversity of talents and career paths that sustain a healthy economy.
+						Trade schools, apprenticeships, and technical education programs are essential to building a <strong>skilled, adaptable,
+						and sustainable workforce.</strong>
+					</p>
+					<p>
+						Education policy should:
+					</p>
+					<ul>
+						<li>Expand funding and institutional support for trade and technical programs</li>
+						<li>Treat skilled trades with equal respect and opportunity as four-year degree paths</li>
+						<li>Strengthen partnerships between schools, labor organizations, and industry</li>
+					</ul>
+					<p>
+						Multiple pathways to success strengthen both individuals and the broader economy.
+					</p>
+					<h4>Addressing Affordability and Student Financial Strain</h4>
+					<p>
+						Rising tuition, fees, and living costs have placed increasing pressure on students and families.
+						Financial barriers to education undermine both equity and economic mobility.
+					</p>
+					<p>
+						A responsible education strategy must:
+					</p>
+					<ul>
+						<li>Reduce reliance on student debt</li>
+						<li>Expand access to need-based aid and public support</li>
+						<li>Strengthen public colleges, universities, and community colleges</li>
+					</ul>
+					<p>
+						Students should be able to focus on learning and skill-building—not constant financial stress.
+					</p>
+					<h4>Prioritizing Education in Federal Spending</h4>
+					<p>
+						Federal budget priorities shape outcomes at every level of education. When education is underfunded
+						at the federal level, the burden is shifted onto local governments, homeowners, and students.
+					</p>
+					<p>
+						By reassessing federal spending priorities and reducing wasteful or misaligned expenditures, it is possible to:
+					</p>
+					<ul>
+						<li>Reinvest in public education</li>
+						<li>Reduce pressure on local property taxes</li>
+						<li>Strengthen schools without requiring additional tax increases</li>
+					</ul>
+					<p>
+						A world-class education system is achievable when education is treated as a national priority.
+					</p>
+					<p>
+						Education policy should empower educators, respect diverse career paths, address affordability, and invest
+						responsibly in the future. By restoring expertise to decision-making, strengthening trade and technical education,
+						and prioritizing education within federal budgeting, the United States can rebuild an education system that delivers
+						opportunity, excellence, and long-term economic strength—without increasing the burden on working families.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 8 -->
+    <!-- Environmental detail -->
+    <article id="issue-environmental" class="issue-detail">
+      <h3>Environmental Protection</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Protecting our environment is not a partisan issue—it is a shared responsibility and a shared benefit.
+					Clean air, clean water, protected land, and healthy ecosystems strengthen public health, create good jobs,
+					and preserve natural beauty for future generations. By investing in conservation and green industry,
+					we can protect the planet we all depend on while growing our economy—without placing additional financial
+					strain on working families.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Republican or Democrat, young or old, we all share this land in common. Our forests, lakes, prairies, and
+						wildlife are part of our shared heritage—and when we protect them, <strong>every American benefits.</strong>
+          </p>
+					<p>
+						Environmental protection is not about ideology. It is about stewardship, responsibility, and ensuring that
+						future generations inherit a world that is healthy, stable, and livable.
+					</p>
+					<h4>Protecting Nature Strengthens Communities</h4>
+					<p>
+						When nature is protected, communities thrive. Environmental stewardship:
+					</p>
+					<ul>
+						<li>Preserves spaces for families and future generations to connect with the outdoors</li>
+						<li>Improves physical and mental health through access to clean, natural environments</li>
+						<li>Creates employment opportunities in conservation, restoration, agriculture, and green energy</li>
+						<li>Strengthens resilience against climate-related disasters</li>
+					</ul>
+					<p>
+						Healthy ecosystems support healthy people.
+					</p>
+					<h4>Restoring Ecological Balance</h4>
+					<p>
+						Every part of our natural world—from the smallest insect to the largest wildlife species—plays a role in
+						maintaining ecological balance. Human activity has disrupted that balance, often with serious consequences
+						for food systems, water quality, and climate stability.
+					</p>
+					<p>
+						Protecting and restoring ecosystems is not just about preserving beauty—it is about <strong>protecting humanity from
+						the consequences of environmental collapse.</strong> We only have one planet, and we do not get a second chance to get
+						this right.
+					</p>
+					<h4>Environmental Protection as a Constitutional Right</h4>
+					<p>
+						Because clean air, clean water, and a healthy environment are essential to life itself, environmental protections
+						should not be optional or temporary. They should be <strong>enshrined as fundamental rights.</strong>
+					</p>
+					<p>
+						Adding environmental protections to the Constitution would:
+					</p>
+					<ul>
+						<li>Recognize a healthy environment as a shared national responsibility</li>
+						<li>Protect natural resources from short-term political or corporate exploitation</li>
+						<li>Ensure long-term stability and accountability in environmental policy</li>
+					</ul>
+					<p>
+						Our natural heritage belongs to everyone—not just the highest bidder.
+					</p>
+					<h4>Economic Growth Through Green Investment</h4>
+					<p>
+						Protecting the environment and growing the economy are not opposing goals. Investing in green industry and environmental protection:
+					</p>
+					<ul>
+						<li>Creates stable, well-paying jobs</li>
+						<li>Reduces long-term healthcare and disaster recovery costs</li>
+						<li>Strengthens energy independence</li>
+						<li>Encourages innovation and local economic growth</li>
+					</ul>
+					<p>
+						Smart environmental policy is an economic opportunity.
+					</p>
+					<h4>Responsible Policy Without Overburdening Families</h4>
+					<p>
+						Environmental protection should not come at the expense of working families. By prioritizing efficient investment, innovation,
+						and long-term savings, these goals can be achieved <strong>without raising taxes on already overburdened residents.</strong>
+					</p>
+					<p>
+						Responsible stewardship means protecting both our environment and our communities.
+					</p>
+					<p>
+						Environmental protection is about shared values: responsibility, health, opportunity, and respect for the land we all call
+						home. By protecting nature, restoring balance, and investing wisely, we can leave a stronger, healthier country to those who
+						come after us—without leaving anyone behind.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 9 -->
+    <!-- Human Rights detail -->
+    <article id="issue-humanrights" class="issue-detail">
+      <h3>Human Rights</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Human rights are the fundamental protections that limit the abuse of power and safeguard individual freedom.
+					Yet in practice, these rights are routinely undermined by government authority and corporate influence—through
+					surveillance, detention without due process, suppression of dissent, and unequal enforcement of the law.
+					Defending human rights means enforcing constitutional limits on power, protecting civil liberties, and ensuring
+					that freedom, dignity, and equal protection apply to everyone—not only those with wealth or political influence.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Human rights form the legal and moral foundation of a free society. They exist to protect people from the
+						concentration and misuse of power—whether that power is exercised by the state or by private institutions.
+						When rights are treated as optional, conditional, or selectively enforced, injustice becomes normalized and
+						freedom erodes quietly.
+          </p>
+					<p>
+						Across the United States, fundamental civil liberties are increasingly compromised not through overt
+						authoritarianism, but through policy choices, legal loopholes, and lack of accountability.
+					</p>
+					<h4>Due Process and the Rule of Law</h4>
+					<p>
+						The right to due process ensures that no person is deprived of liberty without fair procedures,
+						legal representation, and meaningful review. This principle is weakened when systems allow:
+					</p>
+					<ul>
+						<li>Detention without timely access to counsel</li>
+						<li>Prolonged confinement without trial</li>
+						<li>Administrative detention with limited judicial oversight</li>
+						<li>Punitive measures imposed before guilt is established</li>
+					</ul>
+					<p>
+						A justice system that bypasses due process does not protect safety—it undermines legitimacy.
+					</p>
+					<h4>Limits on State Power</h4>
+					<p>
+						Human rights require firm boundaries on government authority. Those boundaries erode when the state engages in:
+					</p>
+					<ul>
+						<li>Mass surveillance without probable cause or oversight</li>
+						<li>Suppression of peaceful protest and dissent</li>
+						<li>Selective enforcement of laws against particular communities</li>
+						<li>Excessive or militarized use of force</li>
+					</ul>
+					<p>
+						Security cannot come at the expense of constitutional protections. Power without limits is incompatible with freedom.
+					</p>
+					<h4>Freedom of Expression, Assembly, and Dissent</h4>
+					<p>
+						Democracy depends on the ability to speak, organize, and challenge authority without fear of retaliation.
+						These freedoms are threatened when:
+					</p>
+					<ul>
+						<li>Peaceful protests are suppressed or criminalized</li>
+						<li>Journalists and whistleblowers face intimidation or prosecution</li>
+						<li>Speech is chilled through surveillance or economic pressure</li>
+						<li>Workers and organizers are punished for collective action</li>
+					</ul>
+					<p>
+						A society that discourages dissent weakens its own democratic foundations.
+					</p>
+					<h4>Privacy and Personal Liberty</h4>
+					<p>
+						Human rights include the right to live without constant monitoring, coercion, or intrusion into personal life.
+						Violations occur when institutions collect, track, or control:
+					</p>
+					<ul>
+						<li>Personal data without meaningful consent</li>
+						<li>Movement, communication, or association</li>
+						<li>Medical or personal decisions</li>
+						<li>Family life and private relationships</li>
+					</ul>
+					<p>
+						Privacy is not secrecy—it is a prerequisite for freedom.
+					</p>
+					<h4>Equal Protection Under the Law</h4>
+					<p>
+						Human rights are also compromised when corporations operate beyond effective oversight. Concentrated economic power
+						enables abuses such as:
+					</p>
+					<ul>
+						<li>Exploitation of workers without consequence</li>
+						<li>Environmental harm treated as a cost of doing business</li>
+						<li>Data harvesting and surveillance for profit</li>
+						<li>Unequal legal outcomes based on financial power</li>
+					</ul>
+					<p>
+						Rights lose their force when accountability depends on wealth or influence.
+					</p>
+					<h4>Equal Protection and Accountability</h4>
+					<p>
+						Human rights require that laws be applied equally and enforced consistently. When enforcement is uneven—or when
+						powerful actors face minimal consequences—public trust erodes and injustice deepens.
+					</p>
+					<p>
+						Protecting rights requires:
+					</p>
+					<ul>
+						<li>Transparent decision-making</li>
+						<li>Independent oversight of enforcement agencies</li>
+						<li>Strong protections for journalists and whistleblowers</li>
+						<li>Clear limits on both public and private power</li>
+					</ul>
+					<p>
+						Rights without enforcement are promises without meaning.
+					</p>
+					<p>
+						Human rights are not separate from economic justice, criminal justice, healthcare, or civil equality—they are the
+						framework that makes those rights enforceable. When civil liberties, due process, privacy, and equal protection
+						weaken, every other right becomes vulnerable.				
+					</p>
+					<p>
+						A society committed to freedom must actively defend human rights, limit the abuse of power, and ensure that dignity
+						and justice are not reserved for the few—but guaranteed for all.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 10 -->
+    <!-- Immigration detail -->
+    <article id="issue-immigration" class="issue-detail">
+      <h3>Immigration</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Immigration policy must be grounded in human rights, due process, and the rule of law. Yet increasingly,
+					immigrants—and in some cases U.S. citizens—are subjected to arbitrary detention, aggressive enforcement tactics,
+					and punishment vastly disproportionate to civil immigration violations. Treating immigration as a criminal issue
+					has fueled abuses of power, family separation, and detention practices that violate basic standards of justice.
+					A humane immigration system must prioritize lawful process, proportional enforcement, and the fundamental dignity
+					of every person.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Immigration has long been treated as a matter of enforcement rather than law, rights, or human dignity.
+						In recent years, this approach has intensified, with expanded authority and reduced oversight allowing immigration
+						enforcement agencies to operate in ways that undermine civil liberties and constitutional protections.
+          </p>
+					<p>
+						Immigration violations—such as paperwork errors, visa overstays, or administrative noncompliance—are civil matters,
+						not crimes. Yet current enforcement practices routinely treat immigrants as hardened criminals, subjecting them to
+						tactics and punishments that far exceed the nature of the alleged offense.
+					</p>
+					<h4>Arbitrary Detention and Erosion of Due Process</h4>
+					<p>
+						Reports have documented individuals being detained during routine encounters—sometimes without warrants, clear
+						identification, or timely access to legal counsel. These practices have included actions by agencies such as
+						Immigration and Customs Enforcement, Customs and Border Protection, and the Department of Homeland Security.
+					</p>
+					<p>
+						In some cases, people have been detained despite having no criminal record, lawful immigration status, or even U.S.
+						citizenship—illustrating how weak safeguards and broad discretion can result in serious violations of civil rights.
+					</p>
+					<p>
+						A system that allows people to be detained without clear charges, timely hearings, or meaningful legal access
+						undermines the rule of law itself.
+					</p>
+					<h4>Civil Violations Are Not Criminal Acts</h4>
+					<p>
+						Overstaying a visa or failing to complete immigration paperwork is not a violent offense. Treating these civil matters
+						as criminal acts has led to:
+					</p>
+					<ul>
+						<li>Excessive detention instead of administrative resolution</li>
+						<li>Family separation and prolonged incarceration</li>
+						<li>Use of jail-like facilities for nonviolent civil violations</li>
+						<li>Punitive enforcement that prioritizes fear over fairness</li>
+					</ul>
+					<p>
+						Proportionality is a basic principle of justice. Immigration enforcement should reflect the civil nature of immigration
+						law—not mimic criminal punishment systems.
+					</p>
+					<h4>Inhumane Detention Conditions</h4>
+					<p>
+						Many detained individuals are held for extended or indefinite periods, often in facilities that resemble prisons rather
+						than administrative holding centers. Conditions reported in some detention settings include:
+					</p>
+					<ul>
+						<li>Inadequate medical and mental healthcare</li>
+						<li>Overcrowding and unsanitary conditions</li>
+						<li>Limited access to legal representation</li>
+						<li>Exposure to physical and sexual abuse</li>
+					</ul>
+					<p>
+						The transfer of detainees to maximum-security prisons—such as CECOT—raises serious human rights concerns. Facilities
+						designed for convicted violent offenders are fundamentally incompatible with the detention of individuals accused only
+						of civil immigration violations. International human rights observers have warned that such environments significantly
+						increase the risk of abuse, coercion, and lasting trauma.
+					</p>
+					<p>
+						Detention should never expose people to conditions that violate basic standards of safety and dignity.
+					</p>
+					<h4>Militarized Enforcement and Community Harm</h4>
+					<p>
+						Aggressive immigration enforcement tactics destabilize entire communities. Fear of detention discourages people from:
+					</p>
+					<ul>
+						<li>Reporting crimes</li>
+						<li>Seeking medical care</li>
+						<li>Sending children to school</li>
+						<li>Cooperating with local authorities</li>
+					</ul>
+					<p>
+						These outcomes make communities less safe, not more. Public safety is strengthened when residents trust
+						institutions—not when they fear them.
+					</p>
+					<h4>Human Rights, Not Political Expediency</h4>
+					<p>
+						Immigration policy must be governed by law, evidence, and human rights—not political pressure or punitive ideology.
+						A fair system requires:
+					</p>
+					<ul>
+						<li>Clear limits on enforcement authority</li>
+						<li>Guaranteed access to legal counsel and timely hearings</li>
+						<li>An end to detention practices that are arbitrary or indefinite</li>
+						<li>Humane treatment consistent with constitutional and international standards</li>
+						<li>Recognition that migration is often driven by economic instability, violence, and climate displacement</li>
+					</ul>
+					<p>
+						No person should be subjected to abuse, imprisonment, or disappearance for a civil administrative violation.
+					</p>
+					<p>
+						Immigration enforcement that abandons due process and proportionality does not strengthen the law—it weakens it.
+						A just immigration system respects human dignity, upholds civil liberties, and ensures that enforcement is lawful,
+						humane, and accountable. Treating people as disposable or dangerous by default is not security—it is a failure of justice.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 11 -->
+		<!-- International detail -->
+    <article id="issue-international" class="issue-detail">
+      <h3>International Relations</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					A stable and peaceful world depends on diplomacy, respect for international law, and strong alliances. In recent months,
+					aggressive rhetoric, unilateral economic actions, and threats against allies have undermined global trust, weakened
+					long-standing partnerships, and increased the risk of conflict. Effective international relations must prioritize diplomacy
+					over coercion, cooperation over confrontation, and human rights over corporate or geopolitical opportunism.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            International relations are not conducted in isolation. Diplomatic language, economic policy, and military posture shape
+						global stability—and when handled recklessly, they can destabilize regions, strain alliances, and increase the likelihood
+						of conflict.
+          </p>
+					<p>
+						Recent actions and statements by U.S. leadership have raised serious concerns among allies and international observers
+						about the direction of American foreign policy.
+					</p>
+					<h4>Erosion of Alliances and Diplomatic Norms</h4>
+					<p>
+						Strong alliances are built on mutual trust, shared commitments, and respect for sovereignty. That trust is undermined
+						when allies are subjected to:
+					</p>
+					<ul>
+						<li>Threats of military force or territorial acquisition</li>
+						<li>Punitive tariffs used as political retaliation</li>
+						<li>Public hostility toward long-standing partners</li>
+						<li>Disregard for established diplomatic processes</li>
+					</ul>
+					<p>
+						Reports of threats to acquire Greenland by force, combined with economic pressure on allied nations, have alarmed partners
+						and contributed to heightened tensions. In response to perceived threats, allied nations have taken defensive
+						measures—including increased military presence—underscoring how destabilizing rhetoric can escalate risk even without direct
+						action.
+					</p>
+					<p>
+						Diplomacy depends not only on policy, but on restraint.
+					</p>
+					<h4>Strain on Collective Security Frameworks</h4>
+					<p>
+						International security arrangements such as North Atlantic Treaty Organization rely on credibility and cooperation.
+						Persistent public attacks on alliance commitments, coupled with unilateral trade penalties imposed on member states,
+						weaken collective defense and embolden adversarial actors.
+					</p>
+					<p>
+						When alliances fracture, global stability suffers—and the cost of deterrence rises for everyone.
+					</p>
+					<h4>Foreign Policy That Undermines International Law</h4>
+					<p>
+						Peace depends on respect for sovereignty and international legal norms. Concerns have grown as diplomatic proposals and
+						negotiations appear to favor aggressor states over countries defending their territorial integrity.
+					</p>
+					<p>
+						In negotiations involving Ukraine and Russia, proposals perceived as legitimizing territorial conquest or rewarding military
+						aggression risk setting dangerous precedents. Such approaches weaken international law and signal that borders can be changed
+						through force rather than diplomacy.
+					</p>
+					<p>
+						A stable global order cannot survive if aggression is rewarded.
+					</p>
+					<h4>Destabilization in the Name of Economic Interests</h4>
+					<p>
+						Military escalation and political interference in regions such as Iran and Iraq have repeatedly produced long-term instability,
+						civilian harm, and regional conflict. These actions are often justified under the banner of national interest while aligning
+						closely with the priorities of multinational energy corporations such as Chevron and other fossil fuel interests.
+					</p>
+					<p>
+						When foreign policy prioritizes corporate profit over human life, the result is endless conflict rather than lasting security.
+					</p>
+					<h4>Economic Coercion as a Diplomatic Weapon</h4>
+					<p>
+						Economic tools such as tariffs, sanctions, and embargoes can serve legitimate diplomatic purposes when used narrowly and
+						lawfully. However, when deployed broadly or indefinitely as instruments of punishment, they often harm civilian populations
+						while failing to achieve their stated political goals.
+					</p>
+					<p>
+						For decades, the United States has used sweeping trade embargoes and economic isolation as a means of pressuring governments
+						into political submission. The most prominent example is Cuba, a country that poses no meaningful military threat to the
+						United States or its allies, yet has faced sustained economic embargoes for generations.
+					</p>
+					<p>
+						Despite decades of isolation intended to destabilize or overturn its government, these policies have:
+					</p>
+					<ul>
+						<li>Failed to achieve regime change</li>
+						<li>Severely restricted access to medicine, food, and economic opportunity for civilians (despite Cuba's own flourishing culture and resilience)</li>
+						<li>Entrenched hardship without improving human rights outcomes</li>
+						<li>Undermined U.S. credibility on international law and humanitarian principles</li>
+						<li>Strengthened anti-American sentiment</li>
+					</ul>
+					<p>
+						Rather than encouraging reform, broad embargoes frequently consolidate power, worsen humanitarian conditions, and punish
+						ordinary people for political decisions beyond their control.
+					</p>
+					<p>
+						More recently, similar coercive economic tactics—such as punitive tariffs imposed on allies or trading partners for political
+						disagreement—have further strained diplomatic relationships. When trade policy is used as retaliation rather than negotiation,
+						it:
+					</p>
+					<ul>
+						<li>Damages global economic stability</li>
+						<li>Harms workers and consumers on all sides</li>
+						<li>Encourages retaliatory trade conflicts</li>
+						<li>Replaces diplomacy with economic punishment</li>
+					</ul>
+					<p>
+						Sustainable international relations require engagement, cooperation, and multilateral diplomacy—not indefinite economic warfare
+						against civilian populations.
+					</p>
+					<h4>Diplomacy, Human Rights, and Global Responsibility</h4>
+					<p>
+						A credible foreign policy must uphold human rights consistently—abroad as well as at home. This includes:
+					</p>
+					<ul>
+						<li>Respecting national sovereignty</li>
+						<li>Opposing collective punishment and civilian harm</li>
+						<li>Supporting international institutions and humanitarian law</li>
+						<li>Prioritizing diplomatic solutions to conflict</li>
+					</ul>
+					<p>
+						Global leadership is not demonstrated through threats or domination, but through cooperation, restraint, and accountability.
+					</p>
+					<p>
+						International relations rooted in coercion and profit-driven intervention weaken global security and isolate the United States
+						from the very allies that have helped prevent large-scale conflict for generations. A foreign policy grounded in diplomacy,
+						international law, and mutual respect strengthens alliances, reduces the risk of war, and promotes a more stable and just world.
+					</p>
+					<p>
+						True security comes not from intimidation, but from cooperation
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 12 -->
+		<!-- Public Transit detail -->
+    <article id="issue-publictransit" class="issue-detail">
+      <h3>Public Transit</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Reliable public transit is essential to economic mobility, environmental sustainability, and national competitiveness.
+					In IL-10, existing rail and bus infrastructure provides a strong foundation, yet decades of underinvestment have
+					resulted in infrequent service, outdated equipment, and significant gaps in coverage. These challenges reflect a broader
+					national pattern of neglect that has left public transit systems across the country struggling. Reinvesting in modern,
+					efficient transit—locally and nationally—can reduce car dependency, cut emissions, expand access to opportunity, and
+					strengthen regional economies without increasing the tax burden on working families.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Public transportation is a vital public utility that connects people to work, education, healthcare, and community life.
+						In IL-10, transit access is uneven and often inadequate—particularly for residents without access to a car or those
+						living outside well-served corridors. These gaps increase household costs, limit opportunity, and deepen car dependency.
+          </p>
+					<p>
+						These challenges are not unique to IL-10. They are part of a <strong>nationwide decline in public transit investment
+							and maintenance</strong> that has left communities across the country with aging systems and shrinking service.
+					</p>
+					<h4>Building on Existing Infrastructure</h4>
+					<p>
+						IL-10 already benefits from established commuter rail corridors, including the Union Pacific North Line, Milwaukee
+						District North Line, and North Central Service. This network provides a strong backbone for regional mobility,
+						yet underinvestment has limited its effectiveness.
+					</p>
+					<p>
+						Common issues include:
+					</p>
+					<ul>
+						<li>Continued reliance on diesel-powered trains</li>
+						<li>Infrequent service that discourages daily use</li>
+						<li>Delays that disrupt commutes and reduce reliability</li>
+					</ul>
+					<p>
+						Modernizing these lines would improve service quality while reducing environmental impact.
+					</p>
+					<h4>Frequency, Reliability, and Modernization</h4>
+					<p>
+						Public transit systems succeed when they are frequent, predictable, and dependable. Long delays, aging signaling
+						systems, and limited service windows undermine public confidence and push riders back toward car dependency.
+					</p>
+					<p>
+						Transit policy should prioritize:
+					</p>
+					<ul>
+						<li>Increased service frequency</li>
+						<li>Modern rail technology and electrification where feasible</li>
+						<li>Upgraded signaling and maintenance systems</li>
+						<li>Performance standards focused on reliability</li>
+					</ul>
+					<p>
+						Reliable transit supports workforce participation and economic growth.
+					</p>
+					<h4>Expanding Bus Access to Underserved Areas</h4>
+					<p>
+						Bus service remains uneven across IL-10, particularly in central and western portions of the district. In many areas,
+						residents live within short driving distance of schools, workplaces, or services but lack safe and accessible transit options.
+					</p>
+					<p>
+						Transit planning should:
+					</p>
+					<ul>
+						<li>Expand routes to reflect population patterns</li>
+						<li>Improve first- and last-mile connectivity</li>
+						<li>Ensure pedestrian safety around transit stops</li>
+					</ul>
+					<p>
+						Access should not depend on where someone lives within the district.
+					</p>
+					<h4>A National Public Transit Crisis</h4>
+					<p>
+						Across the United States, public transit networks have suffered from decades of neglect. Rail lines have been abandoned,
+						stations torn down, and equipment left outdated and costly to maintain. Much of the remaining rail infrastructure is
+						prioritized for freight and material transport, while passenger service is treated as secondary.
+					</p>
+					<p>
+						This has resulted in:
+					</p>
+					<ul>
+						<li>Collapsing transit networks in both urban and rural areas</li>
+						<li>Rising maintenance costs due to deferred upgrades</li>
+						<li>Reduced mobility options for non-drivers</li>
+						<li>Increased reliance on cars and higher household transportation costs</li>
+					</ul>
+					<p>
+						A country that once built the world’s most ambitious rail systems now struggles to maintain basic passenger service.
+					</p>
+					<h4>Public Transit, Climate, and Economic Competitiveness</h4>
+					<p>
+						Car-dependent systems are significantly more harmful to the environment than transit-oriented ones. Strong public transit:
+					</p>
+					<ul>
+						<li>Reduces emissions and improves air quality</li>
+						<li>Lowers transportation costs for households</li>
+						<li>Expands labor markets for employers</li>
+						<li>Supports local businesses and regional economies</li>
+					</ul>
+					<p>
+						Transit investment is not just a climate strategy—it is an economic one.
+					</p>
+					<h4>Reinvesting National and Local Priorities</h4>
+					<p>
+						The decline of public transit is not due to lack of capacity, but lack of prioritization. Redirecting public resources
+						toward domestic infrastructure can:
+					</p>
+					<ul>
+						<li>Restore and expand passenger rail service</li>
+						<li>Modernize outdated systems</li>
+						<li>Reduce long-term maintenance costs</li>
+						<li>Strengthen communities without requiring new taxes</li>
+					</ul>
+					<p>
+						Public transit should be treated as essential national infrastructure, not an afterthought.
+					</p>
+					<p>
+						IL-10’s transit challenges reflect a broader national failure to invest in public transportation. By modernizing existing
+						rail networks, expanding bus access, and prioritizing passenger transit at both the local and national level, communities
+						can reduce car dependency, address climate impacts, and expand access to opportunity. A modern transit system strengthens
+						not just individual districts, but the country as a whole.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 13 -->
+    <!-- Reproductive Rights detail -->
+    <article id="issue-reproductiverights" class="issue-detail">
+      <h3>Reproductive Rights</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					Reproductive freedom is grounded in privacy, bodily autonomy, and individual conscience. A just society must protect
+					the right to make personal reproductive decisions without government interference or the imposition of religious or
+					ideological doctrine. Defending reproductive rights means ensuring access to safe, affordable healthcare,
+					comprehensive education, contraception, and meaningful social support for those who choose to have children—so that
+					all individuals can make informed decisions consistent with their values and circumstances.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+          <p>
+            Reproductive rights are fundamental to personal freedom, health, and equality. Decisions about whether and when to
+						have children are deeply personal and must remain in the hands of individuals—not politicians or special interests.
+          </p>
+					<p>
+						The role of government is to <strong>protect freedom of choice, privacy, and bodily integrity,</strong> not to restrict them.
+					</p>
+					<h4>Bodily Autonomy and the Right to Privacy</h4>
+					<p>
+						The right to privacy and an individual’s control over their own body are core principles protected under the U.S.
+						Constitution. Government intrusion into reproductive decision-making undermines these protections and sets a dangerous
+						precedent for personal liberty.
+					</p>
+					<p>
+						Public policy must:
+					</p>
+					<ul>
+						<li>Respect bodily autonomy</li>
+						<li>Protect medical privacy</li>
+						<li>Prevent government overreach into personal healthcare decisions</li>
+					</ul>
+					<p>
+						Reproductive choices are matters of individual conscience, not state control.
+					</p>
+					<h4>Access to Safe and Affordable Reproductive Healthcare</h4>
+					<p>
+						Protecting reproductive rights requires ensuring access to comprehensive, evidence-based healthcare services. This includes:
+					</p>
+					<ul>
+						<li>Affordable access to safe abortion care</li>
+						<li>Access to contraception for all who need it</li>
+						<li>High-quality prenatal and maternal healthcare</li>
+					</ul>
+					<p>
+						Healthcare access should never depend on income, geography, or political ideology.
+					</p>
+					<h4>Supporting Those Who Choose to Have Children</h4>
+					<p>
+						True reproductive freedom includes meaningful support for individuals and families who choose to bear and raise
+						children. That support must go beyond rhetoric and include:
+					</p>
+					<ul>
+						<li>Accessible prenatal and postnatal care</li>
+						<li>Economic and social supports for families</li>
+						<li>Policies that reduce financial and health risks associated with childbirth</li>
+					</ul>
+					<p>
+						Supporting families strengthens communities and respects choice.
+					</p>
+					<h4>Education and Prevention</h4>
+					<p>
+						Comprehensive, medically accurate sex education and access to contraception are proven to reduce unintended
+						pregnancies and improve health outcomes.
+					</p>
+					<p>
+						Effective policy should:
+					</p>
+					<ul>
+						<li>Provide comprehensive sex education</li>
+						<li>Ensure broad access to contraception</li>
+						<li>Center education on health, consent, and responsibility</li>
+					</ul>
+					<p>
+						Education and prevention empower individuals to make informed decisions.
+					</p>
+					<h4>Freedom From Religious or Ideological Imposition</h4>
+					<p>
+						A pluralistic society must protect individuals from having the beliefs of others imposed upon them through law.
+						Government must remain neutral and ensure that no single religious or philosophical doctrine dictates personal
+						medical decisions.
+					</p>
+					<p>
+						Reproductive rights must be protected for people of all beliefs—and for those of none.
+					</p>
+					<p>
+						Reproductive rights are about privacy, autonomy, and respect for individual conscience. Protecting these
+						rights means ensuring access to healthcare, education, and support—while preventing government intrusion into
+						personal decisions. A society that values freedom must trust individuals to make choices about their own bodies and lives.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 14 -->
+    <!-- Democracy Revitalization detail -->
+    <article id="issue-revitalization" class="issue-detail">
+      <h3>Revitalizate American Democracy</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+        	<span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: 5 Min</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+          American democracy should empower voters, not politicians,
+					special interests, or entrenched power. Revitalize American Democracy (R.A.D.) is a comprehensive
+					reform plan focused on restoring fairness, accountability, and participation in our electoral system.
+					By ending gerrymandering, expanding ballot access, modernizing how we vote, reducing the influence of
+					big money, and establishing term limits, R.A.D. puts power back where it belongs—with the people.
+					This plan is about strengthening representation, rebuilding trust in government, and ensuring that every
+					voice truly matters in our democracy.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+					<h4>For the People, By the People</h4>
+          <p>
+            American democracy is meant to be a government <strong>of the people, by the people, and for the people</strong>—yet today,
+						too many feel locked out of a system that no longer represents them. Our electoral system is failing to live
+						up to the democratic ideals envisioned by those who fought to establish it.
+          </p>
+					<p>
+						Instead of voters choosing their representatives, <strong>gerrymandering allows politicians to choose their voters</strong>.
+						Third-party and Independent candidates <strong>face unfair and unequal barriers</strong> to ballot access compared to the two
+						major parties. We remain trapped in an outdated <strong>Electoral College</strong> and a <strong>first-past-the-post</strong>
+						voting system that discourages competition and silences millions of voices. Members of Congress can remain in office for decades
+						without accountability, while <strong>corporate lobbyists—often from outside a representative’s own district—hold more
+						influence than the constituents themselves.</strong>
+					</p>
+					<p>
+						This is not a functioning democracy—it is a system that concentrates power and protects incumbency at the
+						expense of participation, representation, and trust.
+					</p>
+					<p>
+						Revitalizing American democracy requires empowering voters, expanding access, and restoring fairness to the electoral
+						system. A comprehensive reform agenda should focus on six key pillars:
+					</p>
+					<!-- List of 6 steps with descriptions -->
+					<ol class="rad-list">
+
+						<li class="rad-item">
+							<span class="rad-title">End Gerrymandering for Good</span>
+							<p class="rad-desc">
+								Establish <strong>truly independent redistricting commissions</strong> at all levels of government—local, state,
+								and federal—to ensure fair maps that reflect communities, not political self-interest.
+							</p>
+						</li>
+
+						<li class="rad-item">
+							<span class="rad-title">Adopt Ranked-Choice Voting</span>
+							<p class="rad-desc">
+								Transition to a <strong>ranked-choice voting system</strong>, allowing voters to rank candidates by preference. This
+								encourages broader participation, reduces negative campaigning, and ensures elected officials have genuine majority support.
+							</p>
+						</li>
+
+						<li class="rad-item">
+							<span class="rad-title">Make Election Day a National Holiday</span>
+							<p class="rad-desc">
+								Guarantee access to the ballot by making <strong>Election Day a national holiday</strong>, ensuring that work schedules
+								are no longer a barrier to participation in our democracy.
+							</p>
+						</li>
+
+						<li class="rad-item">
+							<span class="rad-title">Overturn Citizens United</span>
+							<p class="rad-desc">
+								Restore the principle that <strong>money is not speech</strong> by overturning Citizens United and eliminating the
+								outsized influence of corporate PACs and wealthy donors in our political system.
+							</p>
+						</li>
+
+						<li class="rad-item">
+							<span class="rad-title">Equal Ballot Access for All Candidates</span>
+							<p class="rad-desc">
+								Create <strong>fair and equal ballot access requirements</strong> for all political parties and Independent candidates,
+								ending discriminatory signature thresholds that suppress competition and voter choice.
+							</p>
+						</li>
+
+						<li class="rad-item">
+							<span class="rad-title">Establish Congressional Term Limits</span>
+							<p class="rad-desc">
+								Implement <strong>term limits for members of Congress</strong> to prevent career politicians from entrenching power and
+								to ensure fresh perspectives, accountability, and closer ties to the communities they serve.
+							</p>
+						</li>
+					</ol>
+					<p>
+						A democracy only works when <strong>every voice matters and every vote counts.</strong> Revitalizing our electoral system
+						is not a partisan issue—it’s a fundamental step toward rebuilding trust, increasing participation, and ensuring that our
+						government truly represents the people it serves.
+					</p>
+        </div>
+      </div>
+    </article>
+
+		<!-- Issue Detail 15 -->
+    <!-- LGBTQ+ detail -->
+    <article id="issue-lgbtq" class="issue-detail">
+      <h3>LGBTQ+ Equality & Civil Rights</h3>
+
+      <div class="issue-detail-body">
+
+        <div class="read-time">
+          <span class="read-time">Read Time</span>
+          <span class="read-abstract">Abstract: 1 Min</span>
+          <span class="read-divider">|</span>
+          <span class="read-full">Full: ?</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- Abstract / Summary -->
+        <h4>
+					LGBTQ+ rights are human rights. Every person deserves the freedom to live openly, safely,
+					and authentically without fear of discrimination, violence, or government interference.
+					Protecting LGBTQ+ communities means safeguarding bodily autonomy, ensuring equal treatment
+					under the law, defending access to healthcare and education, and standing firmly against
+					efforts to erase or marginalize people based on who they are or who they love. Equality
+					is not special treatment—it is the foundation of a free and just society.
+        </h4>
+        <!-- Divider -->
+        <div class="issue-divider"></div>
+
+        <!-- More detail -->
+        <div class="issue-more"></div>
+					<h4>Freedom and Justice for <strong>All</strong></h4>
+          <p>
+            The promise of America is that all people are created equal, yet LGBTQ+ individuals
+						continue to face discrimination, hostility, and targeted political attacks simply for
+						existing. These injustices are not abstract—they affect access to healthcare, housing,
+						employment, education, and personal safety.
+          </p>
+					<p>
+						A just government has a responsibility to protect people’s rights, not police their identities.
+						LGBTQ+ equality is not a culture war issue—it is a matter of civil rights, public health,
+						and personal freedom.
+          </p>
+					<h4>Equal Protection Under the Law</h4>
+					<p>
+						LGBTQ+ Americans deserve the same legal protections afforded to everyone else. That means:
+					</p>
+					<ul>
+						<li>
+							Enforcing and strengthening nondiscrimination protections in employment, housing, 
+							healthcare, education, and public accommodations
+						</li>
+						<li>
+							Ensuring equal treatment under federal civil rights law, regardless of sexual orientation or gender identity
+						</li>
+						<li>Opposing any attempt to roll back or weaken existing protections</li>
+					</ul>
+					<p>
+						No one should risk losing their job, home, or medical care because of who they are.
+					</p>
+					<h4>Healthcare Is a Human Right — Including Gender-Affirming Care</h4>
+					<p>
+						Access to healthcare must be guided by <strong>medical expertise and patient autonomy</strong>, not political ideology.
+						LGBTQ+ individuals—particularly transgender people—face disproportionate barriers to care, despite
+						overwhelming medical consensus supporting gender-affirming healthcare as evidence-based and life-saving.
+					</p>
+					<p>
+						A fair healthcare system must:
+					</p>
+					<ul>
+						<li>Protect access to gender-affirming care for those who need it</li>
+						<li>Respect the privacy and autonomy of patients and families</li>
+						<li>Prevent government interference in personal medical decisions</li>
+						<li>Address mental health needs with compassion and evidence-based care</li>
+					</ul>
+					<p>
+						Healthcare decisions belong between patients and their doctors—period.
+					</p>
+					<h4>Protecting LGBTQ+ Youth</h4>
+					<p>
+						LGBTQ+ youth deserve safety, affirmation, and opportunity—not censorship or fear. Policies that erase LGBTQ+ identities
+						from schools or deny support services do real harm, increasing rates of bullying, depression, and suicide.
+					</p>
+					<p>
+						We must:
+					</p>
+					<ul>
+						<li>Ensure schools are <strong>safe and inclusive</strong> learning environments</li>
+						<li>Protect students from discrimination and harassment</li>
+						<li>Support access to counseling and mental health resources</li>
+						<li>Reject policies that silence or erase LGBTQ+ identities</li>
+					</ul>
+					<p>
+						Every child deserves to grow up knowing they are valued and supported.
+					</p>
+					<h4>Freedom, Privacy, and Bodily Autonomy</h4>
+					<p>
+						Government has no place dictating how people live, love, or identify. Attempts to criminalize LGBTQ+ existence,
+						restrict gender expression, or surveil families undermine personal freedom and constitutional rights.
+					</p>
+					<p>
+						True liberty means:
+					</p>
+					<ul>
+						<li>Defending the right to <strong>live openly and authentically</strong></li>
+						<li>Protecting privacy from government overreach</li>
+						<li>Upholding bodily autonomy for all individuals</li>
+					</ul>
+					<p>
+						Freedom loses its meaning when it is selectively applied.
+					</p>
+					<h4>Standing Against Hate and Violence</h4>
+					<p>
+						LGBTQ+ individuals face higher rates of harassment, violence, and hate crimes. Addressing this requires more than
+						rhetoric—it requires action.
+					</p>
+					<p>
+						A serious commitment includes:
+					</p>
+					<ul>
+						<li>Strong enforcement of hate crime laws</li>
+						<li>Funding for community-based violence prevention programs</li>
+						<li>Support for survivors</li>
+						<li>Responsible public leadership that rejects dehumanization and fear-mongering</li>
+					</ul>
+					<p>
+						Words from leaders matter-and so do policies.
+					</p>
+					<h4>Equality Strengthens Democracy</h4>
+					<p>
+						A democracy cannot thrive when entire communities are marginalized or silenced. Protecting LGBTQ+ rights strengthens
+						democratic values by affirming that everyone deserves a voice, dignity, and protection under the law.
+					</p>
+					<p>
+						LGBTQ+ equality is not about special rights—it is about equal rights. It is about ensuring that freedom, opportunity,
+						and safety belong to all of us, without exception.
+					</p>
+        </div>
+      </div>
+    </article>
+    <!-- Add more <article> blocks here to match any additional issue cards -->
+  </section>
+
+  <section class="cta-signup">
+    <div class="cta-inner">
+      <!-- Left side: image-->
+      <div class="cta-image">
+        <img src="/assets/images/il10-community.jpeg" alt="Get Involved" />
+      </div>
+
+      <!-- Right side: form -->
+      <div class="cta-content">
+        <h2>Get Involved</h2>
+        <p>Your support and participation makes this grassroots campaign possible. Let's work together to create real change.</p>
+            
+        <form class="cta-form">
+          <div class="cta-row">
+            <input type="text" name="Name" placeholder="Full Name" required />
+            <input type="text" name="Zip" placeholder="Zip Code" required />
+          </div>
+
+          <div class="cta-row">
+            <input type="email" name="email" placeholder="Email Address" required />
+            <input type="tel" name="phone" placeholder="Phone Number" required />
+          </div>
+
+          <label class="cta-label">How would you like to get involved?</label>
+          <select name="involvment" required>
+            <option value="" disabled selected>Select an option</option>
+            <option value="door-knocking">Door Knocking</option>
+            <option value="phone-banking">Phone Banking</option>
+            <option value="host-event">Host an Event</option>
+            <option value="yard-sign">Request a Yard Sign</option>
+            <option value="other">Other</option>
+          </select>
+          <button type="submit" class="cta-btn">Submit</button>
+        </form>
+      </div>
+    </div>
+  </section>
+	</main>
+
+  <!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+				<i class="fab fa-youtube"></i>
+			</a>
+			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<i class="fab fa-bluesky"></i>
+			</a>
+			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+				<i class="fab fa-tiktok"></i>
+			</a>
+			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+				<i class="fab fa-discord"></i>
+			</a>
+    </div>
+
+		<div class="footer-links">
+      <a href="/accessibility.html">Accessibility</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+
+		<div class="footer-paid-for">
+			<strong>Paid for by Alexandria Sofiakis</strong>
+    </div>
+  </footer>
+</body>
+</html>

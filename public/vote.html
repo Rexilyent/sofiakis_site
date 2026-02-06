@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Voting information for Illinois' 10th Congressional District">
+    <meta name="author" content="Alexandria Sofiakis">
+    <title>How to Vote | Alexandria Sofiakis for IL-10</title>
+
+    <!-- Font Styles -->
+    <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" 
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    />
+
+    <link rel="stylesheet" href="/styles/base.css">
+		<link rel="stylesheet" href="/styles/vote.css">
+</head>
+<body class="page-vote">
+	<body class="page-money-tracker">
+	<!-- Shared site header -->
+	<header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="/index.html">Home</a>
+        <a href="/about.html">About</a>
+				<div class="nav-dropdown">
+					<a href="/issues.html" class="nav-issues">Issues</a>
+					<div class="dropdown-menu">
+						<a href="/money_tracker.html">Money Tracker</a>
+					</div>
+				</div>
+        <a href="/events.html" >Events</a>
+        <a href="/il10.html" >IL-10</a>
+				<div class="nav-dropdown">
+					<a href="/vote.html" class="nav-vote">Vote</a>
+					<div class="dropdown-menu">
+						<a href="/endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="/volunteer.html" >Volunteer</a>
+      </div>
+
+			<div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+	<!-- Main Content -->
+	<main class="vote-content">
+		<section class="vote-info" aria-label="Voting Information for IL-10">
+			<div class="vote-hero-inner">
+				<h1>Vote in IL-10</h1>
+			</div>
+		</section>
+
+		<!-- Ways to Vote -->
+		<section class="vote-cards" aria-label="Voting Cards">
+			<!-- Ways to Vote 1-->
+			<div class="vote-card">
+				<div class="vote-card-icon">
+					<i class="fas fa-envelope"></i>
+				</div>
+
+				<div class="title-container">
+					<h2>Vote by Mail</h2>
+				</div>
+
+				<div class="description">
+					Request your mail-in ballot by 2/5/26. Mail-in voting begins 40 days before Election Day. Mailed ballots must be postmarked no later than election day and received within 14 days of Election Day.
+				</div>
+
+				<div class="link">
+					<a href="voting-info-mail" onclick="scrollToVoteCards('voting-info-mail')">Learn More</a>
+				</div>
+			</div>
+
+			<!-- Ways to Vote 2-->
+			<div class="vote-card">
+				<div class="vote-card-icon">
+					<i class="fas fa-box-check"></i>
+				</div>
+
+				<div class="title-container">
+					<h2>Vote Early In-Person</h2>
+				</div>
+
+				<div class="description">
+					Early voting begins 40 days before Election Day. You can vote at any early voting location in your county.
+				</div>
+
+				<div class="link">
+					<a href="voting-info-early" onclick="scrollToVoteCards('voting-info-early')">Learn More</a>
+				</div>
+			</div>
+
+			<!-- Ways to Vote 3-->
+			<div class="vote-card">
+				<div class="vote-card-icon">
+					<i class="fas fa-person-booth"></i>
+				</div>
+
+				<div class="title-container">
+					<h2>Vote on Election Day</h2>
+				</div>
+				<div class="description">
+					Election Day is November 3, 2026. Polls are open from 6am to 7pm. Find your polling location and make sure to bring a valid ID.
+				</div>
+
+				<div class="link">
+					<a href="https://ova.elections.il.gov/PollingPlaceLookup.aspx" target="_blank" rel="noopener noreferrer">Learn More</a>
+			</div>
+		</section>
+
+		<section class="vote-registration">
+			<div class="vote-registration-inner">
+				<h2>Check Your Voter Registration in Illinois</h2>
+				<a class="vote-registration-btn" href="https://ova.elections.il.gov/" target="_blank" rel="noopener noreferrer">Am I Registered?</a>
+			</div>
+		</section>
+
+		<section class="vote-early-info">
+			<article class="vote-early-info-inner" id="voting-info-early">
+				<h2>Early In-Person Voting Information</h2>
+				<p>
+					Early voting in Illinois begins 40 days before Election Day. You can vote at any early voting location in your county.
+					Make sure to bring a valid ID with you when you go to vote early.
+				</p>
+				<p>
+
+				</p>
+				<ul>
+					<li><strong>When:</strong> Starts 40 days before Election Day</li>
+					<li><strong>Where:</strong> Any early voting location in your county</li>
+					<li><strong>ID Requirements:</strong> Valid government-issued ID</li>
+				</ul>
+				<p>
+					For more information on early voting locations and hours, visit the <strong>
+					<a href="https://www.elections.il.gov/" target="_blank" rel="noopener noreferrer">Illinois State Board of Elections</a> website.</strong>
+				</p>
+			</article>
+		</section>
+
+		<!-- Call to Action Section -->
+		<section class="cta-hero" aria-label="Get Involved in IL-10">
+			<div class="cta-hero-inner">
+				<h2>Your Voice Matters in IL-10</h2>
+				<a class="cta-hero-btn" href="/volunteer.html">Get Involved</a>
+			</div>
+		</section>
+	</main>
+
+	<!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+				<i class="fab fa-youtube"></i>
+			</a>
+			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<i class="fab fa-bluesky"></i>
+			</a>
+			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+				<i class="fab fa-tiktok"></i>
+			</a>
+			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+				<i class="fab fa-discord"></i>
+			</a>
+    </div>
+
+		<div class="footer-links">
+      <a href="/accessibility.html">Accessibility</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+
+		<div class="footer-paid-for">
+			<strong>Paid for by Alexandria Sofiakis</strong>
+    </div>
+  </footer>
+</body>
+</html>

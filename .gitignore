@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .env
 server.py
+seed_openfec.py
 
 # Node / frontend
 node_modules/

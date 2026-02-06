@@ -1,0 +1,227 @@
+<!-- =========================================
+     money-tracker.html
+========================================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alexandria Sofiakis for IL-10">
+  <meta name="author" content="Alexandria Sofiakis">
+  <title>Money Tracker | Alexandria Sofiakis for IL-10</title>
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="/styles/base.css">
+  <link rel="stylesheet" href="/styles/money-tracker.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js"></script>
+  <script src="/scripts/money-tracker.js" defer></script>
+</head>
+
+<body class="page-money-tracker">
+  <!-- Shared site header -->
+  <header class="site-header">
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="nav-badge"></div>
+        <span>Alexandria Sofiakis</span>
+      </div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="/index.html">Home</a>
+        <a href="/about.html">About</a>
+				<div class="nav-dropdown">
+					<a href="/issues.html" class="nav-issues">Issues</a>
+					<div class="dropdown-menu">
+						<a href="/money_tracker.html" class="active">Money Tracker</a>
+					</div>
+				</div>
+        <a href="/events.html" >Events</a>
+        <a href="/il10.html" >IL-10</a>
+				<div class="nav-dropdown">
+					<a href="/vote.html" class="nav-vote">Vote</a>
+					<div class="dropdown-menu">
+						<a href="/endorsements.html">Endorsements</a>
+					</div>
+				</div>
+        <a href="/volunteer.html">Volunteer</a>
+      </div>
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="money-tracker-content">
+    <!-- Hero -->
+    <section class="money-tracker-header">
+      <div class="money-tracker-hero-inner">
+        <h1>Money Tracker</h1>
+
+        <p class="lead">
+          Transparency is essential to a healthy democracy. This Money Tracker allows voters to explore and compare
+          campaign fundraising data for candidates running in this race.
+        </p>
+
+        <p>
+          All financial information displayed here is sourced directly from OpenFEC, a nonpartisan organization that
+          aggregates and publishes data using publicly available filings submitted by campaigns and committees to the FEC.
+          The data is updated as new reports are filed and reflects totals for each election cycle. The FEC publishes new reports daily,
+					so figures may change over time.
+        </p>
+
+        <p>
+          Users can view individual candidates or compare two candidates side by side to better understand how campaigns
+          are funded — including contributions from individual donors, political action committees (PACs), party committees,
+          and other sources.
+        </p>
+
+        <p>
+          Alexandria Sofiakis believes voters deserve clear and accessible information about campaign finance.
+          As reflected in the data, Alexandria has not accepted funding from corporate PACs, registered lobbyists,
+					special interest groups, out-of-state-donors, or individual contributions.
+          This tracker is provided to ensure accountability and to give voters the tools to make informed decisions.
+        </p>
+
+        <p class="data-note">
+          <strong>Data source:</strong> OpenFEC. Figures are aggregated by election cycle and
+          may change as amended or new filings are processed.
+        </p>
+      </div>
+    </section>
+
+    <!-- App Shell -->
+    <section class="money-app" aria-label="Money Tracker App">
+      <!-- Controls outside of grid but inside app shell -->
+      <div class="money-controls" aria-label="Money Tracker Controls">
+        <div class="control">
+          <label for="cycle">Cycle</label>
+          <select id="cycle">
+            <option value="2026">2026</option>
+            <option value="2024">2024</option>
+            <option value="2022">2022</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="office">Race type</label>
+          <select id="office">
+            <option value="">All</option>
+            <option value="house">House</option>
+            <option value="senate">Senate</option>
+            <option value="president">President</option>
+          </select>
+        </div>
+
+        <div class="control control--wide">
+          <label for="search">Search candidate</label>
+          <input id="search" type="search" placeholder="Type a name (e.g., Sofiakis)" autocomplete="off" />
+        </div>
+
+        <button id="refresh" class="btn btn--ghost" type="button" title="Refresh cached data">
+          Refresh
+        </button>
+      </div>
+
+      <!-- Grid -->
+      <section class="money__grid">
+        <aside class="money__panel">
+          <div class="panel__header">
+            <h2>Candidates</h2>
+            <p class="muted small" id="panelHint">
+              Select a candidate to view totals. Click Compare to pick an opponent.
+            </p>
+          </div>
+
+          <div id="status" class="status" aria-live="polite"></div>
+          <ul id="candidateList" class="candidateList" aria-label="Candidate search results"></ul>
+        </aside>
+
+        <section class="money__compare" aria-label="Candidate comparison">
+          <div class="compare__header">
+            <h2>Comparison</h2>
+            <div class="compare__actions">
+              <button id="compareToggle" class="btn btn--ghost" type="button">Compare</button>
+              <button id="clearCompare" class="btn btn--danger" type="button">Clear</button>
+            </div>
+          </div>
+
+          <div id="compareEmpty" class="emptyState">
+            <p class="muted" id="emptyText">
+              Select a candidate to begin. Then click Compare to select an opponent.
+            </p>
+          </div>
+
+          <div id="compareCards" class="compareCards"></div>
+
+          <div id="compareTableWrap" class="tableWrap hidden">
+            <h3 class="h3">Contribution breakdown (side-by-side)</h3>
+            <div class="tableScroll">
+              <table class="compareTable">
+                <thead id="compareThead"></thead>
+                <tbody id="compareTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+				<i class="fab fa-youtube"></i>
+			</a>
+			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<i class="fab fa-bluesky"></i>
+			</a>
+			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+				<i class="fab fa-tiktok"></i>
+			</a>
+			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+				<i class="fab fa-discord"></i>
+			</a>
+    </div>
+
+		<div class="footer-links">
+      <a href="/accessibility.html">Accessibility</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+
+		<div class="footer-paid-for">
+			<strong>Paid for by Alexandria Sofiakis</strong>
+    </div>
+  </footer>
+</body>
+</html>
