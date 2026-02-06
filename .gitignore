@@ -3,8 +3,6 @@
 __pycache__/
 *.pyc
 .env
-server.py
-seed_openfec.py
 
 # Node / frontend
 node_modules/
@@ -25,15 +23,6 @@ Thumbs.db
 # FEC Bulk Data
 seeds/
 
-# SQL
-bulk_fec_database_creation.sql
-
-# Databases
-supporters.db
-
-# Secrets
+# Wrangler
 wrangler.toml
-
-# Misc
-New Text Document.txt
-
+.wrangler/
