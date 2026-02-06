@@ -31,6 +31,9 @@ bulk_fec_database_creation.sql
 # Databases
 supporters.db
 
+# Secrets
+wrangler.toml
+
 # Misc
 New Text Document.txt
 
