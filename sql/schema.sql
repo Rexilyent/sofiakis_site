@@ -1,75 +1,109 @@
--- Core candidate data
-CREATE TABLE candidates (
-  id TEXT PRIMARY KEY,
+-- =====================================================
+-- D1 / SQLite schema for Money Tracker (App-Facing)
+-- =====================================================
+-- Notes:
+-- - D1 stores INDEX + AGGREGATES only
+-- - Transaction line items live in per-entity SQLite shards (R2)
+-- - All money values are stored as INTEGER CENTS
+-- =====================================================
+
+-- =====================================================
+-- Candidates
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS candidates (
+  candidate_id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  name_normalized TEXT, -- for case-insensitive search
   office TEXT,
   party TEXT,
   state TEXT,
   district TEXT,
-  incumbent_challenge TEXT,
-  election_year INTEGER
+  cycle INTEGER NOT NULL,
+  source TEXT,
+  updated_at TEXT NOT NULL
 );
 
--- Committee information (optionally tied to a candidate)
-CREATE TABLE committees (
-  id TEXT PRIMARY KEY,
+CREATE INDEX IF NOT EXISTS idx_candidates_cycle
+  ON candidates (cycle);
+
+CREATE INDEX IF NOT EXISTS idx_candidates_state
+  ON candidates (state);
+
+-- =====================================================
+-- Committees
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS committees (
+  committee_id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  type TEXT,
+  committee_type TEXT,
   designation TEXT,
-  type_category TEXT, -- e.g. "PAC", "Party", "Super PAC"
-  affiliated_candidate_id TEXT REFERENCES candidates(id)
-);
-
--- Aggregated totals from itemized transactions (from itoth.txt)
-CREATE TABLE candidate_totals (
-  candidate_id TEXT REFERENCES candidates(id),
-  cycle INTEGER,
-  total_receipts INTEGER,
-  individual_contributions INTEGER,
-  pac_contributions INTEGER,
-  party_contributions INTEGER,
-  other_committee_contributions INTEGER,
-  total_disbursements INTEGER,
-  cash_on_hand INTEGER,
-  debts_owed INTEGER,
-  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(candidate_id, cycle)
-);
-
--- PAC-level aggregation per candidate
-CREATE TABLE pac_contributions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  candidate_id TEXT REFERENCES candidates(id),
-  pac_name TEXT NOT NULL,
-  pac_name_normalized TEXT,
-  pac_id TEXT,
-  total_amount INTEGER,
-  cycle INTEGER,
-  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
--- (Optional) Top donors per candidate
-CREATE TABLE donor_summary (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  candidate_id TEXT REFERENCES candidates(id),
-  donor_name TEXT NOT NULL,
-  city TEXT,
   state TEXT,
-  zip_code TEXT,
-  total_amount INTEGER,
-  cycle INTEGER,
-  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+  connected_org_name TEXT,
+  cycle INTEGER NOT NULL,
+  updated_at TEXT NOT NULL
 );
 
--- Metadata for available cycles
-CREATE TABLE election_cycles (
-  cycle INTEGER PRIMARY KEY,
-  description TEXT
+CREATE INDEX IF NOT EXISTS idx_committees_cycle
+  ON committees (cycle);
+
+-- =====================================================
+-- Candidate ↔ Committee Link
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS candidate_committee_link (
+  candidate_id TEXT NOT NULL,
+  committee_id TEXT NOT NULL,
+  cycle INTEGER NOT NULL,
+  PRIMARY KEY (candidate_id, committee_id, cycle)
 );
 
--- 🔍 Indexes for performance
-CREATE INDEX idx_candidate_name ON candidates(name_normalized);
-CREATE INDEX idx_totals_candidate_cycle ON candidate_totals(candidate_id, cycle);
-CREATE INDEX idx_pac_contrib_candidate ON pac_contributions(candidate_id);
-CREATE INDEX idx_donor_candidate ON donor_summary(candidate_id);
+CREATE INDEX IF NOT EXISTS idx_ccl_candidate
+  ON candidate_committee_link (candidate_id, cycle);
+
+CREATE INDEX IF NOT EXISTS idx_ccl_committee
+  ON candidate_committee_link (committee_id, cycle);
+
+-- =====================================================
+-- Candidate Aggregates
+-- =====================================================
+-- All amounts stored as INTEGER CENTS
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS candidate_totals (
+  candidate_id TEXT NOT NULL,
+  cycle INTEGER NOT NULL,
+
+  total_raised_cents INTEGER NOT NULL,
+  total_spent_cents INTEGER NOT NULL,
+  cash_on_hand_cents INTEGER,
+
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (candidate_id, cycle)
+);
+
+-- =====================================================
+-- Committee Aggregates
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS committee_totals (
+  committee_id TEXT NOT NULL,
+  cycle INTEGER NOT NULL,
+
+  total_raised_cents INTEGER NOT NULL,
+  total_spent_cents INTEGER NOT NULL,
+  cash_on_hand_cents INTEGER,
+
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (committee_id, cycle)
+);
+
+-- =====================================================
+-- Metadata / Import Info
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS data_meta (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);

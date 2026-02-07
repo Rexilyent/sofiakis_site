@@ -4,6 +4,9 @@ __pycache__/
 *.pyc
 .env
 
+# Offline Scripts
+scripts/
+
 # Node / frontend
 node_modules/
 dist/
@@ -20,8 +23,13 @@ Thumbs.db
 # Logs
 *.log
 
+# Databases
+*.db
+*.db-journal
+*.sqlite3
+
 # FEC Bulk Data
-seeds/
+bulk_fec/
 
 # Wrangler
 wrangler.toml
