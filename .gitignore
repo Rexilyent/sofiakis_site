@@ -5,7 +5,8 @@ __pycache__/
 .env
 
 # Offline Scripts
-scripts/
+move_fec_bulk_to_dir.py
+upload_shards_to_r2.py
 
 # Node / frontend
 node_modules/
@@ -23,13 +24,17 @@ Thumbs.db
 # Logs
 *.log
 
+# FEC Bulk Data
+bulk_fec/
+
+# Dataset files
+manifest.json
+checksums.json
+
 # Databases
 *.db
 *.db-journal
 *.sqlite3
-
-# FEC Bulk Data
-bulk_fec/
 
 # Wrangler
 wrangler.toml
