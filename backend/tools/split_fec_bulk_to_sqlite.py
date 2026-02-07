@@ -280,3 +280,18 @@ manifest = {
 
 print(f"✔ Dataset release created: {RELEASE_ID}")
 print("✔ Includes manifest.json and checksums.json")
+
+# ==================================================
+# LATEST pointer
+# ==================================================
+
+latest_payload = {
+		"cycle": CYCLE,
+    "release": RELEASE_ID,
+		"generated_at": datetime.now(UTC).isoformat() + "Z",
+}
+
+latest_path = DATASET_ROOT / "LATEST.json"
+latest_path.write_text(json.dumps(latest_payload, indent=2))
+
+print(f"✔ LATEST.json created")

@@ -2,7 +2,6 @@
 .venv/
 __pycache__/
 *.pyc
-.env
 
 # Offline Scripts
 move_fec_bulk_to_dir.py
@@ -30,6 +29,7 @@ bulk_fec/
 # Dataset files
 manifest.json
 checksums.json
+LATEST.json
 
 # Databases
 *.db
@@ -39,3 +39,8 @@ checksums.json
 # Wrangler
 wrangler.toml
 .wrangler/
+
+# Dependency files
+requirements.txt
+.env
+.env.*

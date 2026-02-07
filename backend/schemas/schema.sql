@@ -27,7 +27,13 @@ CREATE INDEX IF NOT EXISTS idx_candidates_cycle
   ON candidates (cycle);
 
 CREATE INDEX IF NOT EXISTS idx_candidates_state
-  ON candidates (state);
+  ON candidates (cycle, state);
+
+CREATE INDEX IF NOT EXISTS idx_candidates_office
+	ON candidates (cycle, office);
+
+CREATE INDEX IF NOT EXISTS idx_candidates_party
+	ON candidates (cycle, party);
 
 -- =====================================================
 -- Committees
@@ -39,8 +45,8 @@ CREATE TABLE IF NOT EXISTS committees (
   committee_type TEXT,
   designation TEXT,
   state TEXT,
-  connected_org_name TEXT,
   cycle INTEGER NOT NULL,
+	source TEXT,
   updated_at TEXT NOT NULL
 );
 
@@ -82,6 +88,9 @@ CREATE TABLE IF NOT EXISTS candidate_totals (
   PRIMARY KEY (candidate_id, cycle)
 );
 
+CREATE INDEX IF NOT EXISTS idx_candidate_totals_cycle
+	ON candidate_totals (cycle);
+
 -- =====================================================
 -- Committee Aggregates
 -- =====================================================
@@ -97,6 +106,32 @@ CREATE TABLE IF NOT EXISTS committee_totals (
   updated_at TEXT NOT NULL,
   PRIMARY KEY (committee_id, cycle)
 );
+
+CREATE INDEX IF NOT EXISTS idx_committee_totals_cycle
+	ON committee_totals (cycle);
+
+-- =====================================================
+-- Candidate Receipt Breakdown
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS candidate_receipt_breakdown (
+	candidate_id TEXT NOT NULL,
+	cycle INTEGER NOT NULL,
+
+	source_type TEXT NOT NULL,
+	-- expected values:
+	-- "individual"
+	-- 'pac'
+	-- 'party'
+	-- 'self'
+
+	amount_cents INTEGER NOT NULL,
+
+	PRIMARY KEY (candidate_id, cycle, source_type)
+);
+
+CREATE INDEX IF NOT EXISTS idx_candidate_breakdown_cycle
+	ON candidate_receipt_breakdown (cycle);
 
 -- =====================================================
 -- Metadata / Import Info
