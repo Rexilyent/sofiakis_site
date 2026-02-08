@@ -26,6 +26,9 @@ Thumbs.db
 # FEC Bulk Data
 bulk_fec/
 
+# FEC Shard Files
+data/fec/
+
 # Dataset files
 manifest.json
 checksums.json
