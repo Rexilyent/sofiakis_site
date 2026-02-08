@@ -95,6 +95,7 @@
   text-underline-offset: 3px;
 }
 
+/* Add external link arrow after "Visit Website" */
 .page-endorsements .endorsement-card .link span::after {
   content: " ↗";
   font-size: 0.9em;
@@ -102,6 +103,7 @@
   transition: opacity 0.15s ease;
 }
 
+/* Show the arrow on hover/focus by increasing opacity */
 .page-endorsements a.endorsement-card:hover .link span::after,
 .page-endorsements a.endorsement-card:focus-visible .link span::after {
   opacity: 0.8;
@@ -121,8 +123,8 @@
   justify-content: center;
 }
 
-/* Crop the image itself */
-.page-endorsements .endorsement-card .endorsement-icon img {
+/* Specific endorsement icon adjustments */
+.page-endorsements .endorsement-icon.movement-4-freedom img {
   width: 100%;
   height: 100%;
 
@@ -130,4 +132,13 @@
   border-radius: 16px;    /* shape control */
 
   display: block;
+}
+
+.page-endorsements .endorsement-icon.ilgp img {
+	width: 95%; /* Scale down to fit otherwise image crops unintentionally */
+	height: 95%; /* Scale down to fit otherwise image crops unintentionally */
+
+	object-fit: contain; /* no cropping (image has whitespace) */
+
+	display: block;
 }
