@@ -1,9 +1,12 @@
 import sqlite3
 import json
 import hashlib
+import sys
+import time
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from datetime import datetime, UTC
+from collections import defaultdict
 
 # ==================================================
 # Configuration
@@ -23,14 +26,52 @@ CAND_DIR.mkdir(parents=True, exist_ok=True)
 COMM_DIR.mkdir(parents=True, exist_ok=True)
 
 UNASSIGNED_COMMITTEE_ID = "_UNASSIGNED"
+COMMIT_EVERY = 10_000
+
+# ==================================================
+# Validation registry
+# ==================================================
+
+VALIDATION = defaultdict(lambda: {
+    "lines_total": 0,
+    "lines_parsed": 0,
+    "amount_valid": 0,
+    "tx_written": 0,
+    "tx_skipped": 0,
+    "tx_candidate": 0,
+    "tx_committee": 0,
+    "tx_unassigned": 0,
+})
+
+# ==================================================
+# Progress bar
+# ==================================================
+
+def progress(label, current, total, width=40):
+    filled = int(width * current / total) if total else 0
+    bar = "█" * filled + "░" * (width - filled)
+    pct = (current / total * 100) if total else 0
+    sys.stdout.write(
+        f"\r{label:<30} [{bar}] {current:,}/{total:,} ({pct:5.1f}%)"
+    )
+    sys.stdout.flush()
+
+# ==================================================
+# SQLite config (FAST WRITE MODE)
+# ==================================================
+
+def configure_sqlite(conn):
+    conn.execute("PRAGMA journal_mode=DELETE;")
+    conn.execute("PRAGMA synchronous=OFF;")
+    conn.execute("PRAGMA busy_timeout=5000;")
 
 # ==================================================
 # Candidate master resolution (cn > webl > weball)
 # ==================================================
 
-candidate_index: dict[str, dict] = {}
+candidate_index = {}
 
-def load_candidate_file(path: Path, source: str):
+def load_candidate_file(path, source):
     if not path.exists():
         return
     with path.open(encoding="utf-8", errors="ignore") as f:
@@ -59,50 +100,36 @@ load_candidate_file(BULK_DIR / "cn26.txt", "cn")
 print(f"Loaded {len(candidate_index)} candidates")
 
 # ==================================================
-# Validation helpers
+# Helpers
 # ==================================================
 
-def is_real_candidate(candidate_id: str | None) -> bool:
-    return bool(candidate_id and candidate_id in candidate_index)
+def is_real_candidate(cid):
+    return cid in candidate_index
 
-def is_real_committee(committee_id: str | None) -> bool:
-    return bool(
-        committee_id
-        and committee_id.startswith("C")
-        and len(committee_id) == 9
-        and committee_id not in {"A", "N", "NONE", "00000000"}
-    )
+def is_real_committee(cid):
+    return bool(cid and cid.startswith("C") and len(cid) == 9)
 
-def parse_amount_cents(val: str | None):
-    if not val:
-        return None
-
-    val = val.strip()
-    if not val:
-        return None
-
+def parse_amount_cents(val):
     try:
-        # Some FEC fields contain junk like "." or "NA"
-        d = Decimal(val)
-        return int(d * 100)
-    except (InvalidOperation, ValueError):
+        return int(Decimal(val) * 100)
+    except (InvalidOperation, TypeError):
         return None
 
-def parse_date(val: str):
+def parse_date(val):
     return val if val else None
 
 # ==================================================
 # SQLite helpers
 # ==================================================
 
-candidate_dbs: dict[str, sqlite3.Connection] = {}
-committee_dbs: dict[str, sqlite3.Connection] = {}
+candidate_dbs = {}
+committee_dbs = {}
+TX_COUNT = 0
 
-def open_candidate_db(candidate_id: str) -> sqlite3.Connection:
-    meta = candidate_index[candidate_id]
-    path = CAND_DIR / f"{candidate_id}.db"
-    conn = sqlite3.connect(path)
-    conn.execute("""
+def open_candidate_db(cid):
+    conn = sqlite3.connect(CAND_DIR / f"{cid}.db")
+    configure_sqlite(conn)
+    conn.executescript("""
         CREATE TABLE IF NOT EXISTS candidate (
             candidate_id TEXT PRIMARY KEY,
             name TEXT,
@@ -112,186 +139,265 @@ def open_candidate_db(candidate_id: str) -> sqlite3.Connection:
             district TEXT,
             source TEXT
         );
-    """)
-    conn.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
-            source TEXT NOT NULL,
-            committee_id TEXT,
+            source TEXT,
+            direction TEXT,
+            from_committee_id TEXT,
+            to_committee_id TEXT,
             candidate_id TEXT,
             amount_cents INTEGER,
             transaction_date TEXT,
-            raw_line TEXT NOT NULL
+            raw_line TEXT
         );
     """)
     conn.execute("DELETE FROM candidate")
     conn.execute(
         "INSERT INTO candidate VALUES (?,?,?,?,?,?,?)",
-        tuple(meta.values())
+        tuple(candidate_index[cid].values())
     )
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_tx_date ON transactions(transaction_date)")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_tx_amount ON transactions(amount_cents)")
     return conn
 
-def open_committee_db(committee_id: str) -> sqlite3.Connection:
-    path = COMM_DIR / f"{committee_id}.db"
-    conn = sqlite3.connect(path)
-    conn.execute("""
+def open_committee_db(cid):
+    conn = sqlite3.connect(COMM_DIR / f"{cid}.db")
+    configure_sqlite(conn)
+    conn.executescript("""
         CREATE TABLE IF NOT EXISTS transactions (
-            source TEXT NOT NULL,
-            committee_id TEXT,
+            source TEXT,
+            direction TEXT,
+            from_committee_id TEXT,
+            to_committee_id TEXT,
             candidate_id TEXT,
             amount_cents INTEGER,
             transaction_date TEXT,
-            raw_line TEXT NOT NULL
+            raw_line TEXT
+        );
+        CREATE TABLE IF NOT EXISTS committee_candidates (
+            committee_id TEXT,
+            candidate_id TEXT,
+            PRIMARY KEY (committee_id, candidate_id)
         );
     """)
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_tx_date ON transactions(transaction_date)")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_tx_amount ON transactions(amount_cents)")
     return conn
 
-def get_candidate_db(candidate_id: str):
-    if not is_real_candidate(candidate_id):
+def get_candidate_db(cid):
+    if not is_real_candidate(cid):
         return None
-    if candidate_id not in candidate_dbs:
-        candidate_dbs[candidate_id] = open_candidate_db(candidate_id)
-    return candidate_dbs[candidate_id]
+    return candidate_dbs.setdefault(cid, open_candidate_db(cid))
 
-def get_committee_db(committee_id: str):
-    key = committee_id if is_real_committee(committee_id) else UNASSIGNED_COMMITTEE_ID
-    if key not in committee_dbs:
-        committee_dbs[key] = open_committee_db(key)
-    return committee_dbs[key]
+def get_committee_db(cid):
+    key = cid if is_real_committee(cid) else UNASSIGNED_COMMITTEE_ID
+    conn = committee_dbs.get(key)
+    if conn is None:
+        conn = open_committee_db(key)
+        committee_dbs[key] = conn
+    return conn
 
-def insert_tx(conn, src, committee_id, candidate_id, amount_cents, date, raw):
+def insert_tx(conn, source, direction, from_c, to_c, cand, amt, date, raw):
+    global TX_COUNT
+    VALIDATION[source]["lines_parsed"] += 1
+
+    if amt is None:
+        VALIDATION[source]["tx_skipped"] += 1
+        return
+
+    VALIDATION[source]["amount_valid"] += 1
+
+    if conn is None:
+        VALIDATION[source]["tx_skipped"] += 1
+        return
+
+    if cand:
+        VALIDATION[source]["tx_candidate"] += 1
+    else:
+        VALIDATION[source]["tx_committee"] += 1
+
+    if from_c == UNASSIGNED_COMMITTEE_ID or to_c == UNASSIGNED_COMMITTEE_ID:
+        VALIDATION[source]["tx_unassigned"] += 1
+
     conn.execute(
-        "INSERT INTO transactions VALUES (?,?,?,?,?,?)",
-        (src, committee_id, candidate_id, amount_cents, date, raw),
+        "INSERT INTO transactions VALUES (?,?,?,?,?,?,?,?)",
+        (source, direction, from_c, to_c, cand, amt, date, raw)
     )
 
+    VALIDATION[source]["tx_written"] += 1
+    TX_COUNT += 1
+    if TX_COUNT % COMMIT_EVERY == 0:
+        conn.commit()
+
 # ==================================================
-# Pre-create candidate DBs
+# Pre-create databases
 # ==================================================
 
-print("Pre-creating candidate databases...")
+print("Creating candidate databases...")
 for cid in candidate_index:
     get_candidate_db(cid)
-print(f"Pre-created {len(candidate_index)} candidate databases")
+print(f"✔ {len(candidate_dbs)} candidate DBs")
+
+print("Collecting committees...")
+committee_ids = set()
+
+if (BULK_DIR / "cm26.txt").exists():
+    for line in (BULK_DIR / "cm26.txt").open(encoding="utf-8", errors="ignore"):
+        cid = line.split("|", 1)[0].strip()
+        if is_real_committee(cid):
+            committee_ids.add(cid)
+
+for line in (BULK_DIR / "ccl26.txt").open(encoding="utf-8", errors="ignore"):
+    p = line.rstrip("\n").split("|")
+    if len(p) >= 2 and is_real_committee(p[1]):
+        committee_ids.add(p[1])
+
+print(f"Creating {len(committee_ids)} committee DBs...")
+for cid in committee_ids:
+    get_committee_db(cid)
+print("✔ Committee DBs ready")
 
 # ==================================================
 # Candidate ↔ Committee links
 # ==================================================
 
-committee_candidates: dict[str, set[str]] = {}
-
-with open(BULK_DIR / "ccl26.txt", encoding="utf-8", errors="ignore") as f:
+print("Linking candidates ↔ committees...")
+with (BULK_DIR / "ccl26.txt").open(encoding="utf-8", errors="ignore") as f:
     for line in f:
         p = line.rstrip("\n").split("|")
         if len(p) >= 2 and is_real_candidate(p[0]) and is_real_committee(p[1]):
-            committee_candidates.setdefault(p[1], set()).add(p[0])
+            get_committee_db(p[1]).execute(
+                "INSERT OR IGNORE INTO committee_candidates VALUES (?,?)",
+                (p[1], p[0])
+            )
+print("✔ Links complete")
 
 # ==================================================
-# Transaction processing (UNCHANGED LOGIC)
+# Transaction processing with progress + validation
 # ==================================================
 
-def process_file(path, handler):
-    with open(path, encoding="utf-8", errors="ignore") as f:
+def process_file(path, handler, label, source_key):
+    total = sum(1 for _ in path.open(encoding="utf-8", errors="ignore"))
+    count = 0
+    last = time.time()
+
+    with path.open(encoding="utf-8", errors="ignore") as f:
         for line in f:
+            VALIDATION[source_key]["lines_total"] += 1
             p = line.rstrip("\n").split("|")
             if len(p) >= 15:
                 handler(p, line)
+            else:
+                VALIDATION[source_key]["tx_skipped"] += 1
+            count += 1
+            if time.time() - last > 0.1:
+                progress(label, count, total)
+                last = time.time()
 
-# itcont
-process_file(BULK_DIR / "itcont.txt", lambda p, raw:
-    insert_tx(
-        get_committee_db(p[0]),
-        "itcont",
-        p[0],
-        None,
-        parse_amount_cents(p[14]),
-        parse_date(p[13]),
-        raw,
-    )
+    progress(label, total, total)
+    print()
+
+process_file(
+    BULK_DIR / "itcont.txt",
+    lambda p, raw: insert_tx(
+        get_committee_db(p[0]), "itcont", "in",
+        None, p[0], None,
+        parse_amount_cents(p[14]), parse_date(p[13]), raw
+    ),
+    "itcont (individual)",
+    "itcont"
 )
 
-# itpas2
-process_file(BULK_DIR / "itpas2.txt", lambda p, raw:
-    (
+process_file(
+    BULK_DIR / "itpas2.txt",
+    lambda p, raw: (
         insert_tx(
-            get_committee_db(p[0]),
-            "itpas2",
-            p[0],
-            p[1],
-            parse_amount_cents(p[14]),
-            parse_date(p[13]),
-            raw,
+            get_committee_db(p[0]), "itpas2", "out",
+            p[0], None, p[1],
+            parse_amount_cents(p[14]), parse_date(p[13]), raw
         ),
         insert_tx(
-            get_candidate_db(p[1]),
-            "itpas2",
-            p[0],
-            p[1],
-            parse_amount_cents(p[14]),
-            parse_date(p[13]),
-            raw,
-        ) if is_real_candidate(p[1]) else None
-    )
+            get_candidate_db(p[1]), "itpas2", "in",
+            p[0], None, p[1],
+            parse_amount_cents(p[14]), parse_date(p[13]), raw
+        )
+    ),
+    "itpas2 (PAC → candidate)",
+    "itpas2"
 )
 
-# itoth
-process_file(BULK_DIR / "itoth.txt", lambda p, raw:
-    (
-        insert_tx(get_committee_db(p[0]), "itoth", p[0], None, parse_amount_cents(p[14]), parse_date(p[13]), raw),
-        insert_tx(get_committee_db(p[1]), "itoth", p[1], None, parse_amount_cents(p[14]), parse_date(p[13]), raw)
-    )
+process_file(
+    BULK_DIR / "itoth.txt",
+    lambda p, raw: (
+        insert_tx(
+            get_committee_db(p[0]), "itoth", "out",
+            p[0], p[1], None,
+            parse_amount_cents(p[14]), parse_date(p[13]), raw
+        ),
+        insert_tx(
+            get_committee_db(p[1]), "itoth", "in",
+            p[0], p[1], None,
+            parse_amount_cents(p[14]), parse_date(p[13]), raw
+        )
+    ),
+    "itoth (committee ↔ committee)",
+    "itoth"
 )
 
-# oppexp
-process_file(BULK_DIR / "oppexp.txt", lambda p, raw:
-    insert_tx(get_committee_db(p[0]), "oppexp", p[0], None, parse_amount_cents(p[14]), parse_date(p[13]), raw)
+process_file(
+    BULK_DIR / "oppexp.txt",
+    lambda p, raw: insert_tx(
+        get_committee_db(p[0]), "oppexp", "out",
+        p[0], None, None,
+        parse_amount_cents(p[14]), parse_date(p[13]), raw
+    ),
+    "oppexp (operating)",
+    "oppexp"
 )
 
 # ==================================================
-# Finalize
+# Finalize + audit manifest
 # ==================================================
 
 for conn in list(candidate_dbs.values()) + list(committee_dbs.values()):
     conn.commit()
     conn.close()
 
-# ==================================================
-# Manifest + checksums
-# ==================================================
+checksums = {
+    str(db.relative_to(OUT_BASE)): hashlib.sha256(db.read_bytes()).hexdigest()
+    for db in OUT_BASE.rglob("*.db")
+}
 
-checksums = {}
-for db in OUT_BASE.rglob("*.db"):
-    checksums[str(db.relative_to(OUT_BASE))] = hashlib.sha256(db.read_bytes()).hexdigest()
+summary = {
+    "total_lines": sum(v["lines_total"] for v in VALIDATION.values()),
+    "total_written": sum(v["tx_written"] for v in VALIDATION.values()),
+    "total_skipped": sum(v["tx_skipped"] for v in VALIDATION.values()),
+}
+
+summary["passed"] = all(
+    v["tx_written"] + v["tx_skipped"] == v["lines_parsed"]
+    for v in VALIDATION.values()
+)
 
 manifest = {
     "cycle": CYCLE,
     "release_id": RELEASE_ID,
     "generated_at": datetime.now(UTC).isoformat() + "Z",
-    "candidate_count": len(candidate_dbs),
-    "committee_count": len(committee_dbs),
-    "schema_version": 1,
+    "schema_version": 3,
+    "validation": {
+        **VALIDATION,
+        "summary": summary
+    }
 }
 
 (OUT_BASE / "manifest.json").write_text(json.dumps(manifest, indent=2))
 (OUT_BASE / "checksums.json").write_text(json.dumps(checksums, indent=2))
+print("✔ Manifest and checksums written")
 
-print(f"✔ Dataset release created: {RELEASE_ID}")
-print("✔ Includes manifest.json and checksums.json")
-
-# ==================================================
-# LATEST pointer
-# ==================================================
-
-latest_payload = {
-		"cycle": CYCLE,
+(DATASET_ROOT / "LATEST.json").write_text(json.dumps({
+    "cycle": CYCLE,
     "release": RELEASE_ID,
-		"generated_at": datetime.now(UTC).isoformat() + "Z",
-}
+    "generated_at": datetime.now(UTC).isoformat() + "Z"
+}, indent=2))
+print("✔ LATEST.json updated")
 
-latest_path = DATASET_ROOT / "LATEST.json"
-latest_path.write_text(json.dumps(latest_payload, indent=2))
+if not summary["passed"]:
+    raise RuntimeError("❌ Validation failed — see manifest.json")
 
-print(f"✔ LATEST.json created")
+print(f"\n✔ Dataset release created: {RELEASE_ID}")
+print("✔ Validation embedded in manifest.json")
