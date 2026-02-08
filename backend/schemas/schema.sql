@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS candidates (
   state TEXT,
   district TEXT,
   cycle INTEGER NOT NULL,
-  source TEXT,
+  source TEXT, -- FEC
+	release_id TEXT NOT NULL, -- immutable source versioning from split_fec_bulk_to_sqlite.py
   updated_at TEXT NOT NULL
 );
 
@@ -46,7 +47,8 @@ CREATE TABLE IF NOT EXISTS committees (
   designation TEXT,
   state TEXT,
   cycle INTEGER NOT NULL,
-	source TEXT,
+	source TEXT, -- FEC
+	release_id TEXT NOT NULL, -- immutable source versioning from split_fec_bulk_to_sqlite.py
   updated_at TEXT NOT NULL
 );
 
@@ -82,8 +84,9 @@ CREATE TABLE IF NOT EXISTS candidate_totals (
 
   total_raised_cents INTEGER NOT NULL,
   total_spent_cents INTEGER NOT NULL,
-  cash_on_hand_cents INTEGER,
 
+	source TEXT, -- FEC
+	release_id TEXT NOT NULL, -- immutable source versioning from split_fec_bulk_to_sqlite.py
   updated_at TEXT NOT NULL,
   PRIMARY KEY (candidate_id, cycle)
 );
@@ -101,8 +104,9 @@ CREATE TABLE IF NOT EXISTS committee_totals (
 
   total_raised_cents INTEGER NOT NULL,
   total_spent_cents INTEGER NOT NULL,
-  cash_on_hand_cents INTEGER,
 
+	source TEXT, -- FEC
+	release_id TEXT NOT NULL, -- immutable source versioning from split_fec_bulk_to_sqlite.py
   updated_at TEXT NOT NULL,
   PRIMARY KEY (committee_id, cycle)
 );
@@ -133,12 +137,39 @@ CREATE TABLE IF NOT EXISTS candidate_receipt_breakdown (
 CREATE INDEX IF NOT EXISTS idx_candidate_breakdown_cycle
 	ON candidate_receipt_breakdown (cycle);
 
+CREATE TABLE IF NOT EXISTS candidate_spending_breakdown (
+	candidate_id TEXT NOT NULL,
+	cycle INTEGER NOT NULL,
+
+	spending_type TEXT NOT NULL,
+	-- expected values:
+	-- "operating"
+	-- 'contribution'
+	-- 'independent_expenditure'
+	-- 'other'
+
+	amount_cents INTEGER NOT NULL,
+
+	PRIMARY KEY (candidate_id, cycle, spending_type)
+);
+
 -- =====================================================
 -- Metadata / Import Info
 -- =====================================================
 
-CREATE TABLE IF NOT EXISTS data_meta (
-  key TEXT PRIMARY KEY,
-  value TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS upload_audit (
+  release_id TEXT PRIMARY KEY,
+	cycle INTEGER NOT NULL,
+	candidate_shards INTEGER NOT NULL,
+	committee_shards INTEGER NOT NULL,
+	checksum_sha256 TEXT NOT NULL,
+	uploaded_at TEXT NOT NULL,
+	uploader_version TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS upload_audit_log (
+  release_id TEXT NOT NULL,
+	phase TEXT NOT NULL,
+	message TEXT NOT NULL,
+	timestamp TEXT NOT NULL
 );
