@@ -166,10 +166,3 @@ CREATE TABLE IF NOT EXISTS upload_audit (
 	uploaded_at TEXT NOT NULL,
 	uploader_version TEXT NOT NULL
 );
-
-CREATE TABLE IF NOT EXISTS upload_audit_log (
-  release_id TEXT NOT NULL,
-	phase TEXT NOT NULL,
-	message TEXT NOT NULL,
-	timestamp TEXT NOT NULL
-);
