@@ -6,14 +6,15 @@
 import sqlite3
 import subprocess
 import argparse
-import hashlib
-import json
 import sys
 import os
 from pathlib import Path
-from datetime import datetime, UTC
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from common.hashing import sha256_file, dataset_checksum
+from common.progress import progress
+from common.json_utils import load_json
+from common.time_utils import now_iso
 
 # ==================================================
 # Configuration
@@ -39,24 +40,6 @@ def run_d1_sql(sql: str):
     )
     if proc.returncode != 0:
         raise RuntimeError(proc.stderr.decode())
-
-def now():
-    return datetime.now(UTC).isoformat() + "Z"
-
-# ==================================================
-# Progress bar
-# ==================================================
-
-def progress(label, current, total, width=40):
-    filled = int(width * current / total) if total else width
-    bar = "█" * filled + "░" * (width - filled)
-    pct = (current / total * 100) if total else 100
-    sys.stdout.write(
-        f"\r{label:<25} [{bar}] {current}/{total} ({pct:5.1f}%)"
-    )
-    sys.stdout.flush()
-    if current == total:
-        print()
 
 # ==================================================
 # SQL helpers
@@ -172,16 +155,14 @@ def process_committee_shard(db_path: str):
 
 def load_release(cycle: str):
     cycle_dir = DATA_ROOT / cycle
-    latest = json.loads((cycle_dir / "LATEST.json").read_text())
+    latest = load_json(cycle_dir / "LATEST.json")
     release_id = latest["release"]
     release_root = cycle_dir / release_id
 
-    checksums = json.loads((release_root / "checksums.json").read_text())
-    manifest = json.loads((release_root / "manifest.json").read_text())
+    checksums = load_json(release_root / "checksums.json")
+    manifest = load_json(release_root / "manifest.json")
 
-    dataset_hash = hashlib.sha256(
-        json.dumps(checksums, sort_keys=True).encode()
-    ).hexdigest()
+    dataset_hash = dataset_hash(checksums)
 
     expected_candidates = manifest.get("candidate_count")
     expected_committees = manifest.get("committee_count")
@@ -227,7 +208,7 @@ def main():
         expected_committees,
     ) = load_release(args.cycle)
 
-    ts = now()
+    ts = now_iso()
 
     candidate_dbs = sorted((release_root / "candidates").glob("*.db"))
     committee_dbs = sorted((release_root / "committees").glob("*.db"))

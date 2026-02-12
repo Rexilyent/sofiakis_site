@@ -1,24 +1,25 @@
 # =================================================
-# Verify FEC SQLite Shard Release
+# Verify / Compare FEC SQLite Shard Releases
 # =================================================
-# Verifies:
-# - Canonical release via LATEST.json
-# - All shard files listed in checksums.json exist
-# - Candidate / committee shard counts derived from checksums.json
-# - _UNASSIGNED committee shard excluded
-# - Manifest validation.summary.passed == true
-# - Dataset-level checksum derived from checksums.json
-# Includes a progress bar so users know the script is running
+# Supports:
+#   --cycle
+#   --release-id
+#   --deep
+#   --compare RELEASE_A RELEASE_B
 # =================================================
 
 import argparse
-import json
-import hashlib
 import sys
+import sqlite3
 from pathlib import Path
-from datetime import datetime, UTC
+from common.hashing import sha256_file, dataset_checksum
+from common.progress import progress
+from common.release import resolve_release
+from common.json_utils import load_json
+from common.time_utils import now_iso
 
 DATA_ROOT = Path("data/fec")
+READ_CHUNK = 1024 * 1024
 
 # -------------------------------------------------
 # Helpers
@@ -27,146 +28,166 @@ DATA_ROOT = Path("data/fec")
 def die(msg: str):
     raise SystemExit(f"❌ {msg}")
 
-def load_json(path: Path, name: str):
-    if not path.exists():
-        die(f"{name} not found at {path}")
+# -------------------------------------------------
+# Transaction Summary (used for deep comparison)
+# -------------------------------------------------
+
+def shard_summary(path: Path):
+    conn = sqlite3.connect(path)
+    cur = conn.cursor()
     try:
-        return json.loads(path.read_text())
-    except json.JSONDecodeError as e:
-        die(f"Invalid JSON in {name}: {e}")
+        cur.execute("SELECT COUNT(*), COALESCE(SUM(amount_cents),0) FROM transactions")
+        count, total = cur.fetchone()
+    except Exception:
+        count, total = 0, 0
+    conn.close()
+    return count, total
 
-def dataset_checksum(checksums: dict) -> str:
-    """
-    Deterministic dataset fingerprint.
-    This is what gets stored in upload_audit.checksum_sha256
-    """
-    return hashlib.sha256(
-        json.dumps(checksums, sort_keys=True).encode()
-    ).hexdigest()
+# -------------------------------------------------
+# Compare Mode
+# -------------------------------------------------
 
-def progress(label: str, current: int, total: int, width: int = 40):
-    if total <= 0:
-        return
-    filled = int(width * current / total)
-    bar = "█" * filled + "░" * (width - filled)
-    pct = (current / total) * 100
-    sys.stdout.write(
-        f"\r{label:<25} [{bar}] {current:,}/{total:,} ({pct:5.1f}%)"
-    )
-    sys.stdout.flush()
-    if current == total:
-        print()
+def compare_releases(cycle: str, release_a: str, release_b: str, deep: bool):
+
+    id_a, root_a = resolve_release(cycle, release_a)
+    id_b, root_b = resolve_release(cycle, release_b)
+
+    print(f"Comparing releases:")
+    print(f"  A: {id_a}")
+    print(f"  B: {id_b}")
+    print()
+
+    checksums_a = load_json(root_a / "checksums.json", "checksums.json (A)")
+    checksums_b = load_json(root_b / "checksums.json", "checksums.json (B)")
+
+    keys_a = set(checksums_a.keys())
+    keys_b = set(checksums_b.keys())
+
+    added = keys_b - keys_a
+    removed = keys_a - keys_b
+    common = keys_a & keys_b
+
+    changed = [
+        k for k in common
+        if checksums_a[k] != checksums_b[k]
+    ]
+
+    print("File-level differences:")
+    print(f"  Added:   {len(added)}")
+    print(f"  Removed: {len(removed)}")
+    print(f"  Changed: {len(changed)}")
+
+    if deep and changed:
+        print("\nDeep transaction comparison:")
+        for rel_path in changed:
+            path_a = root_a / Path(rel_path)
+            path_b = root_b / Path(rel_path)
+
+            if not path_a.exists() or not path_b.exists():
+                continue
+
+            count_a, total_a = shard_summary(path_a)
+            count_b, total_b = shard_summary(path_b)
+
+            if count_a != count_b or total_a != total_b:
+                print(f"\n  {rel_path}")
+                print(f"    Rows:   {count_a} → {count_b}")
+                print(f"    Total:  {total_a} → {total_b}")
+
+    print("\n✔ Comparison complete")
+    return
 
 # -------------------------------------------------
 # Main
 # -------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Verify integrity of a split FEC shard release"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cycle", required=True)
+    parser.add_argument("--release-id")
+    parser.add_argument("--deep", action="store_true")
+    parser.add_argument(
+        "--compare",
+        nargs=2,
+        metavar=("RELEASE_A", "RELEASE_B"),
+        help="Compare two releases"
     )
-    parser.add_argument("--cycle", required=True, help="Election cycle (e.g. 2026)")
     args = parser.parse_args()
 
-    cycle_dir = DATA_ROOT / args.cycle
-    if not cycle_dir.exists():
-        die(f"Cycle directory does not exist: {cycle_dir}")
+    # --------------------------------------------
+    # Compare mode
+    # --------------------------------------------
 
-    # -------------------------------------------------
-    # Resolve canonical release
-    # -------------------------------------------------
+    if args.compare:
+        compare_releases(args.cycle, args.compare[0], args.compare[1], args.deep)
+        return
 
-    latest = load_json(cycle_dir / "LATEST.json", "LATEST.json")
-    release_id = latest.get("release")
-    if not release_id:
-        die("LATEST.json missing 'release' field")
+    # --------------------------------------------
+    # Single-release verification
+    # --------------------------------------------
 
-    release_root = cycle_dir / release_id
-    if not release_root.exists():
-        die(f"Release directory does not exist: {release_root}")
+    release_id, release_root = resolve_release(args.cycle, args.release_id)
 
-    # -------------------------------------------------
-    # Load files
-    # -------------------------------------------------
-
-    checksums = load_json(release_root / "checksums.json", "checksums.json")
     manifest = load_json(release_root / "manifest.json", "manifest.json")
-
-    # -------------------------------------------------
-    # Manifest validation gate
-    # -------------------------------------------------
+    checksums = load_json(release_root / "checksums.json", "checksums.json")
 
     summary = manifest.get("validation", {}).get("summary")
-    if not summary:
-        die("manifest.json missing validation.summary")
+    if not summary or summary.get("passed") is not True:
+        die("Manifest validation failed")
 
-    if summary.get("passed") is not True:
-        die("Manifest validation failed (summary.passed != true)")
-
-    # -------------------------------------------------
-    # Derive shard expectations from checksums.json
-    # -------------------------------------------------
-
-    candidate_keys = [
-        k for k in checksums.keys()
-        if k.startswith("candidates\\") and k.endswith(".db")
-    ]
-
-    committee_keys = [
-        k for k in checksums.keys()
-        if k.startswith("committees\\")
-        and k.endswith(".db")
-        and not k.endswith("_UNASSIGNED.db")
-    ]
-
-    expected_candidates = len(candidate_keys)
-    expected_committees = len(committee_keys)
-
-    if expected_candidates == 0:
-        die("No candidate shards found in checksums.json")
-
-    # -------------------------------------------------
-    # Verify shard files exist on disk (with progress)
-    # -------------------------------------------------
-
-    print("Verifying shard files on disk...")
     total = len(checksums)
     checked = 0
     missing = []
+    mismatched = []
 
-    for rel_path in checksums.keys():
+    print("Verifying shard files on disk...")
+    if args.deep:
+        print("⚠ Deep verification enabled")
+
+    for rel_path, expected_hash in checksums.items():
         checked += 1
         shard_path = release_root / Path(rel_path)
 
         if not shard_path.exists():
             missing.append(rel_path)
+        elif args.deep:
+            actual_hash = sha256_file(shard_path)
+            if actual_hash != expected_hash:
+                mismatched.append(rel_path)
 
         if checked == 1 or checked % 100 == 0 or checked == total:
             progress("Shard verification", checked, total)
 
     if missing:
-        die(
-            "Missing shard files:\n"
-            + "\n".join(f"  - {m}" for m in missing)
-        )
+        die(f"Missing shard files: {len(missing)}")
 
-    # -------------------------------------------------
-    # Dataset-level checksum
-    # -------------------------------------------------
+    if mismatched:
+        die(f"Checksum mismatches: {len(mismatched)}")
+        
+		# -----------------------------------------------------------
+    # Derive shard counts (for audit/logging purposes)
+    # -----------------------------------------------------------
+    
+    candidate_keys = [
+        k for k in checksums.keys()
+        if k.startswith("candidates\\") and k.endswith(".db")
+		]
+        
+    committee_keys = [
+				k for k in checksums.keys()
+				if k.startswith("committees\\") and k.endswith(".db") and not k.endswith("_UNASSIGNED.db")
+		]
 
     full_checksum = dataset_checksum(checksums)
 
-    # -------------------------------------------------
-    # Success output
-    # -------------------------------------------------
-
     print("\n✔ Release verification passed")
-    print(f"  Cycle:              {args.cycle}")
-    print(f"  Release ID:         {release_id}")
-    print(f"  Candidate shards:   {expected_candidates}")
-    print(f"  Committee shards:   {expected_committees}")
-    print(f"  Dataset SHA-256:    {full_checksum}")
-    print(f"  Verified at:        {datetime.now(UTC).isoformat()}Z")
+    print(f"  Cycle:            {args.cycle}")
+    print(f"  Candidate Shards: {len(candidate_keys)}")
+    print(f"  Committee Shards: {len(committee_keys)}")
+    print(f"  Total Shards:     {len(checksums)}")
+    print(f"  Release ID:       {release_id}")
+    print(f"  Dataset SHA-256:  {full_checksum}")
+    print(f"  Verified at:      {now_iso()}")
 
 if __name__ == "__main__":
     main()

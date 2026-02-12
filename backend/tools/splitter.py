@@ -1,22 +1,31 @@
+# -------------------------------------------------------------------------------
+# Tool to split FEC bulk files into per-candidate and per-committee SQLite databases.
+#     Changes in v1.0.1:
+#     - Refactored duplicate logic into helper functions for better readability and maintainability.
+# -------------------------------------------------------------------------------
+
 import sqlite3
-import json
-import hashlib
 import sys
 import time
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from datetime import datetime, UTC
 from collections import defaultdict
+from common.hashing import sha256_file, dataset_checksum
+from common.progress import progress
+from common.time_utils import now_iso
+from common.json_utils import load_json, write_json
+from common.sqlite_utils import configure_fast_write
 
 # ==================================================
 # Configuration
 # ==================================================
 
+SPLITTER_VERSION = "1.0.1"
+
 CYCLE = "2026"
 BULK_DIR = Path("bulk_fec")
-
 DATASET_ROOT = Path("data/fec") / CYCLE
-RELEASE_ID = datetime.now(UTC).strftime("%Y-%m-%dT%H-%M-%SZ")
+RELEASE_ID = now_iso()
 OUT_BASE = DATASET_ROOT / RELEASE_ID
 
 CAND_DIR = OUT_BASE / "candidates"
@@ -42,28 +51,6 @@ VALIDATION = defaultdict(lambda: {
     "tx_committee": 0,
     "tx_unassigned": 0,
 })
-
-# ==================================================
-# Progress bar
-# ==================================================
-
-def progress(label, current, total, width=40):
-    filled = int(width * current / total) if total else 0
-    bar = "█" * filled + "░" * (width - filled)
-    pct = (current / total * 100) if total else 0
-    sys.stdout.write(
-        f"\r{label:<30} [{bar}] {current:,}/{total:,} ({pct:5.1f}%)"
-    )
-    sys.stdout.flush()
-
-# ==================================================
-# SQLite config (FAST WRITE MODE)
-# ==================================================
-
-def configure_sqlite(conn):
-    conn.execute("PRAGMA journal_mode=DELETE;")
-    conn.execute("PRAGMA synchronous=OFF;")
-    conn.execute("PRAGMA busy_timeout=5000;")
 
 # ==================================================
 # Candidate master resolution (cn > webl > weball)
@@ -128,7 +115,7 @@ TX_COUNT = 0
 
 def open_candidate_db(cid):
     conn = sqlite3.connect(CAND_DIR / f"{cid}.db")
-    configure_sqlite(conn)
+    configure_fast_write(conn)
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS candidate (
             candidate_id TEXT PRIMARY KEY,
@@ -159,7 +146,7 @@ def open_candidate_db(cid):
 
 def open_committee_db(cid):
     conn = sqlite3.connect(COMM_DIR / f"{cid}.db")
-    configure_sqlite(conn)
+    configure_fast_write(conn)
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS transactions (
             source TEXT,
@@ -359,7 +346,7 @@ for conn in list(candidate_dbs.values()) + list(committee_dbs.values()):
     conn.close()
 
 checksums = {
-    str(db.relative_to(OUT_BASE)): hashlib.sha256(db.read_bytes()).hexdigest()
+    str(db.relative_to(OUT_BASE)): sha256_file(db)
     for db in OUT_BASE.rglob("*.db")
 }
 
@@ -377,7 +364,7 @@ summary["passed"] = all(
 manifest = {
     "cycle": CYCLE,
     "release_id": RELEASE_ID,
-    "generated_at": datetime.now(UTC).isoformat() + "Z",
+    "generated_at": now_iso(),
     "schema_version": 3,
     "validation": {
         **VALIDATION,
@@ -385,15 +372,15 @@ manifest = {
     }
 }
 
-(OUT_BASE / "manifest.json").write_text(json.dumps(manifest, indent=2))
-(OUT_BASE / "checksums.json").write_text(json.dumps(checksums, indent=2))
+write_json(OUT_BASE / "manifest.json", manifest)
+write_json(OUT_BASE / "checksums.json", checksums)
 print("✔ Manifest and checksums written")
 
-(DATASET_ROOT / "LATEST.json").write_text(json.dumps({
+write_json(DATASET_ROOT / "LATEST.json", {
     "cycle": CYCLE,
     "release": RELEASE_ID,
-    "generated_at": datetime.now(UTC).isoformat() + "Z"
-}, indent=2))
+    "generated_at": now_iso()
+})
 print("✔ LATEST.json updated")
 
 if not summary["passed"]:
