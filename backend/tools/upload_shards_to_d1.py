@@ -1,20 +1,58 @@
 # =================================================
 # Aggregate SQLite Shards → Cloudflare D1
-# Parallel shard processing + verified uploads
+# Parallel shard processing + verified uploads w/ cryptographic signatures
+#
+# Version 1.1.1
+#
+#   Changelog:
+#     - Refactored for clarity and performance
+#     - Added support for cryptographic signature verification
+#     - Added logical anomaly validation for aggregates
 # =================================================
 
 import sqlite3
 import subprocess
 import argparse
-import sys
 import os
 from pathlib import Path
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from common.hashing import sha256_file, dataset_checksum
+
+from common.d1 import D1Client
+from common.hashing import dataset_checksum
 from common.progress import progress
 from common.json_utils import load_json
 from common.time_utils import now_iso
+from common.release import resolve_release
+from common.release_integrity import (
+    validate_release_structure,
+    validate_manifest_structure,
+    validate_manifest_passed,
+    validate_shard_counts,
+    validate_no_extra_shards,
+    validate_checksums_on_disk,
+)
+from common.audit import (
+    build_upload_audit,
+    build_insert_sql,
+    build_upload_exists_sql,
+)
+
+from common.signing import (
+    load_public_key,
+    verify_manifest_signature,
+)
+
+from common.anomaly_logger import AnomalyLogger
+from common.anomaly import (
+    check_candidate_aggregate,
+    check_committee_aggregate,
+)
+
+from common.aggregation import (
+    aggregate_candidate_shard,
+    aggregate_committee_shard,
+)
 
 # ==================================================
 # Configuration
@@ -22,27 +60,17 @@ from common.time_utils import now_iso
 
 D1_DATABASE_NAME = os.environ.get("D1_DATABASE", "dev-moneytracker-db")
 DATA_ROOT = Path("data/fec")
-UPLOADER_VERSION = "uploader-v1.1"
+TRUSTED_PUBLIC_KEY = Path(
+    os.environ.get("TRUSTED_PUBLIC_KEY", "keys/prod/public.pem")
+)
+UPLOADER_VERSION = "uploader-v1.1.1"
 
 BATCH_SIZE = 200
 MAX_SQL_STATEMENTS = 400
 MAX_WORKERS = max(1, os.cpu_count() - 1)
 
 # ==================================================
-# Utilities
-# ==================================================
-
-def run_d1_sql(sql: str):
-    proc = subprocess.run(
-        ["wrangler", "d1", "execute", D1_DATABASE_NAME, "--file=-"],
-        input=sql.encode(),
-        capture_output=True,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.decode())
-
-# ==================================================
-# SQL helpers
+# SQL Helpers
 # ==================================================
 
 def esc(v):
@@ -51,6 +79,7 @@ def esc(v):
     if isinstance(v, int):
         return str(v)
     return "'" + str(v).replace("'", "''") + "'"
+
 
 def insert(table, cols, rows):
     values = [
@@ -65,171 +94,114 @@ def insert(table, cols, rows):
     """
 
 # ==================================================
-# Parallel shard workers
+# Release Loading + Integrity Gate
 # ==================================================
 
-def process_candidate_shard(db_path: str):
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
+def load_release(cycle: str, deep_verify: bool):
 
-    cur.execute(
-        "SELECT candidate_id,name,office,party,state,district,source FROM candidate"
-    )
-    row = cur.fetchone()
-    if not row:
-        raise RuntimeError(f"{db_path} missing candidate row")
-
-    meta = dict(zip(
-        ["candidate_id","name","office","party","state","district","source"],
-        row
-    ))
-
-    raised = spent = 0
-    receipts = defaultdict(int)
-    spending = defaultdict(int)
-    committees = set()
-
-    for src, direction, from_c, _, _, amt in cur.execute(
-        "SELECT source,direction,from_committee_id,to_committee_id,"
-        "candidate_id,amount_cents FROM transactions"
-    ):
-        if amt is None:
-            continue
-
-        if src in ("itcont","itpas2") and direction == "in":
-            raised += amt
-            receipts[src] += amt
-            if from_c and from_c != "_UNASSIGNED":
-                committees.add(from_c)
-
-        elif src == "oppexp" and direction == "out":
-            spent += amt
-            spending["operating"] += amt
-
-        elif src == "itpas2" and direction == "out":
-            spent += amt
-            spending["independent_expenditure"] += amt
-
-    conn.close()
-    return {
-        "meta": meta,
-        "raised": raised,
-        "spent": spent,
-        "receipts": dict(receipts),
-        "spending": dict(spending),
-        "committees": list(committees),
-    }
-
-def process_committee_shard(db_path: str):
-    committee_id = Path(db_path).stem
-    if committee_id == "_UNASSIGNED":
-        return None
-
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
-
-    raised = spent = 0
-
-    for src, direction, *_ , amt in cur.execute(
-        "SELECT source,direction,from_committee_id,to_committee_id,"
-        "candidate_id,amount_cents FROM transactions"
-    ):
-        if amt is None:
-            continue
-
-        if src == "itcont" and direction == "in":
-            raised += amt
-        elif src in ("oppexp","itpas2") and direction == "out":
-            spent += amt
-
-    conn.close()
-    return {
-        "committee_id": committee_id,
-        "raised": raised,
-        "spent": spent,
-    }
-
-# ==================================================
-# Release loading + verification
-# ==================================================
-
-def load_release(cycle: str):
-    cycle_dir = DATA_ROOT / cycle
-    latest = load_json(cycle_dir / "LATEST.json")
-    release_id = latest["release"]
-    release_root = cycle_dir / release_id
+    release_id, release_root = resolve_release(cycle)
 
     checksums = load_json(release_root / "checksums.json")
     manifest = load_json(release_root / "manifest.json")
 
-    dataset_hash = dataset_hash(checksums)
+    validate_release_structure(release_root)
+    
+		# -------------------------------------------------
+	  # 🔐 Cryptographic Signature Gate (FIRST)
+    # -------------------------------------------------
+    
+    if not TRUSTED_PUBLIC_KEY.exists():
+        raise RuntimeError(
+            f"Trusted public key not found: {TRUSTED_PUBLIC_KEY}"
+        )
+    
+    public_key = load_public_key(
+			TRUSTED_PUBLIC_KEY.read_bytes()
+		)
+    
+    if not verify_manifest_signature(manifest, public_key):
+        raise RuntimeError(
+            "Manifest signature verification FAILED"
+        )
+    
+    print(f"✔ Manifest signature verified")
+    
+		# -------------------------------------------------
+    # Integrity checks
+    # -------------------------------------------------
+		
+    validate_manifest_structure(manifest)
+    validate_manifest_passed(manifest)
+    validate_no_extra_shards(release_root, checksums)
 
-    expected_candidates = manifest.get("candidate_count")
-    expected_committees = manifest.get("committee_count")
+    if deep_verify:
+        validate_checksums_on_disk(
+            release_root,
+            checksums,
+            deep=True
+        )
 
-    if expected_candidates is None or expected_committees is None:
-        raise RuntimeError("manifest.json missing shard counts")
+    dataset_hash = dataset_checksum(checksums)
+    
+    signature_block = manifest.get("_signature", {})
+    signature_hex = signature_block.get("signature", "")
 
-    return (
-        release_root,
-        int(cycle),
-        release_id,
-        dataset_hash,
-        expected_candidates,
-        expected_committees,
-    )
-
-# ==================================================
-# Safe SQL flushing
-# ==================================================
-
-def flush_sql(sql):
-    if len(sql) > 1:
-        sql.append("COMMIT;")
-        run_d1_sql("\n".join(sql))
-        return ["BEGIN;"]
-    return sql
+    return release_root, release_id, manifest, checksums, dataset_hash, signature_hex
 
 # ==================================================
 # Entrypoint
 # ==================================================
 
 def main():
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--cycle", required=True)
+    parser.add_argument("--deep-verify", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
+    
+    d1 = D1Client(dry_run=args.dry_run)
 
-    (
-        release_root,
-        cycle,
-        release_id,
-        checksum,
-        expected_candidates,
-        expected_committees,
-    ) = load_release(args.cycle)
-
-    ts = now_iso()
+    release_root, release_id, manifest, checksums, checksum, signature_hex = \
+        load_release(args.cycle, args.deep_verify)
+    
+    anomaly_logger = AnomalyLogger(release_id, strict=args.strict)
 
     candidate_dbs = sorted((release_root / "candidates").glob("*.db"))
     committee_dbs = sorted((release_root / "committees").glob("*.db"))
 
     actual_candidates = len(candidate_dbs)
-    actual_committees = len([db for db in committee_dbs if db.stem != "_UNASSIGNED"])
+    actual_committees = len(
+        [db for db in committee_dbs if db.stem != "_UNASSIGNED"]
+    )
 
-    if actual_candidates != expected_candidates:
-        raise RuntimeError(
-            f"Candidate shard mismatch: expected {expected_candidates}, found {actual_candidates}"
-        )
+    validate_shard_counts(
+        manifest,
+        actual_candidates,
+        actual_committees
+    )
 
-    if actual_committees != expected_committees:
-        raise RuntimeError(
-            f"Committee shard mismatch: expected {expected_committees}, found {actual_committees}"
-        )
+    cycle = int(args.cycle)
+    ts = now_iso()
+
+    # ==================================================
+    # Idempotency Gate
+    # ==================================================
+
+    if not args.force:
+        exists_sql = build_upload_exists_sql(release_id)
+        result = d1.scalar(exists_sql)
+        if result.strip() not in ("0", ""):
+            raise RuntimeError(
+                f"Release {release_id} already uploaded."
+            )
 
     print(f"\nParallel processing with {MAX_WORKERS} workers")
 
     # ==================================================
-    # Candidates
+    # Candidate Upload
     # ==================================================
 
     completed = 0
@@ -237,37 +209,48 @@ def main():
 
     for batch_start in range(0, total, BATCH_SIZE):
         batch = candidate_dbs[batch_start:batch_start+BATCH_SIZE]
-        sql = ["BEGIN;"]
+        statements = []
 
         with ProcessPoolExecutor(MAX_WORKERS) as pool:
-            futures = [pool.submit(process_candidate_shard, str(db)) for db in batch]
+            futures = [
+                pool.submit(aggregate_candidate_shard, str(db))
+                for db in batch
+            ]
 
             for f in as_completed(futures):
                 r = f.result()
+                issues = check_candidate_aggregate(r)
+                for code, msg in issues:
+                    anomaly_logger.record(
+                        shard_id=r["meta"].get("candidate_id"),
+                        issue_code=code,
+                        message=msg
+                    )
                 completed += 1
                 progress("Candidates", completed, total)
 
                 m = r["meta"]
                 cid = m["candidate_id"]
 
-                sql.append(insert(
+                statements.append(insert(
                     "candidates",
-                    ["candidate_id","name","office","party","state","district",
-                     "cycle","source","release_id","updated_at"],
+                    ["candidate_id","name","office","party","state",
+                     "district","cycle","source","release_id","updated_at"],
                     [[cid, m["name"], m["office"], m["party"],
                       m["state"], m["district"],
                       cycle, m["source"], release_id, ts]]
                 ))
 
-                sql.append(insert(
+                statements.append(insert(
                     "candidate_totals",
                     ["candidate_id","cycle","total_raised_cents",
                      "total_spent_cents","release_id","updated_at"],
-                    [[cid, cycle, r["raised"], r["spent"], release_id, ts]]
+                    [[cid, cycle, r["raised"], r["spent"],
+                      release_id, ts]]
                 ))
 
                 for k,v in r["receipts"].items():
-                    sql.append(insert(
+                    statements.append(insert(
                         "candidate_receipt_breakdown",
                         ["candidate_id","cycle","source_type",
                          "amount_cents","release_id","updated_at"],
@@ -275,7 +258,7 @@ def main():
                     ))
 
                 for k,v in r["spending"].items():
-                    sql.append(insert(
+                    statements.append(insert(
                         "candidate_spending_breakdown",
                         ["candidate_id","cycle","spending_type",
                          "amount_cents","release_id","updated_at"],
@@ -283,22 +266,24 @@ def main():
                     ))
 
                 for cm in r["committees"]:
-                    sql.append(insert(
+                    statements.append(insert(
                         "candidate_committee_link",
                         ["candidate_id","committee_id","cycle",
                          "release_id","updated_at"],
                         [[cid, cm, cycle, release_id, ts]]
                     ))
 
-                if len(sql) > MAX_SQL_STATEMENTS:
-                    sql = flush_sql(sql)
+                if len(statements) > MAX_SQL_STATEMENTS:
+                    d1.transaction(statements)
+                    statements = []
 
-        sql = flush_sql(sql)
+        if statements:
+            d1.transaction(statements)
 
     print("\n✔ Candidates complete")
 
     # ==================================================
-    # Committees
+    # Committee Upload
     # ==================================================
 
     completed = 0
@@ -306,20 +291,30 @@ def main():
 
     for batch_start in range(0, len(committee_dbs), BATCH_SIZE):
         batch = committee_dbs[batch_start:batch_start+BATCH_SIZE]
-        sql = ["BEGIN;"]
+        statements = []
 
         with ProcessPoolExecutor(MAX_WORKERS) as pool:
-            futures = [pool.submit(process_committee_shard, str(db)) for db in batch]
+            futures = [
+                pool.submit(aggregate_committee_shard, str(db))
+                for db in batch
+            ]
 
             for f in as_completed(futures):
                 r = f.result()
+                issues = check_committee_aggregate(r)
+                for code, msg in issues:
+                    anomaly_logger.record(
+                        shard_id=r["meta"].get("committee_id"),
+                        issue_code=code,
+                        message=msg
+                    )
                 if not r:
                     continue
 
                 completed += 1
                 progress("Committees", completed, total)
 
-                sql.append(insert(
+                statements.append(insert(
                     "committee_totals",
                     ["committee_id","cycle","total_raised_cents",
                      "total_spent_cents","release_id","updated_at"],
@@ -328,27 +323,37 @@ def main():
                       release_id, ts]]
                 ))
 
-                if len(sql) > MAX_SQL_STATEMENTS:
-                    sql = flush_sql(sql)
+                if len(statements) > MAX_SQL_STATEMENTS:
+                    d1.transaction(statements)
+                    statements = []
 
-        sql = flush_sql(sql)
-
+        if statements:
+            d1.transaction(statements)
     # ==================================================
-    # Final audit (single authoritative record)
+    # Upload Audit Record
     # ==================================================
 
-    sql = ["BEGIN;"]
-    sql.append(insert(
-        "upload_audit",
-        ["release_id","cycle","candidate_shards","committee_shards",
-         "checksum_sha256","uploaded_at","uploader_version"],
-        [[release_id, cycle, expected_candidates,
-          expected_committees, checksum, ts, UPLOADER_VERSION]]
-    ))
-    sql.append("COMMIT;")
-    run_d1_sql("\n".join(sql))
+    audit_record = build_upload_audit(
+        release_id=release_id,
+        cycle=cycle,
+        candidate_shards=actual_candidates,
+        committee_shards=actual_committees,
+        checksum_sha256=checksum,
+        uploader_version=UPLOADER_VERSION,
+        manifest_signature=signature_hex,
+        anomaly_summary=anomaly_logger.summary()
+    )
+
+    audit_sql = build_insert_sql(
+        audit_record,
+        table_name="upload_audit"
+    )
+
+    d1.execute(audit_sql)
 
     print("\n✔ Upload complete and verified")
+    print(f"  Release ID: {release_id}")
+    print(f"  Dataset SHA256: {checksum}")
 
 if __name__ == "__main__":
     main()

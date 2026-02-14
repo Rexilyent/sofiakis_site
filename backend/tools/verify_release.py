@@ -1,15 +1,19 @@
 # =================================================
 # Verify / Compare FEC SQLite Shard Releases
 # =================================================
+# Version: 0.0.2
+#  - Added support for cryptographic signature verification
+#
 # Supports:
 #   --cycle
 #   --release-id
 #   --deep
 #   --compare RELEASE_A RELEASE_B
+#   --public-key PATH
 # =================================================
 
+import os
 import argparse
-import sys
 import sqlite3
 from pathlib import Path
 from common.hashing import sha256_file, dataset_checksum
@@ -18,8 +22,21 @@ from common.release import resolve_release
 from common.json_utils import load_json
 from common.time_utils import now_iso
 
-DATA_ROOT = Path("data/fec")
-READ_CHUNK = 1024 * 1024
+# 🔐 Integrity Engine
+from common.release_integrity import (
+    validate_manifest_structure,
+    validate_manifest_passed,
+    validate_release_structure,
+    validate_no_extra_shards,
+    validate_checksums_on_disk,
+    validate_dataset_fingerprint,
+)
+
+# 🔏 Signature Engine
+from common.signing import (
+    load_public_key,
+    verify_manifest_signature,
+)
 
 # -------------------------------------------------
 # Helpers
@@ -47,7 +64,7 @@ def shard_summary(path: Path):
 # Compare Mode
 # -------------------------------------------------
 
-def compare_releases(cycle: str, release_a: str, release_b: str, deep: bool):
+def compare_releases(cycle: str, release_a: str, release_b: str, deep: bool, public_key_path: Path):
 
     id_a, root_a = resolve_release(cycle, release_a)
     id_b, root_b = resolve_release(cycle, release_b)
@@ -57,8 +74,18 @@ def compare_releases(cycle: str, release_a: str, release_b: str, deep: bool):
     print(f"  B: {id_b}")
     print()
 
-    checksums_a = load_json(root_a / "checksums.json", "checksums.json (A)")
-    checksums_b = load_json(root_b / "checksums.json", "checksums.json (B)")
+    # Verify both manifests before comparing
+    for rel_id, rel_root in [(id_a, root_a), (id_b, root_b)]:
+        manifest = load_json(rel_root / "manifest.json")
+        public_key = load_public_key(public_key_path.read_bytes())
+
+        if not verify_manifest_signature(manifest, public_key):
+            die(f"Manifest signature invalid for release {rel_id}")
+
+        print(f"✔ Signature verified for {rel_id}")
+
+    checksums_a = load_json(root_a / "checksums.json")
+    checksums_b = load_json(root_b / "checksums.json")
 
     keys_a = set(checksums_a.keys())
     keys_b = set(checksums_b.keys())
@@ -95,13 +122,92 @@ def compare_releases(cycle: str, release_a: str, release_b: str, deep: bool):
                 print(f"    Total:  {total_a} → {total_b}")
 
     print("\n✔ Comparison complete")
-    return
 
-# -------------------------------------------------
-# Main
-# -------------------------------------------------
+# ==================================================
+# Single Release Verification
+# ==================================================
+
+def verify_release(cycle: str, release_id: str | None, deep: bool, public_key_path: Path):
+
+    release_id, release_root = resolve_release(cycle, release_id)
+
+    manifest = load_json(release_root / "manifest.json")
+    checksums = load_json(release_root / "checksums.json")
+    
+		# -------------------------------------------------
+    # 🔐 Cryptographic Signature Verification (FIRST)
+    # -------------------------------------------------
+
+    if not public_key_path.exists():
+        die(f"Trusted public key not found: {public_key_path}")
+
+    public_key = load_public_key(public_key_path.read_bytes())
+
+    if not verify_manifest_signature(manifest, public_key):
+        die("Manifest signature verification FAILED")
+
+    print("✔ Manifest cryptographic signature verified")
+
+
+    # -------------------------------------------------
+    # Integrity Checks (delegated to release_integrity)
+    # -------------------------------------------------
+
+    try:
+        validate_release_structure(release_root)
+        validate_manifest_structure(manifest)
+        validate_manifest_passed(manifest)
+        validate_no_extra_shards(release_root, checksums)
+        validate_checksums_on_disk(release_root, checksums, deep=deep)
+    except Exception as e:
+        die(str(e))
+
+    # -------------------------------------------------
+    # Shard Counting (for audit/logging output only)
+    # -------------------------------------------------
+
+    total = len(checksums)
+    checked = 0
+
+    print("Verifying shard files on disk...")
+    if deep:
+        print("⚠ Deep verification enabled")
+
+    for _ in checksums.keys():
+        checked += 1
+        if checked == 1 or checked % 100 == 0 or checked == total:
+            progress("Shard verification", checked, total)
+
+    # Derive shard counts
+    candidate_keys = [
+        k for k in checksums.keys()
+        if k.startswith("candidates\\") and k.endswith(".db")
+    ]
+
+    committee_keys = [
+        k for k in checksums.keys()
+        if k.startswith("committees\\")
+        and k.endswith(".db")
+        and not k.endswith("_UNASSIGNED.db")
+    ]
+
+    full_checksum = validate_dataset_fingerprint(checksums)
+
+    print("\n✔ Release verification passed")
+    print(f"  Cycle:            {cycle}")
+    print(f"  Candidate Shards: {len(candidate_keys)}")
+    print(f"  Committee Shards: {len(committee_keys)}")
+    print(f"  Total Shards:     {len(checksums)}")
+    print(f"  Release ID:       {release_id}")
+    print(f"  Dataset SHA-256:  {full_checksum}")
+    print(f"  Verified at:      {now_iso()}")
+    
+# ==================================================
+# Main Entrypoint
+# ==================================================
 
 def main():
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--cycle", required=True)
     parser.add_argument("--release-id")
@@ -112,82 +218,34 @@ def main():
         metavar=("RELEASE_A", "RELEASE_B"),
         help="Compare two releases"
     )
+
     args = parser.parse_args()
+    
+		# Public key resolution
+    public_key_path = Path(
+        args.public_key
+        or os.environ.get("TRUSTED_PUBLIC_KEY")
+        or "keys/prod/public.pem"
+    )
 
-    # --------------------------------------------
+
     # Compare mode
-    # --------------------------------------------
-
     if args.compare:
-        compare_releases(args.cycle, args.compare[0], args.compare[1], args.deep)
+        compare_releases(
+            args.cycle,
+            args.compare[0],
+            args.compare[1],
+            args.deep
+        )
         return
 
-    # --------------------------------------------
-    # Single-release verification
-    # --------------------------------------------
+    # Single verification mode
+    verify_release(
+        args.cycle,
+        args.release_id,
+        args.deep
+    )
 
-    release_id, release_root = resolve_release(args.cycle, args.release_id)
-
-    manifest = load_json(release_root / "manifest.json", "manifest.json")
-    checksums = load_json(release_root / "checksums.json", "checksums.json")
-
-    summary = manifest.get("validation", {}).get("summary")
-    if not summary or summary.get("passed") is not True:
-        die("Manifest validation failed")
-
-    total = len(checksums)
-    checked = 0
-    missing = []
-    mismatched = []
-
-    print("Verifying shard files on disk...")
-    if args.deep:
-        print("⚠ Deep verification enabled")
-
-    for rel_path, expected_hash in checksums.items():
-        checked += 1
-        shard_path = release_root / Path(rel_path)
-
-        if not shard_path.exists():
-            missing.append(rel_path)
-        elif args.deep:
-            actual_hash = sha256_file(shard_path)
-            if actual_hash != expected_hash:
-                mismatched.append(rel_path)
-
-        if checked == 1 or checked % 100 == 0 or checked == total:
-            progress("Shard verification", checked, total)
-
-    if missing:
-        die(f"Missing shard files: {len(missing)}")
-
-    if mismatched:
-        die(f"Checksum mismatches: {len(mismatched)}")
-        
-		# -----------------------------------------------------------
-    # Derive shard counts (for audit/logging purposes)
-    # -----------------------------------------------------------
-    
-    candidate_keys = [
-        k for k in checksums.keys()
-        if k.startswith("candidates\\") and k.endswith(".db")
-		]
-        
-    committee_keys = [
-				k for k in checksums.keys()
-				if k.startswith("committees\\") and k.endswith(".db") and not k.endswith("_UNASSIGNED.db")
-		]
-
-    full_checksum = dataset_checksum(checksums)
-
-    print("\n✔ Release verification passed")
-    print(f"  Cycle:            {args.cycle}")
-    print(f"  Candidate Shards: {len(candidate_keys)}")
-    print(f"  Committee Shards: {len(committee_keys)}")
-    print(f"  Total Shards:     {len(checksums)}")
-    print(f"  Release ID:       {release_id}")
-    print(f"  Dataset SHA-256:  {full_checksum}")
-    print(f"  Verified at:      {now_iso()}")
 
 if __name__ == "__main__":
     main()

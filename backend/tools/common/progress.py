@@ -4,7 +4,6 @@
 
 import sys
 
-
 def progress(label: str, current: int, total: int, width: int = 40):
     if total <= 0:
         return

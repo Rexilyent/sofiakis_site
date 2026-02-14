@@ -2,6 +2,10 @@
 # Tool to split FEC bulk files into per-candidate and per-committee SQLite databases.
 #     Changes in v1.0.1:
 #     - Refactored duplicate logic into helper functions for better readability and maintainability.
+#
+#
+# Command-line usage:
+#		 python splitter.py
 # -------------------------------------------------------------------------------
 
 import sqlite3
@@ -12,9 +16,13 @@ from pathlib import Path
 from collections import defaultdict
 from common.hashing import sha256_file, dataset_checksum
 from common.progress import progress
-from common.time_utils import now_iso
+from common.time_utils import now_iso, release_id
 from common.json_utils import load_json, write_json
 from common.sqlite_utils import configure_fast_write
+from common.signing import (
+    load_private_key,
+    sign_manifest,
+)
 
 # ==================================================
 # Configuration
@@ -25,7 +33,7 @@ SPLITTER_VERSION = "1.0.1"
 CYCLE = "2026"
 BULK_DIR = Path("bulk_fec")
 DATASET_ROOT = Path("data/fec") / CYCLE
-RELEASE_ID = now_iso()
+RELEASE_ID = release_id()
 OUT_BASE = DATASET_ROOT / RELEASE_ID
 
 CAND_DIR = OUT_BASE / "candidates"
@@ -36,6 +44,8 @@ COMM_DIR.mkdir(parents=True, exist_ok=True)
 
 UNASSIGNED_COMMITTEE_ID = "_UNASSIGNED"
 COMMIT_EVERY = 10_000
+
+SIGNING_KEY_PATH = Path("keys/dev/private.pem")
 
 # ==================================================
 # Validation registry
@@ -372,15 +382,49 @@ manifest = {
     }
 }
 
-write_json(OUT_BASE / "manifest.json", manifest)
-write_json(OUT_BASE / "checksums.json", checksums)
-print("✔ Manifest and checksums written")
+# --------------------------------------------------
+# Paths
+# --------------------------------------------------
+
+manifest_path = OUT_BASE / "manifest.json"
+checksums_path = OUT_BASE / "checksums.json"
+
+# --------------------------------------------------
+# Write checksums.json using json_utils
+# --------------------------------------------------
+
+write_json(checksums_path, checksums, sort_keys=True)
+
+# --------------------------------------------------
+# Sign manifest
+# --------------------------------------------------
+
+if not SIGNING_KEY_PATH.exists():
+    raise RuntimeError(f"Signing key not found: {SIGNING_KEY_PATH}")
+
+private_key = load_private_key(
+    SIGNING_KEY_PATH.read_bytes()
+)
+
+signed_manifest = sign_manifest(
+    manifest,
+    private_key
+)
+
+# --------------------------------------------------
+# Write signed manifest using json_utils
+# --------------------------------------------------
+
+write_json(manifest_path, signed_manifest, sort_keys=True)
+
+print("✔ Manifest written and cryptographically signed")
+print("✔ checksums.json written")
 
 write_json(DATASET_ROOT / "LATEST.json", {
     "cycle": CYCLE,
     "release": RELEASE_ID,
     "generated_at": now_iso()
-})
+}, sort_keys=True)
 print("✔ LATEST.json updated")
 
 if not summary["passed"]:

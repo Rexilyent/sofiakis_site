@@ -7,7 +7,6 @@ from .json_utils import load_json
 
 DATA_ROOT = Path("data/fec")
 
-
 def resolve_release(cycle: str, release_id: str | None = None):
     cycle_dir = DATA_ROOT / cycle
     if not cycle_dir.exists():
@@ -23,7 +22,6 @@ def resolve_release(cycle: str, release_id: str | None = None):
         raise RuntimeError(f"Release directory missing: {release_root}")
 
     return release_id, release_root
-
 
 def load_release_bundle(cycle: str):
     release_id, release_root = resolve_release(cycle)
