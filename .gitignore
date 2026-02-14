@@ -47,3 +47,7 @@ wrangler.toml
 requirements.txt
 .env
 .env.*
+
+# Private keys
+private.pem
+private.key
