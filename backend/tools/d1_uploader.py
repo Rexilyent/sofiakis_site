@@ -2,12 +2,11 @@
 # Aggregate SQLite Shards → Cloudflare D1
 # Parallel shard processing + verified uploads w/ cryptographic signatures
 #
-# Version 1.1.1
+# Version 1.1.2
 #
 #   Changelog:
-#     - Refactored for clarity and performance
-#     - Added support for cryptographic signature verification
-#     - Added logical anomaly validation for aggregates
+#     - Renamed to d1_uploader.py
+#     - Updated to use D1Client v1.1
 # =================================================
 
 import sqlite3
@@ -54,16 +53,27 @@ from common.aggregation import (
     aggregate_committee_shard,
 )
 
+from common.reconciliation import (
+    reconcile_candidate_shard,
+    reconcile_committee_shard,
+)
+
 # ==================================================
 # Configuration
 # ==================================================
 
 D1_DATABASE_NAME = os.environ.get("D1_DATABASE", "dev-moneytracker-db")
 DATA_ROOT = Path("data/fec")
-TRUSTED_PUBLIC_KEY = Path(
-    os.environ.get("TRUSTED_PUBLIC_KEY", "keys/prod/public.pem")
-)
-UPLOADER_VERSION = "uploader-v1.1.1"
+APP_ENV = os.environ.get("APP_ENV", "development").lower()
+
+if APP_ENV in ("dev", "development"):
+    TRUSTED_PUBLIC_KEY = Path(os.environ.get("TRUSTED_DEV_KEY", "keys/dev/public.pem"))
+elif APP_ENV in ("prod", "production"):
+    TRUSTED_PUBLIC_KEY = Path(os.environ.get("TRUSTED_PROD_KEY", "keys/prod/public.pem"))
+else:
+    raise RuntimeError(f"Unknown APP_ENV: {APP_ENV}")
+
+UPLOADER_VERSION = "uploader-v1.1.2"
 
 BATCH_SIZE = 200
 MAX_SQL_STATEMENTS = 400
@@ -212,14 +222,27 @@ def main():
         statements = []
 
         with ProcessPoolExecutor(MAX_WORKERS) as pool:
-            futures = [
-                pool.submit(aggregate_candidate_shard, str(db))
+            futures = {
+                pool.submit(aggregate_candidate_shard, str(db)): str(db)
                 for db in batch
-            ]
+						}
 
             for f in as_completed(futures):
+                db_path = futures[f]
                 r = f.result()
+                # -------------------------------
+                # Anomaly check
+                # -------------------------------
                 issues = check_candidate_aggregate(r)
+                
+								# -------------------------------
+                # Reconciliation check
+                # -------------------------------
+                issues += reconcile_candidate_shard(db_path, r)
+                
+								# -------------------------------
+                # Log Anomalies
+                # -------------------------------
                 for code, msg in issues:
                     anomaly_logger.record(
                         shard_id=r["meta"].get("candidate_id"),
@@ -294,14 +317,27 @@ def main():
         statements = []
 
         with ProcessPoolExecutor(MAX_WORKERS) as pool:
-            futures = [
-                pool.submit(aggregate_committee_shard, str(db))
+            futures = {
+                pool.submit(aggregate_committee_shard, str(db)): str(db)
                 for db in batch
-            ]
+            }
 
             for f in as_completed(futures):
+                db_path = futures[f]
                 r = f.result()
+                # -------------------------------
+                # Anomaly check
+                # -------------------------------
                 issues = check_committee_aggregate(r)
+                
+								# -------------------------------
+                # Reconciliation check
+                # -------------------------------
+                issues += reconcile_committee_shard(db_path, r)
+                
+								# -------------------------------
+                # Log Anomalies
+                # -------------------------------
                 for code, msg in issues:
                     anomaly_logger.record(
                         shard_id=r["meta"].get("committee_id"),
