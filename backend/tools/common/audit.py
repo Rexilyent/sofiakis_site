@@ -63,6 +63,8 @@ class UploadAuditRecord(AuditBase):
     committee_shards: int = 0
     checksum_sha256: str = ""
     uploader_version: str = ""
+    manifest_signature: Optional[str] = None
+    anomaly_summary: Optional[str] = None
 
 
 def build_upload_audit(
@@ -72,6 +74,8 @@ def build_upload_audit(
     committee_shards: int,
     checksum_sha256: str,
     uploader_version: str,
+    manifest_signature: Optional[str] = None,
+    anomaly_summary: Optional[Dict[str, Any]] = None,
     include_environment: bool = True,
 ) -> UploadAuditRecord:
 
@@ -83,6 +87,11 @@ def build_upload_audit(
         committee_shards=committee_shards,
         checksum_sha256=checksum_sha256,
         uploader_version=uploader_version,
+        manifest_signature=manifest_signature,
+        anomaly_summary=(
+            json.dumps(anomaly_summary, separators=(",", ":"))
+            if anomaly_summary else None
+				)
     )
 
     if include_environment:
