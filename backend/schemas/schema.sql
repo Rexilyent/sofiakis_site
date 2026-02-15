@@ -163,6 +163,8 @@ CREATE TABLE IF NOT EXISTS upload_audit (
 	candidate_shards INTEGER NOT NULL,
 	committee_shards INTEGER NOT NULL,
 	checksum_sha256 TEXT NOT NULL,
-	uploaded_at TEXT NOT NULL,
-	uploader_version TEXT NOT NULL
+	uploader_version TEXT NOT NULL,
+	manifest_signature TEXT NOT NULL,
+	anomaly_summary TEXT,
+	created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
