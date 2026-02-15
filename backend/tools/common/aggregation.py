@@ -1,25 +1,33 @@
 # =================================================
 # Aggregation Utilities
 # =================================================
-# Pure aggregation logic.
-# No D1.
-# No SQL generation.
-# No side effects.
+# Version 0.0.2
+#
+# Changelog:
+# - Added ratio calculations
+# - Improved transaction processing logic
 # =================================================
 
 import sqlite3
 from pathlib import Path
 from collections import defaultdict
 
+
+# -------------------------------------------------
+# Helpers
+# -------------------------------------------------
+
+def _ratio(negative: int, positive: int) -> float:
+    if positive <= 0:
+        return 0.0
+    return abs(negative) / positive
+
+
 # -------------------------------------------------
 # Candidate Aggregation
 # -------------------------------------------------
 
 def aggregate_candidate_shard(db_path: str) -> dict:
-    """
-    Aggregates totals + breakdowns from a candidate shard.
-    Returns structured dict ready for persistence.
-    """
 
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
@@ -28,6 +36,7 @@ def aggregate_candidate_shard(db_path: str) -> dict:
         "SELECT candidate_id,name,office,party,state,district,source FROM candidate"
     )
     row = cur.fetchone()
+
     if not row:
         conn.close()
         raise RuntimeError(f"{db_path} missing candidate row")
@@ -37,8 +46,11 @@ def aggregate_candidate_shard(db_path: str) -> dict:
         row
     ))
 
-    raised = 0
-    spent = 0
+    raised_pos = 0
+    raised_neg = 0
+    spent_pos = 0
+    spent_neg = 0
+
     receipts = defaultdict(int)
     spending = defaultdict(int)
     committees = set()
@@ -47,74 +59,151 @@ def aggregate_candidate_shard(db_path: str) -> dict:
         "SELECT source,direction,from_committee_id,to_committee_id,"
         "candidate_id,amount_cents FROM transactions"
     ):
+
         if amt is None:
             continue
 
+        # -------------------------------------------------
         # Raised
+        # -------------------------------------------------
+
         if src in ("itcont","itpas2") and direction == "in":
-            raised += amt
+
+            if amt >= 0:
+                raised_pos += amt
+            else:
+                raised_neg += amt
+
             receipts[src] += amt
+
             if from_c and from_c != "_UNASSIGNED":
                 committees.add(from_c)
 
+        # -------------------------------------------------
         # Operating spend
+        # -------------------------------------------------
+
         elif src == "oppexp" and direction == "out":
-            spent += amt
+
+            if amt >= 0:
+                spent_pos += amt
+            else:
+                spent_neg += amt
+
             spending["operating"] += amt
 
+        # -------------------------------------------------
         # Independent expenditures
+        # -------------------------------------------------
+
         elif src == "itpas2" and direction == "out":
-            spent += amt
+
+            if amt >= 0:
+                spent_pos += amt
+            else:
+                spent_neg += amt
+
             spending["independent_expenditure"] += amt
 
     conn.close()
 
+    raised_net = raised_pos + raised_neg
+    spent_net = spent_pos + spent_neg
+
     return {
         "meta": meta,
-        "raised": raised,
-        "spent": spent,
+
+        # Net totals (for backward compatibility)
+        "raised": raised_net,
+        "spent": spent_net,
+
+        # Positive / negative breakdown
+        "raised_positive": raised_pos,
+        "raised_negative": raised_neg,
+        "spent_positive": spent_pos,
+        "spent_negative": spent_neg,
+
+        # Refund ratios
+        "raised_refund_ratio": _ratio(raised_neg, raised_pos),
+        "spent_refund_ratio": _ratio(spent_neg, spent_pos),
+
+        # Source breakdown
         "receipts": dict(receipts),
         "spending": dict(spending),
+
+        # Committee relationships
         "committees": list(committees),
     }
+
 
 # -------------------------------------------------
 # Committee Aggregation
 # -------------------------------------------------
 
 def aggregate_committee_shard(db_path: str) -> dict | None:
-    """
-    Aggregates totals from a committee shard.
-    Returns None for _UNASSIGNED.
-    """
 
     committee_id = Path(db_path).stem
+
     if committee_id == "_UNASSIGNED":
         return None
 
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-    raised = 0
-    spent = 0
+    raised_pos = 0
+    raised_neg = 0
+    spent_pos = 0
+    spent_neg = 0
 
     for src, direction, *_ , amt in cur.execute(
         "SELECT source,direction,from_committee_id,to_committee_id,"
         "candidate_id,amount_cents FROM transactions"
     ):
+
         if amt is None:
             continue
 
+        # -------------------------------------------------
+        # Raised
+        # -------------------------------------------------
+
         if src == "itcont" and direction == "in":
-            raised += amt
+
+            if amt >= 0:
+                raised_pos += amt
+            else:
+                raised_neg += amt
+
+        # -------------------------------------------------
+        # Spent
+        # -------------------------------------------------
 
         elif src in ("oppexp","itpas2") and direction == "out":
-            spent += amt
+
+            if amt >= 0:
+                spent_pos += amt
+            else:
+                spent_neg += amt
 
     conn.close()
 
+    raised_net = raised_pos + raised_neg
+    spent_net = spent_pos + spent_neg
+
     return {
         "committee_id": committee_id,
-        "raised": raised,
-        "spent": spent,
+
+        # Net totals
+        "raised": raised_net,
+        "spent": spent_net,
+
+        # Positive / negative components
+        "raised_positive": raised_pos,
+        "raised_negative": raised_neg,
+        "spent_positive": spent_pos,
+        "spent_negative": spent_neg,
+
+        # Refund ratios
+        "raised_refund_ratio": _ratio(raised_neg, raised_pos),
+        "spent_refund_ratio": _ratio(spent_neg, spent_pos),
     }
