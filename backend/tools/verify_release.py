@@ -212,6 +212,7 @@ def main():
     parser.add_argument("--cycle", required=True)
     parser.add_argument("--release-id")
     parser.add_argument("--deep", action="store_true")
+    parser.add_argument("--public-key", type=Path, dest="public_key", help="Path to trusted public key", default=None)
     parser.add_argument(
         "--compare",
         nargs=2,
@@ -235,7 +236,8 @@ def main():
             args.cycle,
             args.compare[0],
             args.compare[1],
-            args.deep
+            args.deep,
+            public_key_path
         )
         return
 
@@ -243,7 +245,8 @@ def main():
     verify_release(
         args.cycle,
         args.release_id,
-        args.deep
+        args.deep,
+        public_key_path
     )
 
 
