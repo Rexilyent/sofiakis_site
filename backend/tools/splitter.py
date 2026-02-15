@@ -1,37 +1,95 @@
 # -------------------------------------------------------------------------------
 # Tool to split FEC bulk files into per-candidate and per-committee SQLite databases.
-#     Changes in v1.0.1:
-#     - Refactored duplicate logic into helper functions for better readability and maintainability.
+#     Changes in v1.0.2:
+#     - Added environment variable loading for configuration
+#     - Added cycle auto-detection from bulk data
+#     - Added cycle argument
+#     - Added strict mode and tolerance for cycle violations
 #
+# Command-line usage (Examples):
+#		  python splitter.py
+#     python splitter.py --strict
+#		  python splitter.py --cycle 2026 --tolerance 0.01
 #
-# Command-line usage:
-#		 python splitter.py
+# Arguments:
+#     --cycle: Election cycle year (default: 2026)
+#     --strict: Fail on any cycle violation
+#     --tolerance: Allowed percentage of out-of-cycle transactions (default: 0.01)
 # -------------------------------------------------------------------------------
 
-import sqlite3
+import os
 import sys
 import time
+import sqlite3
+import argparse
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from collections import defaultdict
 from common.hashing import sha256_file, dataset_checksum
 from common.progress import progress
-from common.time_utils import now_iso, release_id
+from common.time_utils import (
+    now_iso,
+    release_id,
+    extract_year,
+)
 from common.json_utils import load_json, write_json
 from common.sqlite_utils import configure_fast_write
 from common.signing import (
     load_private_key,
     sign_manifest,
 )
+from common.cycle import (
+    normalize_cycle_year,
+    derive_cycle_from_transactions,
+    validate_cycle_consistency,
+    validate_transaction_date,
+)
+
+# ==================================================
+# Splitter version
+# ==================================================
+SPLITTER_VERSION = "1.0.2"
+
+# ==================================================
+# Bulk data directory
+# ==================================================
+BULK_DIR = Path("bulk_fec")
+
+# ==================================================
+# Command-line arguments
+# ==================================================
+
+parser = argparse.ArgumentParser(description="Split FEC bulk files into per-candidate and per-committee SQLite databases.")
+parser.add_argument("--cycle", type=str, help="Election cycle year (default: 2026)")
+
+parser.add_argument("--strict", action="store_true", help="Fail on any cycle violation")
+
+parser.add_argument(
+    "--tolerance", 
+    type=float,
+    default=.01,
+    help="Allowed percentage of out-of-cycle transactions (default: 0.01)"
+)
+
+args = parser.parse_args()
+
+if args.cycle:
+    user_cycle = normalize_cycle_year(args.cycle)
+    derived_cycle = derive_cycle_from_transactions(BULK_DIR)
+    validate_cycle_consistency(user_cycle, derived_cycle)
+    CYCLE = user_cycle
+else:
+    CYCLE = derive_cycle_from_transactions(BULK_DIR)
+
+if not CYCLE.isdigit() or len(CYCLE) != 4:
+    raise ValueError("Cycle must be a 4-digit year, e.g., 2026")
+
+print(f"Using FEC cycle: {CYCLE}")
 
 # ==================================================
 # Configuration
 # ==================================================
 
-SPLITTER_VERSION = "1.0.1"
-
-CYCLE = "2026"
-BULK_DIR = Path("bulk_fec")
 DATASET_ROOT = Path("data/fec") / CYCLE
 RELEASE_ID = release_id()
 OUT_BASE = DATASET_ROOT / RELEASE_ID
@@ -45,7 +103,14 @@ COMM_DIR.mkdir(parents=True, exist_ok=True)
 UNASSIGNED_COMMITTEE_ID = "_UNASSIGNED"
 COMMIT_EVERY = 10_000
 
-SIGNING_KEY_PATH = Path("keys/dev/private.pem")
+APP_ENV = os.environ.get("APP_ENV", "development").lower()
+
+if APP_ENV in ("dev", "development"):
+    SIGNING_KEY_PATH = Path(os.environ.get("SIGNING_KEY_PATH", "keys/dev/private.pem"))
+elif APP_ENV in ("prod", "production"):
+    SIGNING_KEY_PATH = Path(os.environ.get("SIGNING_KEY_PATH", "keys/prod/private.pem"))
+else:
+    raise RuntimeError(f"Unknown APP_ENV: {APP_ENV}")
 
 # ==================================================
 # Validation registry
@@ -60,6 +125,8 @@ VALIDATION = defaultdict(lambda: {
     "tx_candidate": 0,
     "tx_committee": 0,
     "tx_unassigned": 0,
+    "cycle_distribution": defaultdict(int),
+    "cycle_violations": 0,
 })
 
 # ==================================================
@@ -90,9 +157,9 @@ def load_candidate_file(path, source):
                     "source": source,
                 }
 
-load_candidate_file(BULK_DIR / "weball26.txt", "weball")
-load_candidate_file(BULK_DIR / "webl26.txt", "webl")
-load_candidate_file(BULK_DIR / "cn26.txt", "cn")
+load_candidate_file(BULK_DIR / f"weball{CYCLE[-2:]}.txt", "weball")
+load_candidate_file(BULK_DIR / f"webl{CYCLE[-2:]}.txt", "webl")
+load_candidate_file(BULK_DIR / f"cn{CYCLE[-2:]}.txt", "cn")
 
 print(f"Loaded {len(candidate_index)} candidates")
 
@@ -210,6 +277,18 @@ def insert_tx(conn, source, direction, from_c, to_c, cand, amt, date, raw):
 
     if from_c == UNASSIGNED_COMMITTEE_ID or to_c == UNASSIGNED_COMMITTEE_ID:
         VALIDATION[source]["tx_unassigned"] += 1
+        
+		# ------------------------------------
+    # Cycle Locking
+    # ------------------------------------
+    if date:
+        if not validate_transaction_date(date, CYCLE):
+            VALIDATION[source]["cycle_violations"] += 1
+        else:
+            year = extract_year(date)
+            if year:
+                VALIDATION[source]["cycle_distribution"][str(year)] += 1
+		# ------------------------------------
 
     conn.execute(
         "INSERT INTO transactions VALUES (?,?,?,?,?,?,?,?)",
@@ -226,27 +305,37 @@ def insert_tx(conn, source, direction, from_c, to_c, cand, amt, date, raw):
 # ==================================================
 
 print("Creating candidate databases...")
-for cid in candidate_index:
+total_candidates = len(candidate_index)
+
+for i, cid in enumerate(candidate_index, start=1):
     get_candidate_db(cid)
+    if i % 100 == 0 or i == total_candidates:
+        progress("Candidates", i, total_candidates)
+        
+print()
 print(f"✔ {len(candidate_dbs)} candidate DBs")
 
 print("Collecting committees...")
 committee_ids = set()
 
-if (BULK_DIR / "cm26.txt").exists():
-    for line in (BULK_DIR / "cm26.txt").open(encoding="utf-8", errors="ignore"):
+if (BULK_DIR / f"cm{CYCLE[-2:]}.txt").exists():
+    for line in (BULK_DIR / f"cm{CYCLE[-2:]}.txt").open(encoding="utf-8", errors="ignore"):
         cid = line.split("|", 1)[0].strip()
         if is_real_committee(cid):
             committee_ids.add(cid)
 
-for line in (BULK_DIR / "ccl26.txt").open(encoding="utf-8", errors="ignore"):
+for line in (BULK_DIR / f"ccl{CYCLE[-2:]}.txt").open(encoding="utf-8", errors="ignore"):
     p = line.rstrip("\n").split("|")
     if len(p) >= 2 and is_real_committee(p[1]):
         committee_ids.add(p[1])
 
 print(f"Creating {len(committee_ids)} committee DBs...")
-for cid in committee_ids:
+for i, cid in enumerate(committee_ids, start=1):
     get_committee_db(cid)
+    if i % 100 == 0 or i == len(committee_ids):
+        progress("Committees", i, len(committee_ids))
+
+print()
 print("✔ Committee DBs ready")
 
 # ==================================================
@@ -254,14 +343,22 @@ print("✔ Committee DBs ready")
 # ==================================================
 
 print("Linking candidates ↔ committees...")
-with (BULK_DIR / "ccl26.txt").open(encoding="utf-8", errors="ignore") as f:
-    for line in f:
+ccl_path = BULK_DIR / f"ccl{CYCLE[-2:]}.txt"
+total_lines = sum(1 for _ in ccl_path.open(encoding="utf-8", errors="ignore"))
+
+with ccl_path.open(encoding="utf-8", errors="ignore") as f:
+    for i, line in enumerate(f, start=1):
         p = line.rstrip("\n").split("|")
         if len(p) >= 2 and is_real_candidate(p[0]) and is_real_committee(p[1]):
             get_committee_db(p[1]).execute(
                 "INSERT OR IGNORE INTO committee_candidates VALUES (?,?)",
                 (p[1], p[0])
             )
+            
+        if i % 100 == 0 or i == total_lines:
+            progress("Linking", i, total_lines)
+            
+print()
 print("✔ Links complete")
 
 # ==================================================
@@ -355,15 +452,52 @@ for conn in list(candidate_dbs.values()) + list(committee_dbs.values()):
     conn.commit()
     conn.close()
 
-checksums = {
-    str(db.relative_to(OUT_BASE)): sha256_file(db)
-    for db in OUT_BASE.rglob("*.db")
-}
+db_files = list(OUT_BASE.rglob("*.db"))
+total_dbs = len(db_files)
+
+checksums = {}
+
+print("Calculating checksums for database files...")
+
+for i, db in enumerate(db_files, start=1):
+    checksums[str(db.relative_to(OUT_BASE))] = sha256_file(db)
+    if i % 10 == 0 or i == total_dbs:
+        progress("Checksums", i, total_dbs)
+
+print()
+
+# --------------------------------
+# Aggregate cycle distribution
+# --------------------------------
+
+aggregate_cycle_distribution = defaultdict(int)
+
+for v in VALIDATION.values():
+    for year, count in v["cycle_distribution"].items():
+        aggregate_cycle_distribution[year] += count
+        
+# --------------------------------
+# Aggregate violation statistics
+# --------------------------------
+
+total_parsed = sum(v["lines_parsed"] for v in VALIDATION.values())
+total_violations = sum(v["cycle_violations"] for v in VALIDATION.values())
+
+violation_rate = (
+    (total_violations / total_parsed) * 100
+    if total_parsed else 0
+)
+
+# --------------------------------
+# Build summary
+# --------------------------------
 
 summary = {
     "total_lines": sum(v["lines_total"] for v in VALIDATION.values()),
     "total_written": sum(v["tx_written"] for v in VALIDATION.values()),
     "total_skipped": sum(v["tx_skipped"] for v in VALIDATION.values()),
+    "cycle_distribution": dict(aggregate_cycle_distribution),
+    "violation_rate_percent": round(violation_rate, 6)
 }
 
 summary["passed"] = all(
@@ -371,11 +505,36 @@ summary["passed"] = all(
     for v in VALIDATION.values()
 )
 
+# --------------------------------
+# Enforcement Policy (STRICT / TOLERANCE)
+# --------------------------------
+
+if args.strict and total_violations > 0:
+    raise RuntimeError(
+        f"❌ Cycle violations detected — Strict mode enabled"
+    )
+
+if violation_rate > args.tolerance:
+    raise RuntimeError(
+        f"❌ Violation rate {violation_rate:.2f}% exceeds tolerance {args.tolerance:.2f}%"
+    )
+
+# --------------------------------
+# Build manifest
+# --------------------------------
+
 manifest = {
     "cycle": CYCLE,
     "release_id": RELEASE_ID,
     "generated_at": now_iso(),
     "schema_version": 3,
+    
+    # 🔐 Required for uploader integrity validation
+    "candidate_count": len(candidate_dbs),
+    "committee_count": len(
+        [k for k in committee_dbs.keys() if k != UNASSIGNED_COMMITTEE_ID]
+    ),
+    
     "validation": {
         **VALIDATION,
         "summary": summary
