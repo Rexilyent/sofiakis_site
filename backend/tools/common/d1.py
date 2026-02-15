@@ -2,12 +2,26 @@
 # D1 Client Abstraction Layer
 # ==================================================
 
+# ↓ This is so annoying to see....
 from __future__ import annotations
 
-import subprocess
 import os
 import time
+import subprocess
+from dotenv import load_dotenv
+from pathlib import Path
 from typing import List, Optional
+
+# ==================================================
+# D1 Client Version 1.1
+# ==================================================
+
+# ==================================================
+# Load Environment
+# ==================================================
+
+env_path = Path(__file__).resolve().parents[3] / ".env"
+load_dotenv(env_path)
 
 
 # ==================================================
@@ -17,25 +31,26 @@ from typing import List, Optional
 class D1ExecutionError(RuntimeError):
     pass
 
-
 # ==================================================
 # D1 Client
 # ==================================================
 
 class D1Client:
-
-    def __init__(
-        self,
-        database: Optional[str] = None,
-        dry_run: bool = False,
-        max_retries: int = 1,
-    ):
-        self.database = database or os.environ.get("D1_DATABASE")
+    def __init__(self, dry_run: bool = False):
         self.dry_run = dry_run
-        self.max_retries = max_retries
 
-        if not self.database:
+        env = os.getenv("APP_ENV", "dev").lower()
+
+        if env == "prod":
+            self.database_name = os.getenv("D1_PROD_DATABASE_NAME")
+        else:
+            self.database_name = os.getenv("D1_DEV_DATABASE_NAME")
+
+        if not self.database_name:
             raise RuntimeError("D1 database name not configured")
+
+        print(f"[D1] Environment: {env}")
+        print(f"[D1] Database: {self.database_name}")
 
     # -------------------------------------------------
     # Core Execution
