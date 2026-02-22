@@ -142,3 +142,12 @@
 
 	display: block;
 }
+
+.page-endorsements .endorsement-icon.uhva img {
+	width: 100%;
+	height: 100%;
+
+	object-fit: contain;      /* crops cleanly */
+
+	display: block;
+}
