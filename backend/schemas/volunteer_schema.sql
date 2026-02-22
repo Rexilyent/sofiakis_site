@@ -13,10 +13,13 @@
 CREATE TABLE IF NOT EXISTS volunteers (
 	volunteer_id TEXT PRIMARY KEY,
 	name TEXT NOT NULL,
-	email TEXT NOT NULL,
+	email TEXT NOT NULL UNIQUE,
 	phone TEXT,
 	zip TEXT NOT NULL,
 	consent BOOLEAN NOT NULL DEFAULT 0,
+	email_verified BOOLEAN NOT NULL DEFAULT 0,
+	verification_token TEXT,
+	verification_expires_at TEXT,
 	source_form TEXT NOT NULL,
 	ip_hash TEXT NOT NULL,
 	created_at TEXT NOT NULL,
@@ -24,6 +27,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_email ON volunteers(email);
+CREATE INDEX IF NOT EXISTS idx_volunteers_verification_token ON volunteers(verification_token);
 
 CREATE TABLE IF NOT EXISTS volunteer_interests (
 	volunteer_id TEXT NOT NULL,
@@ -45,4 +49,14 @@ CREATE TABLE IF NOT EXISTS volunteer_submissions (
 	form_type TEXT NOT NULL,
 	submitted_at TEXT NOT NULL,
 	raw_payload_hash TEXT NOT NULL,
+);
+
+-- =====================================================
+-- Rate Limiting Table
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  key TEXT PRIMARY KEY,
+  count INTEGER NOT NULL,
+  window_start TEXT NOT NULL
 );
