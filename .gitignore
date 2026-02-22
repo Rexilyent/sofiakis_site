@@ -40,13 +40,13 @@ LATEST.json
 *.sqlite3
 
 # Wrangler
-wrangler.toml
 .wrangler/
 
 # Dependency files
 requirements.txt
 .env
 .env.*
+.dev.vars
 
 # Private keys
 private.pem
