@@ -19,7 +19,13 @@
   <link rel="stylesheet" href="/styles/base.css">
 	<link rel="stylesheet" href="/styles/home.css">
 
+	<!-- Cloudflare Turnstile -->
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
 	<script src="/scripts/home.js" defer></script>
+
+	<!-- Volunteer Form Script -->
+	<script src="/scripts/volunteer.js" defer></script>
 </head>
 <body class="page-home">
 	<main class="home-content">
@@ -36,26 +42,35 @@
 				</div>
 
 				<div class="home-join-form">
-					<form aria-label="Join the Campaign Form">
+					<form id="homepage-join-form" class="volunteer-form" data-form-type="homepage_join" aria-label="Join the Campaign Form">
 						<div class="form-group">
 							<label for="join-name" class="sr-only">Full Name</label>
-							<input type="text" id="join-name" name="join-name" placeholder="Full Name" required>
+							<input type="text" id="name" name="join-name" placeholder="Full Name" required>
 						</div>
 
 						<div class="form-group">
 							<label for="join-email" class="sr-only">Email Address</label>
-							<input type="email" id="join-email" name="join-email" placeholder="Email Address" required>
+							<input type="email" id="email" name="join-email" placeholder="Email Address" required>
 						</div>
 
 						<div class="form-group">
 							<label for="join-phone" class="sr-only">Phone Number</label>
-							<input type="tel" id="join-phone" name="join-phone" placeholder="Phone Number (optional)">
+							<input type="tel" id="phone" name="join-phone" placeholder="Phone Number (optional)">
 						</div>
 
 						<div class="form-group">
 							<label for="join-zip" class="sr-only">Zip Code</label>
-							<input type="text" id="join-zip" name="join-zip" placeholder="Zip Code" required>
+							<input type="text" id="zip" name="join-zip" placeholder="Zip Code" required>
 						</div>
+
+						<div class="form-group">
+							<label class="consent-label">
+								<input type="checkbox" id="consent" name="join-consent" required>
+								I agree to receive updates and communications from Alexandria's campaign. (You can unsubscribe at any time.)
+							</label>
+						</div>
+
+						<div class="turnstile-container" style="display:none; margin-top:1rem;"></div>
 
 						<button type="submit" class="btn btn-primary">Join Now</button>
 					</form>
@@ -80,12 +95,14 @@
       	<div class="nav-links" id="nav-links">
         	<a href="/index.html" class="active">Home</a>
         	<a href="/about.html">About</a>
-					<div class="nav-dropdown">
+					<!-- Recomment this when money tracker is finished -->
+					<a href="/issues.html">Issues</a>
+					<!-- <div class="nav-dropdown">
 						<a href="/issues.html" class="nav-issues">Issues</a>
 						<div class="dropdown-menu">
 							<a href="/money_tracker.html">Money Tracker</a>
 						</div>
-					</div>
+					</div> -->
         	<a href="/events.html" >Events</a>
         	<a href="/il10.html" >IL-10</a>
 					<div class="nav-dropdown">

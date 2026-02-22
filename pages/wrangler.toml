@@ -1,38 +1,13 @@
+name = "sofiakis-site"
 compatibility_date = "2026-02-22"
 pages_build_output_dir = "public"
-
-# ==============================
-# PRODUCTION
-# ==============================
 
 [[d1_databases]]
 binding = "MONEY_DB"
 database_name = "moneytracker-db"
-database_id = "PROD_MONEY_DB_ID"
+database_id = "cf2020aa-de25-4cca-8bd2-9cd5d2ec9b68"
 
 [[d1_databases]]
 binding = "CORE_DB"
 database_name = "campaign-core-db"
-database_id = "PROD_CORE_DB_ID"
-
-[vars]
-APP_ENV = "production"
-
-# ==============================
-# DEVELOPMENT
-# ==============================
-
-[env.dev]
-
-[[env.dev.d1_databases]]
-binding = "MONEY_DB"
-database_name = "dev-moneytracker-db"
-database_id = "DEV_MONEY_DB_ID"
-
-[[env.dev.d1_databases]]
-binding = "CORE_DB"
-database_name = "dev-campaign-core-db"
-database_id = "DEV_CORE_DB_ID"
-
-[env.dev.vars]
-APP_ENV = "development"
+database_id = "60ace8c2-5249-41ed-a87b-2495014b496c"

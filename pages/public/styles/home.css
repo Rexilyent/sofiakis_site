@@ -102,6 +102,25 @@
     0 3px 6px rgba(0,0,0,0.08);
 }
 
+/* Consent checkbox */
+.page-home .home-join-form .consent-label{
+	display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  cursor: pointer;
+	color: var(--muted);
+}
+
+.consent-label input[type="checkbox"] {
+  accent-color: #1e8f4d; /* match your green button */
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
 /* Submit button */
 .page-home .home-join-form .btn{
   margin-top: 0.5rem;

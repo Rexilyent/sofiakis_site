@@ -1,4 +1,11 @@
-// Centralized language list (edit here only)
+
+const TURNSTILE_SITE_KEY = "0x4AAAAAACgWogBl9vBAjHlb"; // Dev key, replace with prod key in production
+const API_BASE = "/api";
+
+// ====================================
+// Centralized language list
+// ====================================
+
 const OUTREACH_LANGUAGES = [
 	"Albanian",
 	"Amharic",
@@ -81,110 +88,82 @@ const VOLUNTEER_INTERESTS = [
 	"I'm not sure yet",
 ];
 
-function buildCheckboxDropdown({
-  rootId,
-  btnId,
-  menuId,
-  btnTextId,
-  name,
-  options,
-  placeholder,
-  includeOther = false,
-  otherValue = "Other",
-  otherInputName = "other",
-  // NEW: optional hook called whenever selection changes
-  onChange = null
-}) {
-  const root = document.getElementById(rootId);
+// =====================================================
+// DROPDOWN BUILDER
+// =====================================================
+
+function buildCheckboxDropdown(config) {
+  const {
+    form,
+    rootSelector,
+    btnSelector,
+    menuSelector,
+    btnTextSelector,
+    name,
+    options,
+    placeholder,
+    includeOther = false,
+    otherInputName = "other"
+  } = config;
+
+  const root = form.querySelector(rootSelector);
   if (!root) return;
 
-  const btn = document.getElementById(btnId);
-  const btnText = document.getElementById(btnTextId);
-  const menu = document.getElementById(menuId);
+  const btn = root.querySelector(btnSelector);
+  const menu = root.querySelector(menuSelector);
+  const btnText = root.querySelector(btnTextSelector);
 
-  if (!btn || !btnText || !menu) return;
+  if (!btn || !menu || !btnText) return;
 
-  // --- Build menu items ---
   menu.innerHTML = "";
 
   function makeOption(value) {
     const label = document.createElement("label");
     label.className = "dropdown-option";
-    label.setAttribute("data-value", value);
 
     const input = document.createElement("input");
     input.type = "checkbox";
     input.name = name;
     input.value = value;
 
-    // Keep checkbox accessible but hidden by CSS
-    label.appendChild(input);
+    const text = document.createElement("span");
+    text.className = "opt-text";
+    text.textContent = value;
 
-    const textNode = document.createElement("span");
-    textNode.className = "opt-text";
-    textNode.textContent = value;
-    label.appendChild(textNode);
-
+    label.append(input, text);
     return label;
   }
 
-  options.forEach((opt) => menu.appendChild(makeOption(opt)));
+  options.forEach(opt => menu.appendChild(makeOption(opt)));
 
-  let otherCheckbox = null;
-  let otherWrap = null;
   let otherInput = null;
+  let otherCheckbox = null;
 
   if (includeOther) {
     const divider = document.createElement("div");
     divider.className = "dropdown-divider";
     menu.appendChild(divider);
 
-    const otherLabel = makeOption(otherValue);
+    const otherLabel = makeOption("Other");
     menu.appendChild(otherLabel);
 
-    otherCheckbox = otherLabel.querySelector('input[type="checkbox"]');
-
-    otherWrap = document.createElement("div");
-    otherWrap.style.display = "none";
-    otherWrap.style.paddingTop = "8px";
+    otherCheckbox = otherLabel.querySelector("input");
 
     otherInput = document.createElement("input");
     otherInput.type = "text";
     otherInput.name = otherInputName;
     otherInput.placeholder = "If other, please specify";
     otherInput.maxLength = 60;
+    otherInput.style.display = "none";
+    otherInput.style.marginTop = "8px";
 
-    // Match your form styles
-    otherInput.style.width = "100%";
-    otherInput.style.padding = "0.7rem 0.9rem";
-    otherInput.style.borderRadius = "12px";
-    otherInput.style.border = "1px solid rgba(0,0,0,0.12)";
-    otherInput.style.background = "rgba(255,255,255,0.9)";
-    otherInput.style.font = "inherit";
-
-    otherWrap.appendChild(otherInput);
-    menu.appendChild(otherWrap);
+    menu.appendChild(otherInput);
   }
 
-  const getCheckboxes = () =>
-    Array.from(menu.querySelectorAll(`input[type="checkbox"][name="${name}"]`));
-
-  function setOpen(open) {
-    menu.classList.toggle("open", open);
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-
-  function syncSelectedStyles() {
-    menu.querySelectorAll(".dropdown-option").forEach((label) => {
-      const cb = label.querySelector('input[type="checkbox"]');
-      label.classList.toggle("is-selected", !!cb?.checked);
-    });
-  }
-
-  function updateButtonLabel() {
-    const selected = getCheckboxes()
-      .filter((cb) => cb.checked)
-      .map((cb) => cb.value);
+  function updateLabel() {
+    const selected = Array.from(
+      menu.querySelectorAll(`input[name="${name}"]:checked`)
+    ).map(cb => cb.value);
 
     if (selected.length === 0) {
       btnText.textContent = placeholder;
@@ -195,121 +174,184 @@ function buildCheckboxDropdown({
     }
   }
 
-  function updateOtherVisibility() {
-    if (!includeOther || !otherCheckbox || !otherWrap) return;
-    otherWrap.style.display = otherCheckbox.checked ? "block" : "none";
-    if (!otherCheckbox.checked && otherInput) otherInput.value = "";
-  }
-
-  function notifyChange() {
-    if (typeof onChange === "function") {
-      onChange(getCheckboxes());
-    }
-  }
-
-  // --- Button open/close ---
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation(); // prevent document click from instantly closing
-    setOpen(!menu.classList.contains("open"));
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    menu.classList.toggle("open");
   });
 
-  // --- Option selection: event delegation ---
-  menu.addEventListener("click", (e) => {
+  menu.addEventListener("click", e => {
     e.stopPropagation();
+    const label = e.target.closest(".dropdown-option");
+    if (!label) return;
 
-    const option = e.target.closest(".dropdown-option");
-    if (!option) return;
-
-    const cb = option.querySelector('input[type="checkbox"]');
-    if (!cb) return;
-
+    const cb = label.querySelector("input");
     cb.checked = !cb.checked;
 
-    syncSelectedStyles();
-    updateButtonLabel();
-    updateOtherVisibility();
-    notifyChange();
+    if (otherCheckbox && cb === otherCheckbox) {
+      otherInput.style.display = cb.checked ? "block" : "none";
+      if (!cb.checked) otherInput.value = "";
+    }
+
+    updateLabel();
   });
 
-  // Close when clicking outside
-  document.addEventListener("click", () => setOpen(false));
+  document.addEventListener("click", () => menu.classList.remove("open"));
 
-  // Close on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") setOpen(false);
-  });
-
-  // Initialize
-  syncSelectedStyles();
-  updateButtonLabel();
-  updateOtherVisibility();
-  notifyChange();
+  updateLabel();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  // ----- Languages dropdown -----
-  buildCheckboxDropdown({
-    rootId: "language-dropdown",
-    btnId: "language-dropdown-btn",
-    btnTextId: "language-btn-text",
-    menuId: "language-dropdown-menu",
-    name: "languages[]",
-    options: OUTREACH_LANGUAGES,
-    placeholder: "Select languages",
-    includeOther: true,
-    otherValue: "Other",
-    otherInputName: "language_other"
-  });
+// =====================================================
+// TURNSTILE HANDLER (Safe + Deferred)
+// =====================================================
 
-  // ----- Interests dropdown (REQUIRED) -----
-  const form = document.querySelector(".volunteer-form");
-  const interestError = document.getElementById("interest-error");
-  const interestBtn = document.getElementById("interest-dropdown-btn");
+function setupTurnstile(form) {
+  let widgetId = null;
+  const container = form.querySelector(".turnstile-container");
+  if (!container) return null;
 
-  function setInterestError(message) {
-    if (!interestError || !interestBtn) return;
+  return function executeTurnstile(callback) {
+    container.style.display = "block";
 
-    if (message) {
-      interestError.textContent = message;
-      interestError.classList.add("active");
-      interestBtn.classList.add("invalid");
-    } else {
-      interestError.textContent = "";
-      interestError.classList.remove("active");
-      interestBtn.classList.remove("invalid");
+    if (widgetId !== null) {
+			turnstile.reset(widgetId);
+      turnstile.execute(widgetId);
+      return;
     }
-  }
 
-  buildCheckboxDropdown({
-    rootId: "interest-dropdown",
-    btnId: "interest-dropdown-btn",
-    btnTextId: "interest-btn-text",
-    menuId: "interest-dropdown-menu",
-    name: "interests[]",
-    options: VOLUNTEER_INTERESTS,
-    placeholder: "Select interests",
-    includeOther: true,
-    otherValue: "Other",
-    otherInputName: "interest_other",
-
-    // Clear error as soon as user selects something
-    onChange: (checkboxes) => {
-      const selectedCount = checkboxes.filter(cb => cb.checked).length;
-      if (selectedCount > 0) setInterestError("");
-    }
-  });
-
-  // Enforce required on submit
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      const selected = form.querySelectorAll('input[name="interests[]"]:checked');
-      if (selected.length === 0) {
-        e.preventDefault();
-        setInterestError("Please select at least one volunteer activity.");
-        if (interestBtn) interestBtn.focus();
-      } else {
-        setInterestError("");
-      }
+    widgetId = turnstile.render(container, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: token => callback(token)
     });
+  };
+}
+
+// =====================================================
+// SUBMISSION
+// =====================================================
+
+async function submitVolunteer(payload) {
+  const res = await fetch(`${API_BASE}/volunteer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) throw new Error("Submission failed");
+  return res.json();
+}
+
+function showMessage(form, message, isError = false) {
+  let box = form.querySelector(".form-message");
+
+  if (!box) {
+    box = document.createElement("div");
+    box.className = "form-message";
+    box.style.marginTop = "1rem";
+    box.style.fontWeight = "600";
+    form.appendChild(box);
   }
+
+  box.textContent = message;
+  box.style.color = isError ? "#b00020" : "#0a7a3d";
+}
+
+// =====================================================
+// MAIN INITIALIZER
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const forms = document.querySelectorAll(
+    ".volunteer-form, [data-volunteer-form]"
+  );
+
+  forms.forEach(form => {
+
+    // 🔹 Detect if this form has dropdown sections
+    const hasInterestDropdown = form.querySelector("#interest-dropdown");
+    const hasLanguageDropdown = form.querySelector("#language-dropdown");
+
+    // 🔹 Only build dropdowns if they exist
+    if (hasLanguageDropdown) {
+      buildCheckboxDropdown({
+        form,
+        rootSelector: "#language-dropdown",
+        btnSelector: "#language-dropdown-btn",
+        menuSelector: "#language-dropdown-menu",
+        btnTextSelector: "#language-btn-text",
+        name: "languages[]",
+        options: OUTREACH_LANGUAGES,
+        placeholder: "Select languages",
+        includeOther: true,
+        otherInputName: "language_other"
+      });
+    }
+
+    if (hasInterestDropdown) {
+      buildCheckboxDropdown({
+        form,
+        rootSelector: "#interest-dropdown",
+        btnSelector: "#interest-dropdown-btn",
+        menuSelector: "#interest-dropdown-menu",
+        btnTextSelector: "#interest-btn-text",
+        name: "interests[]",
+        options: VOLUNTEER_INTERESTS,
+        placeholder: "Select interests",
+        includeOther: true,
+        otherInputName: "interest_other"
+      });
+    }
+
+    const runTurnstile = setupTurnstile(form);
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+
+      let interests = [];
+      let languages = [];
+
+      // 🔹 Only validate interests if dropdown exists
+      if (hasInterestDropdown) {
+        interests = Array.from(
+          form.querySelectorAll('input[name="interests[]"]:checked')
+        ).map(i => i.value);
+
+        if (interests.length === 0) {
+          showMessage(form, "Please select at least one volunteer activity.", true);
+          return;
+        }
+      }
+
+      if (hasLanguageDropdown) {
+        languages = Array.from(
+          form.querySelectorAll('input[name="languages[]"]:checked')
+        ).map(i => i.value);
+      }
+
+      const payload = {
+        name: form.querySelector("#name")?.value.trim(),
+        email: form.querySelector("#email")?.value.trim(),
+        phone: form.querySelector("#phone")?.value.trim(),
+        zip: form.querySelector("#zip")?.value.trim(),
+        interests,
+        languages,
+        consent: form.querySelector("#consent")?.checked || false,
+        form_type: form.dataset.formType || "volunteer_page"
+      };
+
+      runTurnstile(async token => {
+        try {
+          payload.turnstileToken = token;
+          await submitVolunteer(payload);
+
+          form.reset();
+          form.querySelector(".turnstile-container").style.display = "none";
+          showMessage(form, "Thank you for signing up to volunteer!");
+
+        } catch {
+          showMessage(form, "There was an issue submitting the form.", true);
+        }
+      });
+    });
+  });
 });

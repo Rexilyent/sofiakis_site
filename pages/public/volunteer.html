@@ -19,6 +19,9 @@
   <link rel="stylesheet" href="/styles/base.css">
 	<link rel="stylesheet" href="/styles/volunteer.css">
 
+	<!-- Cloudflare Turnstile -->
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
 	<script src="/scripts/volunteer.js" defer></script>
 </head>
 <body class="page-volunteer">
@@ -37,12 +40,14 @@
       <div class="nav-links" id="nav-links">
         <a href="/index.html">Home</a>
         <a href="/about.html">About</a>
-				<div class="nav-dropdown">
+				<!-- Recomment this when money tracker is finished -->
+				<a href="/issues.html">Issues</a>
+				<!-- <div class="nav-dropdown">
 					<a href="/issues.html" class="nav-issues">Issues</a>
 					<div class="dropdown-menu">
 						<a href="/money_tracker.html">Money Tracker</a>
 					</div>
-				</div>
+				</div> -->
         <a href="/events.html" >Events</a>
         <a href="/il10.html" >IL-10</a>
 				<div class="nav-dropdown">
@@ -172,7 +177,7 @@
 					</p>
 			</div>
 
-			<form class="volunteer-form" action="https://formspree.io/f/your-form-id" method="POST">
+			<form class="volunteer-form" id="volunteer-form" novalidate>
 				<div class="form-grid">
 					<!-- Row 1 -->
 					<div class="field">
@@ -244,6 +249,10 @@
 						<p class="field-error" id="interest-error" aria-live="polite"></p>
 					</div>
 
+					<!-- Cloudflare Turnstile -->
+					<div id="turnstile-container" style="display:none; margin-top: 1rem;"></div>
+
+					<!-- Submit Button -->
 					<div class="actions span-2">
 						<button class="btn-submit" type="submit">Submit</button>
 					</div>
