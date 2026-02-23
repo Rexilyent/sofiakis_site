@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS volunteers (
 	source_form TEXT NOT NULL,
 	ip_hash TEXT NOT NULL,
 	created_at TEXT NOT NULL,
-	updated_at TEXT NOT NULL
+	updated_at TEXT NOT NULL,
+	deleted_at TEXT
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_email ON volunteers(email);
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS volunteer_interests (
 	interest TEXT NOT NULL,
 	PRIMARY KEY (volunteer_id, interest),
 	FOREIGN KEY (volunteer_id) REFERENCES volunteers(volunteer_id)
+	ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS volunteer_languages (
@@ -41,6 +43,7 @@ CREATE TABLE IF NOT EXISTS volunteer_languages (
 	language TEXT NOT NULL,
 	PRIMARY KEY (volunteer_id, language),
 	FOREIGN KEY (volunteer_id) REFERENCES volunteers(volunteer_id)
+	ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS volunteer_submissions (
@@ -49,6 +52,19 @@ CREATE TABLE IF NOT EXISTS volunteer_submissions (
 	form_type TEXT NOT NULL,
 	submitted_at TEXT NOT NULL,
 	raw_payload_hash TEXT NOT NULL,
+	FOREIGN KEY (volunteer_id) REFERENCES volunteers(volunteer_id)
+	ON DELETE CASCADE
+);
+
+-- =====================================================
+-- Deletion Log for GDPR Compliance
+-- =====================================================
+CREATE TABLE IF NOT EXISTS deletion_requests (
+	request_id TEXT PRIMARY KEY,
+	volunteer_id TEXT NOT NULL,
+	email TEXT NOT NULL,
+	type TEXT NOT NULL, -- "soft" or "hard"
+	requested_at TEXT NOT NULL
 );
 
 -- =====================================================
