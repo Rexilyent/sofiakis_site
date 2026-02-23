@@ -201,27 +201,54 @@ function buildCheckboxDropdown(config) {
 }
 
 // =====================================================
-// TURNSTILE HANDLER (Safe + Deferred)
+// TURNSTILE HANDLER
 // =====================================================
+
+function waitForTurnstile(maxWait = 5000) {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+
+    function check() {
+      if (typeof turnstile !== "undefined") {
+        resolve(turnstile);
+      } else if (Date.now() - start > maxWait) {
+        reject(new Error("Turnstile failed to load within timeout."));
+      } else {
+        requestAnimationFrame(check);
+      }
+    }
+
+    check();
+  });
+}
 
 function setupTurnstile(form) {
   let widgetId = null;
+
   const container = form.querySelector(".turnstile-container");
   if (!container) return null;
 
-  return function executeTurnstile(callback) {
+  return async function executeTurnstile(callback) {
     container.style.display = "block";
 
-    if (widgetId !== null) {
-			turnstile.reset(widgetId);
-      turnstile.execute(widgetId);
-      return;
-    }
+    try {
+      await waitForTurnstile();
 
-    widgetId = turnstile.render(container, {
-      sitekey: TURNSTILE_SITE_KEY,
-      callback: token => callback(token)
-    });
+      if (widgetId !== null) {
+        turnstile.reset(widgetId);
+        turnstile.execute(widgetId);
+        return;
+      }
+
+      widgetId = turnstile.render(container, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: token => callback(token)
+      });
+
+    } catch (err) {
+      console.error(err);
+      alert("Security verification failed to load. Please refresh.");
+    }
   };
 }
 
@@ -268,17 +295,17 @@ document.addEventListener("DOMContentLoaded", () => {
   forms.forEach(form => {
 
     // 🔹 Detect if this form has dropdown sections
-    const hasInterestDropdown = form.querySelector("#interest-dropdown");
-    const hasLanguageDropdown = form.querySelector("#language-dropdown");
+    const hasInterestDropdown = form.querySelector(".interest-dropdown");
+    const hasLanguageDropdown = form.querySelector(".language-dropdown");
 
     // 🔹 Only build dropdowns if they exist
     if (hasLanguageDropdown) {
       buildCheckboxDropdown({
         form,
-        rootSelector: "#language-dropdown",
-        btnSelector: "#language-dropdown-btn",
-        menuSelector: "#language-dropdown-menu",
-        btnTextSelector: "#language-btn-text",
+        rootSelector: ".language-dropdown",
+        btnSelector: ".language-dropdown-btn",
+        menuSelector: ".language-dropdown-menu",
+        btnTextSelector: ".language-btn-text",
         name: "languages[]",
         options: OUTREACH_LANGUAGES,
         placeholder: "Select languages",
@@ -290,10 +317,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hasInterestDropdown) {
       buildCheckboxDropdown({
         form,
-        rootSelector: "#interest-dropdown",
-        btnSelector: "#interest-dropdown-btn",
-        menuSelector: "#interest-dropdown-menu",
-        btnTextSelector: "#interest-btn-text",
+        rootSelector: ".interest-dropdown",
+        btnSelector: ".interest-dropdown-btn",
+        menuSelector: ".interest-dropdown-menu",
+        btnTextSelector: ".interest-btn-text",
         name: "interests[]",
         options: VOLUNTEER_INTERESTS,
         placeholder: "Select interests",
