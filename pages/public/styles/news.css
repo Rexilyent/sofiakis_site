@@ -1,0 +1,28 @@
+.news-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.news-preview {
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.news-preview:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.read-more {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.news-preview:hover .read-more {
+  transform: translateX(6px);
+}
