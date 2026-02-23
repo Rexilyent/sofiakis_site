@@ -234,6 +234,22 @@ body.page-volunteer .volunteer-form-section label {
   box-shadow: 0 0 0 4px rgba(0, 128, 55, 0.12);
 }
 
+/* Consent checkbox */
+.page-volunteer .consent-label {
+	display: flex;
+	align-items: center;
+	font-weight: 600;
+	color: var(--muted);
+	margin-top: 0.5rem;
+}
+
+.page-volunteer .field input[type="checkbox"] {
+	width: auto;
+	margin-right: 0.5rem;
+	transform: scale(1.1);
+	accent-color: var(--primary);
+}
+
 /* Center the submit button */
 .page-volunteer .actions {
 	grid-column: span 2;

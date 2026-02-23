@@ -20,7 +20,7 @@
 	<link rel="stylesheet" href="/styles/volunteer.css">
 
 	<!-- Cloudflare Turnstile -->
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 
 	<script src="/scripts/volunteer.js" defer></script>
 </head>
@@ -213,44 +213,50 @@
 					<div class="field span-2">
 						<label for="language-dropdown-btn">Are you able to help with outreach in other languages?</label>
 						<!-- Checkbox dropdown inputs for languages -->
-						<div class="language-dropdown" id="language-dropdown">
+						<div class="language-dropdown">
 							<button 
 								type="button"
 								class="language-dropdown-btn"
-								id="language-dropdown-btn"
 								aria-haspopup="listbox"
 								aria-expanded="false"
 							>
-								<span class="dropdown-btn-text" id="language-btn-text">Select Languages</span>
+								<span class="language-btn-text">Select Languages</span>
 								<span class="caret">▾</span>
-						</button>
-						<div class="language-dropdown-menu" id="language-dropdown-menu" role="listbox"></div>
+							</button>
+						<div class="language-dropdown-menu" role="listbox"></div>
 					</div>
 				
 					<div class="field span-2">
 						<!-- Checkbox dropdown inputs for interests -->
 						<label for="interest-dropdown-btn">What volunteer activities are you interested in? <span aria-hidden="true">*</span></label>
-						<div class="interest-dropdown" id="interest-dropdown">
+						<div class="interest-dropdown">
 							<button 
 								type="button"
 								class="interest-dropdown-btn"
-								id="interest-dropdown-btn"
 								aria-haspopup="listbox"
 								aria-expanded="false"
 								>
-									<span class="dropdown-btn-text" id="interest-btn-text">Select Interests</span>
+									<span class="interest-btn-text">Select Interests</span>
 									<span class="caret">▾</span>
 							</button>
 
-							<div class="interest-dropdown-menu" id="interest-dropdown-menu" role="listbox">
+							<div class="interest-dropdown-menu" role="listbox"></div>
 						</div>
 
 						<!-- Error Message -->
 						<p class="field-error" id="interest-error" aria-live="polite"></p>
 					</div>
 
+					<!-- Consent Checkbox -->
+					<div class="field span-2">
+						<label class="consent-label">
+							<input type="checkbox" id="consent" name="consent" required>
+							I consent to being contacted by the campaign about volunteering opportunities.
+						</label>
+					</div>
+
 					<!-- Cloudflare Turnstile -->
-					<div id="turnstile-container" style="display:none; margin-top: 1rem;"></div>
+					<div class="turnstile-container" style="display:none; margin-top:1rem;"></div>
 
 					<!-- Submit Button -->
 					<div class="actions span-2">
