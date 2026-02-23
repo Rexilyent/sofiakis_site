@@ -50,7 +50,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 2000;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(17, 110, 48, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
@@ -87,6 +87,7 @@ a {
   display: flex;
   gap: 1.4rem;
   font-size: 0.95rem;
+	color: #ffffff;
 }
 
 .nav-links a {
@@ -126,7 +127,7 @@ a {
 
 .nav-social a {
   font-size: 1.2rem;
-  color: var(--primary);
+  color: #ffffff;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
