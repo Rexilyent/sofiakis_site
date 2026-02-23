@@ -277,3 +277,27 @@
     min-height: 560px;
   }
 }
+
+/* =========================================================
+	 EVENT POPUP (absolute positioned, inside the same card)
+	 ========================================================= */
+.event-popup {
+  position: absolute;
+  z-index: 1000;
+  width: 320px;
+  background: #111;
+  color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  animation: popupFade 0.2s ease-out;
+}
+
+.event-popup.hidden {
+  display: none;
+}
+
+@keyframes popupFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

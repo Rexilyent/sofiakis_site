@@ -11,7 +11,7 @@
 
 // ✅ PASTE your PUBLIC Google Calendar .ics link here
 // Example: "https://calendar.google.com/calendar/ical/.../public/basic.ics"
-const ICS_URL = "PASTE_YOUR_PUBLIC_ICS_URL_HERE";
+const ICS_URL = "/api/calendar";
 
 /**
  * Filter categories detected from bracket tags at the start of event titles.
@@ -242,6 +242,12 @@ function applyFilter(filterKey) {
 document.addEventListener("DOMContentLoaded", async () => {
   const calendarEl = document.getElementById("calendar");
   const subscribeBtn = document.getElementById("subscribeBtn");
+	const popup = document.getElementById("eventPopup");
+	document.addEventListener("click", (e) => {
+		if (!popup.contains(e.target) && !e.target.closest(".fc-event")) {
+			popup.classList.add("hidden");
+		}
+	});
 
   // Subscribe button opens ICS feed for users to add to their calendar app
   if (subscribeBtn) {
@@ -266,7 +272,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     nowIndicator: true,
     eventClick: (info) => {
       info.jsEvent.preventDefault();
-      renderDetails(info.event);
+      
+			const popup = document.getElementById("eventPopup");
+			const body = document.getElementById("popupBody");
+
+			const { description, location, categoryTag } = info.event.extendedProps || {};
+
+			body.innerHTML = `
+				<h4>${escapeHtml(info.event.title)}</h4>
+				<p>${escapeHtml(formatDateRange(info.event))}</p>
+				${location ? `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` : ""}
+				${categoryTag ? `<p><strong>Category:</strong> ${escapeHtml(categoryTag)}</p>` : ""}
+				${description ? `<p>${escapeHtml(description)}</p>` : ""}
+			`;
+
+			popup.style.top = info.jsEvent.pageY + "px";
+			popup.style.left = info.jsEvent.pageX + "px";
+			popup.classList.remove("hidden");
     }
   });
 
