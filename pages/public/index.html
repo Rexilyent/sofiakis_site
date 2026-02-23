@@ -17,11 +17,14 @@
 
   <!-- Shared Base Styles -->
   <link rel="stylesheet" href="/styles/base.css">
+
+	<!-- Page-Specific Styles -->
 	<link rel="stylesheet" href="/styles/home.css">
 
 	<!-- Cloudflare Turnstile -->
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 
+	<!-- Sticky Header Script -->
 	<script src="/scripts/home.js" defer></script>
 
 	<!-- Volunteer Form Script -->
@@ -32,9 +35,7 @@
 		<!-- Join the Campaign Form -->
   	<section class="home-join-header">
 			<!-- Header Banner Image -->
-			<div class="home-join-banner">
-				<img src="/assets/images/home-banner.jpg" alt="Alexandria Sofiakis's Campaign Banner">
-			</div>
+			<div class="home-join-banner"></div>
 
 			<div class="home-join-cloud">
 				<div class="home-join-cloud-inner">
@@ -66,7 +67,7 @@
 						<div class="form-group">
 							<label class="consent-label">
 								<input type="checkbox" id="consent" name="join-consent" required>
-								I agree to receive updates and communications from Alexandria's campaign. (You can unsubscribe at any time.)
+								I agree to receive updates and communications from Alexandria's campaign; it's ok we hate spam as well and won't sell your data to some third party. (You can unsubscribe at any time.)
 							</label>
 						</div>
 
@@ -131,17 +132,15 @@
   	</header>
 
 		<section class="hero-embed" aria-label="Campaign Hero Video">
-			<div class="hero-header">
-				<h2>Placeholder</h2>
-			</div>
-
-			<iframe
-				src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+			<iframe 
+				width="100%"
+				height="700"
+				src="https://www.youtube.com/embed/-6AvUcym1Hk?si=Q2L5v5zelPhlDJvh"
 				title="YouTube video player"
 				frameborder="0"
-				allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-				allowfullscreen
-			></iframe>
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				referrerpolicy="strict-origin-when-cross-origin"
+				allowfullscreen></iframe>
 		</section>
 
 		<!-- Meet Candidate Section -->
@@ -166,7 +165,7 @@
 
 		<!-- Issue Cards Section -->
 		<section class="values-section" aria-label="Key Issues">
-			<h2>Alexandria's Values</h2>
+			<h2>Alexandria's Values & Key Issues</h2>
 			<div class="issue-cards">
 				<div class="issue-card">
 					<div class="issue-icon">
@@ -265,7 +264,7 @@
 			</div>
 
 			<!-- View All Issues Button -->
-			<a class="btn btn-primary" href="/issues.html">View All Issues</a>
+			<a class="btn btn-issues" href="/issues.html">View All Issues</a>
 		</section>
 
 		<!-- Call to Action Section -->

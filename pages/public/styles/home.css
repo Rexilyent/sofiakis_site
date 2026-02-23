@@ -12,16 +12,11 @@
   position: relative;
   height: clamp(600px, 40vw, 800px);
   overflow: hidden;
-}
 
-/* Make the image fill the stage */
-.page-home .home-join-banner img{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+	background-image: url("/assets/images/home-banner.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Place the form ON TOP of the image, inside the white area */
@@ -29,17 +24,51 @@
   position: absolute;
   z-index: 5;
 
-  /* tweak these two until it sits perfectly in the “white cloud” space */
-  left: clamp(24px, 8vw, 160px);
-	top: 50%;
-	transform: translateY(-50%);
+  /* Vertical center */
+  top: 55%;
 
+  /* Portal center position (adjust this %) */
+  left: 27%;
+
+  transform: translate(-50%, -50%);
   width: min(600px, calc(100% - 32px));
-  background: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  padding: 2rem;
+	padding: 2rem;
   text-align: center;
+
+  border-radius: 28px;
+
+  background: rgba(255, 255, 255, 0.28);
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+
+	border: 1px solid rgba(120,255,180,0.35);
+
+	box-shadow:
+  0 0 50px rgba(120, 255, 180, 0.35), /* portal glow */
+  0 20px 60px rgba(0,0,0,0.35);
+
+	overflow: hidden;
+	animation: portalPulse 6s ease-in-out infinite;
+}
+
+@keyframes portalPulse {
+	0% {
+		box-shadow:
+			0 0 60px rgba(120, 255, 180, 0.35),
+			0 20px 60px rgba(0,0,0,0.45);
+	}
+
+	50% {
+		box-shadow:
+			0 0 145px rgba(120, 255, 180, 0.45),
+			0 20px 60px rgba(0,0,0,0.45);
+	}
+
+	100% {
+		box-shadow:
+			0 0 60px rgba(120, 255, 180, 0.35),
+			0 20px 60px rgba(0,0,0,0.45);
+	}
 }
 
 /* Optional: tighter on small screens */
@@ -60,6 +89,7 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   margin-bottom: 1.25rem;
+	color: rgba(10,25,15,0.85)
 }
 
 /* Form layout */
@@ -75,31 +105,35 @@
   font-size: 0.95rem;
   font-family: inherit;
 
-  border-radius: 999px;               /* pill shape */
-  border: 2px solid rgba(0,0,0,0.08);  /* soft outline */
-  background: #f8fbff;                 /* airy cloud white */
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+
+  color: #111;
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.7),
-    0 2px 4px rgba(0,0,0,0.05);
+    inset 0 1px 4px rgba(0,0,0,0.15),
+    0 2px 6px rgba(0,0,0,0.15);
 
   transition: all 0.2s ease;
 }
 
 /* Placeholder tone */
 .page-home .home-join-form input::placeholder{
-  color: #7a8a9a;
+  color: rgba(20,40,30,0.7);
 }
 
 /* Focus state (friendly, not aggressive) */
 .page-home .home-join-form input:focus{
   outline: none;
-  border-color: rgba(0,128,55,0.45);
-  background: #ffffff;
+  border: 1px solid rgba(120,255,180,0.9);
 
   box-shadow:
-    0 0 0 3px rgba(0,128,55,0.12),
-    0 3px 6px rgba(0,0,0,0.08);
+    0 0 0 3px rgba(120,255,180,0.35),
+    inset 0 1px 4px rgba(0,0,0,0.15);
 }
 
 /* Consent checkbox */
@@ -110,7 +144,7 @@
   font-size: 0.9rem;
   line-height: 1.4;
   cursor: pointer;
-	color: var(--muted);
+	color: rgba(10,25,15,0.85);
 }
 
 .consent-label input[type="checkbox"] {
@@ -143,7 +177,7 @@
 
   box-shadow:
     0 6px 0 #075a2a,   /* cartoon depth */
-    0 10px 18px rgba(0,0,0,0.18);
+    0 10px 30px rgba(0,255,150,0.18);
 
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -192,14 +226,25 @@ body.page-home.has-sticky-header{
    HOME: MEET CANDIDATE SECTION
 	 =========================== */
 .page-home .meet-candidate{
+	display: block;
+	margin: 0 auto;
 	background: linear-gradient(
 		180deg,
 		rgba(0,128,55,0.10),
 		rgba(0,128,55,0.04)
 	);
-	border-top: 1px solid rgba(0, 128, 55, 0.14);
-	border-bottom: 1px solid rgba(0, 128, 55, 0.14);
 	max-width: 1100px;
+	align-items: center;
+}
+
+.page-home .meet-candidate .candidate-bio{
+	padding: 1.5rem;
+}
+
+.page-home .meet-candidate h2{
+	color: var(--primary);
+	margin-bottom: 1rem;
+	text-align: center;
 }
 
 /* ===========================
@@ -208,6 +253,7 @@ body.page-home.has-sticky-header{
 .page-home .values-section{
 	max-width: 1100px;
 	padding: 1.5rem;
+	margin: 0 auto;
 }
 
 .page-home .issue-cards{
@@ -215,6 +261,37 @@ body.page-home.has-sticky-header{
 	grid-template-columns: repeat(3,1fr);
 	gap: 1.5rem;
 	padding: 1.5rem;
+	color: var(--primary);
+	text-align: center;
+	align-items: center;
+}
+
+.page-home .values-section h2{
+	color: var(--primary);
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+/* Issues Button */
+.page-home .values-section .btn-issues{
+	margin: 1.5rem auto 0;
+	padding: 0.5rem 1rem;
+	border-radius: 999px;
+	font-weight: 700;
+	font-size: 0.9rem;
+	letter-spacing: 0.04em;
+	background: linear-gradient(
+		180deg,
+		#19a85a,
+		#0b7c3c
+	);
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	box-shadow:
+		0 4px 0 #075a2a,
+		0 6px 12px rgba(0,0,0,0.15);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 
@@ -222,6 +299,8 @@ body.page-home.has-sticky-header{
 	 HOME: NEWS SECTION
 	 =========================== */
 .page-home .news-section{
+	max-width: 1100px;
+	margin: 0 auto;
 	background: linear-gradient(
 		180deg,
 		rgba(0,128,55,0.10),
@@ -229,7 +308,12 @@ body.page-home.has-sticky-header{
 	);
 	border-top: 1px solid rgba(0, 128, 55, 0.14);
 	border-bottom: 1px solid rgba(0, 128, 55, 0.14);
-	max-width: 1100px;
+}
+
+.page-home .news-section h2{
+	color: var(--primary);
+	text-align: center;
+	padding: 1.5rem;
 }
 
 .page-home .news-articles{
