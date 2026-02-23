@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="/styles/issues.css">
 
     <script src="/scripts/issues.js" defer></script>
+
+		<!-- Volunteer Form Script -->
+		<script src="/scripts/volunteer.js" defer></script>
 </head>
 <body class="page-issues">
 	<!-- Shared site header -->
@@ -2392,26 +2395,43 @@
         <h2>Get Involved</h2>
         <p>Your support and participation makes this grassroots campaign possible. Let's work together to create real change.</p>
             
-        <form class="cta-form">
+        <form class="cta-form volunteer-form" data-form-type="issues_cta">
           <div class="cta-row">
-            <input type="text" name="Name" placeholder="Full Name" required />
-            <input type="text" name="Zip" placeholder="Zip Code" required />
+            <input type="text" id="name" name="Name" placeholder="Full Name" required />
+            <input type="text" id="zip" name="Zip" placeholder="Zip Code" required />
           </div>
 
           <div class="cta-row">
-            <input type="email" name="email" placeholder="Email Address" required />
-            <input type="tel" name="phone" placeholder="Phone Number" required />
+            <input type="email" id="email" name="email" placeholder="Email Address" required />
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number" required />
           </div>
 
-          <label class="cta-label">How would you like to get involved?</label>
-          <select name="involvment" required>
-            <option value="" disabled selected>Select an option</option>
-            <option value="door-knocking">Door Knocking</option>
-            <option value="phone-banking">Phone Banking</option>
-            <option value="host-event">Host an Event</option>
-            <option value="yard-sign">Request a Yard Sign</option>
-            <option value="other">Other</option>
-          </select>
+          <div class="interest-dropdown">
+						<button
+							type="button"
+							class="interest-dropdown-btn"
+							aria-haspopup="listbox"
+							aria-expanded="false"
+						>
+							<span class="interest-btn-text" id="interest-btn-text">
+								Select Your Interests
+							</span>
+							<span class="caret">▾</span>
+						</button>
+						<div class="interest-dropdown-menu" id="interest-dropdown-menu" role="listbox"></div>
+					</div>
+
+					<!-- Consent Checkbox -->
+          <div class="form-group">
+            <label class="consent-label">
+              <input type="checkbox" id="consent" name="join-consent" required>
+              I agree to receive updates and communications from Alexandria's campaign; it's ok we hate spam as well and won't sell your data to some third party. (You can unsubscribe at any time.)
+            </label>
+          </div>
+
+					<!-- Cloudflare Turnstile -->
+					<div class="turnstile-container" style="display:none; margin-top:1rem;"></div>
+
           <button type="submit" class="cta-btn">Submit</button>
         </form>
       </div>

@@ -332,6 +332,93 @@
   color: var(--muted);
 }
 
+.page-issues .interest-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.page-issues .interest-dropdown-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #c8dbc8;
+  background: #fff;
+  font-size: 0.98rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-issues .interest-dropdown-btn:focus,
+.page-issues .interest-dropdown-btn:hover {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 128, 55, 0.18);
+}
+
+/* Dropdown menu */
+.page-issues .interest-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #c8dbc8;
+  border-radius: 10px;
+  padding: 0.75rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+/* When JS toggles .open */
+.page-issues .interest-dropdown-menu.open {
+  display: block;
+}
+
+/* Checkbox options */
+.page-issues .dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.page-issues .dropdown-option input {
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.page-issues .dropdown-option:hover {
+  color: var(--primary);
+}
+
+/* Divider (for "Other") */
+.page-issues .dropdown-divider {
+  height: 1px;
+  background: #e3ece3;
+  margin: 0.5rem 0;
+}
+
+/* Consent checkbox */
+.page-issues .consent-label {
+	display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  cursor: pointer;
+	color: var(--muted);
+}
+
 .page-issues .cta-btn {
   position: relative;
   overflow: hidden;
