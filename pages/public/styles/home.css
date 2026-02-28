@@ -199,6 +199,88 @@
 }
 
 /* ===========================
+   PORTAL SUCCESS STATE
+=========================== */
+
+.portal-success-message {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  text-align: center;
+  padding: 1.5rem 1rem 2rem;
+  font-weight: 500;
+}
+
+/* Glow intensifies briefly */
+.portal-success-glow {
+  animation: portalSuccessPulse 1.2s ease forwards;
+}
+
+@keyframes portalSuccessPulse {
+  0% {
+    box-shadow: 0 0 50px rgba(120, 255, 180, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 200px rgba(120, 255, 180, 0.85);
+  }
+  100% {
+    box-shadow: 0 0 60px rgba(120, 255, 180, 0.5);
+  }
+}
+
+/* ===========================
+   PORTAL SUCCESS SHARE STATE
+=========================== */
+
+.portal-success-wrapper {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  text-align: center;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.portal-success-text {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.portal-success-subtext {
+  opacity: 0.85;
+  margin-bottom: 1.2rem;
+}
+
+.portal-share-btn {
+  background: linear-gradient(90deg, #78ffb4, #5ed6ff);
+  border: none;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(120, 255, 180, 0.6);
+}
+
+.portal-share-links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  font-size: 1.2rem;
+}
+
+.portal-share-links a {
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.portal-share-links a:hover {
+  transform: scale(1.15);
+}
+
+/* ===========================
    HOME: HEADER (CONDITIONAL STICKY)
    =========================== */
 
@@ -226,34 +308,152 @@ body.page-home.has-sticky-header{
    HOME: MEET CANDIDATE SECTION
 	 =========================== */
 .page-home .meet-candidate{
-	display: block;
-	margin: 0 auto;
-	background: linear-gradient(
-		180deg,
-		rgba(0,128,55,0.10),
-		rgba(0,128,55,0.04)
-	);
-	max-width: 1100px;
-	align-items: center;
+	position: relative;
+  width: 100%;
+  padding: clamp(4rem, 7vw, 7rem) 1.5rem;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(120,255,180,0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 40%,
+      rgba(0,128,55,0.12),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,128,55,0.14),
+      rgba(0,128,55,0.05)
+    );
+
+  border-top: 1px solid rgba(120,255,180,0.25);
+  border-bottom: 1px solid rgba(120,255,180,0.18);
+}
+
+.page-home .meet-candidate::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+
+  background-size: 4px 4px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.page-home .meet-candidate-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 3rem;
 }
 
 .page-home .meet-candidate .candidate-bio{
-	padding: 1.5rem;
+	flex: 1;
 }
 
 .page-home .meet-candidate h2{
 	color: var(--primary);
 	margin-bottom: 1rem;
-	text-align: center;
+	font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.page-home .candidate-bio p{
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ===========================
+	 HOME: CANDIDATE BUTTON
+   =========================== */
+.page-home .btn-meet{
+  position: relative;
+  display: inline-block;
+  margin-top: 1.8rem;
+  padding: 0.75rem 1.6rem;
+
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+
+  border-radius: 999px;
+  text-decoration: none;
+
+  color: #0a2e1c;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(120,255,180,0.35),
+      rgba(94,214,255,0.25)
+    );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(120,255,180,0.6);
+
+  box-shadow:
+    0 0 20px rgba(120,255,180,0.35),
+    inset 0 0 12px rgba(120,255,180,0.25);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.4s ease,
+    background 0.6s ease;
+}
+
+.page-home .btn-meet::before{
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    rgba(120,255,180,0.8),
+    rgba(94,214,255,0.7),
+    rgba(120,255,180,0.8)
+  );
+
+  background-size: 200% 100%;
+  z-index: -1;
+
+  filter: blur(10px);
+  opacity: 0.6;
+
+  animation: portalButtonAura 6s linear infinite;
+}
+
+@keyframes portalButtonAura{
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
+}
+
+.page-home .btn-meet:hover{
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 0 35px rgba(120,255,180,0.6),
+    inset 0 0 16px rgba(120,255,180,0.35);
 }
 
 /* ===========================
 	 HOME: VALUES SECTION
 	 =========================== */
 .page-home .values-section{
-	max-width: 1100px;
-	padding: 1.5rem;
-	margin: 0 auto;
+	position: relative;
+  padding: clamp(4rem, 6vw, 6rem) 1.5rem;
+  overflow: hidden;
 }
 
 .page-home .issue-cards{
@@ -266,6 +466,15 @@ body.page-home.has-sticky-header{
 	align-items: center;
 }
 
+.page-home .issue-icon{
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--primary);
+
+  text-shadow:
+    0 0 12px rgba(120,255,180,0.6);
+}
+
 .page-home .values-section h2{
 	color: var(--primary);
 	text-align: center;
@@ -274,43 +483,77 @@ body.page-home.has-sticky-header{
 
 /* Issues Button */
 .page-home .values-section .btn-issues{
-	margin: 1.5rem auto 0;
-	padding: 0.5rem 1rem;
-	border-radius: 999px;
-	font-weight: 700;
-	font-size: 0.9rem;
-	letter-spacing: 0.04em;
-	background: linear-gradient(
-		180deg,
-		#19a85a,
-		#0b7c3c
-	);
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	box-shadow:
-		0 4px 0 #075a2a,
-		0 6px 12px rgba(0,0,0,0.15);
-	transition: transform 0.15s ease, box-shadow 0.15s ease;
+	display: block;           /* Important */
+  width: fit-content;       /* So it doesn’t stretch */
+  margin: 2.5rem auto 0;    /* TRUE centering */
+
+  padding: 0.75rem 1.6rem;
+  border-radius: 999px;
+
+  font-weight: 600;
+  letter-spacing: 0.04em;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(120,255,180,0.35),
+      rgba(94,214,255,0.25)
+    );
+
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(120,255,180,0.6);
+
+  color: #0a2e1c;
+  text-decoration: none;
+
+  box-shadow:
+    0 0 18px rgba(120,255,180,0.35),
+    inset 0 0 10px rgba(120,255,180,0.25);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
+.page-home .btn-issues:hover{
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 0 30px rgba(120,255,180,0.6),
+    inset 0 0 14px rgba(120,255,180,0.35);
+}
 
 /* ===========================
 	 HOME: NEWS SECTION
 	 =========================== */
-.page-home .news-section{
-	max-width: 1100px;
-	margin: 0 auto;
-	background: linear-gradient(
-		180deg,
-		rgba(0,128,55,0.10),
-		rgba(0,128,55,0.04)
-	);
-	border-top: 1px solid rgba(0, 128, 55, 0.14);
-	border-bottom: 1px solid rgba(0, 128, 55, 0.14);
+.page-home .news-inner{
+	position: relative;
+  width: 100%;
+  padding: clamp(4rem, 7vw, 7rem) 1.5rem;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(120,255,180,0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 40%,
+      rgba(0,128,55,0.12),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,128,55,0.14),
+      rgba(0,128,55,0.05)
+    );
+
+  border-top: 1px solid rgba(120,255,180,0.25);
+  border-bottom: 1px solid rgba(120,255,180,0.18);
 }
 
-.page-home .news-section h2{
+.page-home .news-inner h2{
 	color: var(--primary);
 	text-align: center;
 	padding: 1.5rem;
