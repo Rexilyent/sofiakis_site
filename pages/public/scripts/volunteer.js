@@ -1,3 +1,14 @@
+// =====================================
+// VOLUNTEER FORM SCRIPT
+// =====================================
+// Handles dropdowns, Turnstile integration, and form submission for volunteer sign-up forms.
+// Designed to be reusable across multiple forms with different configurations.
+// Note: This script assumes a certain HTML structure for the forms. Make sure to follow the
+// expected structure for dropdowns and form fields for it to work correctly.
+
+// ====================================
+// CONFIG
+// ====================================
 
 const TURNSTILE_SITE_KEY = "0x4AAAAAACgWogBl9vBAjHlb"; // Dev key, replace with prod key in production
 const API_BASE = "/api";
@@ -187,6 +198,12 @@ function buildCheckboxDropdown(config) {
     const cb = label.querySelector("input");
     cb.checked = !cb.checked;
 
+  	if (cb.checked) {
+    	label.classList.add("is-selected");
+  	} else {
+    	label.classList.remove("is-selected");
+  	}
+
     if (otherCheckbox && cb === otherCheckbox) {
       otherInput.style.display = cb.checked ? "block" : "none";
       if (!cb.checked) otherInput.value = "";
@@ -253,7 +270,7 @@ function setupTurnstile(form) {
 }
 
 // =====================================================
-// SUBMISSION
+// API SUBMISSION
 // =====================================================
 
 async function submitVolunteer(payload) {
@@ -266,6 +283,10 @@ async function submitVolunteer(payload) {
   if (!res.ok) throw new Error("Submission failed");
   return res.json();
 }
+
+// =====================================================
+// SUCCESS & ERROR HANDLING
+// =====================================================
 
 function showMessage(form, message, isError = false) {
   let box = form.querySelector(".form-message");
@@ -282,6 +303,88 @@ function showMessage(form, message, isError = false) {
   box.style.color = isError ? "#b00020" : "#0a7a3d";
 }
 
+function showHomepagePortalSuccess(form) {
+	const portal = document.querySelector(".home-join-cloud");
+	const header = portal.querySelector(".home-join-cloud-inner h2");
+
+	// Fade out form
+	form.style.transition = "opacity 0.4s ease";
+	form.style.opacity = "0";
+	setTimeout(() => {form.style.display = "none";}, 400);
+
+	// Intensify portal glow briefly
+	portal.classList.add("portal-success-glow");
+
+	// Update header text
+	header.textContent = "Welcome to the Movement ✨";
+
+	// Creat centered message
+	const successMessage = document.createElement("div");
+	successMessage.className = "portal-success-message";
+	successMessage.innerHTML = `
+		<p>You're officially part of Alexandria’s grassroots campaign.</p>
+    <p>We'll be reaching out soon.</p>
+		<p>In the meantime, help someone else cross over.</p>
+
+		<button class="portal-share-btn">
+			Bring Someone Through
+		</button>
+
+		<div class="portal-share-links">
+			<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank">
+				<i class="fab fa-facebook"></i>
+			</a>
+
+			<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent("Join me in supporting Alexandria for IL-10 ✨")}" target="_blank">
+				<i class="fab fa-twitter"></i>
+			</a>
+
+			<a href="https://www.instagram.com/" target="_blank">
+				<i class="fab fa-instagram"></i>
+			</a>
+		</div>
+	`;
+	portal.appendChild(successMessage);
+
+	setTimeout(() => {successMessage.style.opacity = "1";}, 50);
+}
+
+function showSuccessState(form) {
+	const isHomepage = form.id === "homepage-join-form";
+
+	if (isHomepage) {
+		showHomepagePortalSuccess(form);
+		return;
+	}
+
+	// Default behavior for all other forms
+	// Hide all direct children except existing message
+	const children = Array.from(form.children);
+
+	children.forEach(child => {
+		if (!child.classList.contains("form-message")) {
+			child.style.transition = "opacity 0.4s ease";
+			child.style.opacity = "0";
+			setTimeout(() => {child.style.display = "none";}, 400);
+		}
+	});
+
+	// Create success container
+	const successBox = document.createElement("div");
+	successBox.className ="form-success-state";
+	successBox.innerHTML = `
+		<div class="success-icon">✓</div>
+		<h2>Thank you for signing up to volunteer!</h2>
+		<p>We'll be in touch with more information soon.</p>
+	`;
+	form.appendChild(successBox);
+
+	// Animate in success state
+	setTimeout(() => {
+		successBox.style.opacity = "1";
+	}, 50);
+}
+
 // =====================================================
 // MAIN INITIALIZER
 // =====================================================
@@ -293,6 +396,8 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   forms.forEach(form => {
+
+		let hasSubmitted = false; // Flag to prevent multiple submissions
 
     // 🔹 Detect if this form has dropdown sections
     const hasInterestDropdown = form.querySelector(".interest-dropdown");
@@ -334,6 +439,8 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", e => {
       e.preventDefault();
 
+			if (hasSubmitted) return; // Prevent multiple submissions
+ 
       let interests = [];
       let languages = [];
 
@@ -367,16 +474,21 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       runTurnstile(async token => {
+				if (hasSubmitted) return; // Double-check flag inside async callback
+
         try {
+					hasSubmitted = true; // Set flag to prevent further submissions
+
           payload.turnstileToken = token;
           await submitVolunteer(payload);
 
-          form.reset();
-          form.querySelector(".turnstile-container").style.display = "none";
-          showMessage(form, "Thank you for signing up to volunteer!");
+          showSuccessState(form);
 
-        } catch {
+        } catch (err) {
           showMessage(form, "There was an issue submitting the form.", true);
+					console.error(err);
+					hasSubmitted = false; // Reset flag to allow retry
+					if (submitBtn) submitBtn.disabled = false; // Re-enable submit button if it was disabled
         }
       });
     });
