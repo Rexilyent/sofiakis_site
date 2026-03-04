@@ -15,11 +15,27 @@
     <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 
+		<!-- Leaflet CSS -->
+		<link rel="stylesheet"
+  					href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+		<!-- MarkerCluster CSS -->
+		<link rel="stylesheet"
+  					href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+		<link rel="stylesheet"
+  					href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
 		<!-- FullCalendar CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
 
     <link rel="stylesheet" href="/styles/base.css">
 		<link rel="stylesheet" href="/styles/events.css">
+
+		<!-- Leaflet JS -->
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+
+		<!-- MarkerCluster JS -->
+		<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
 
 		<!-- FullCalendar JS -->
 		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
@@ -74,6 +90,18 @@
         <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
           <i class="fab fa-instagram"></i>
         </a>
+				<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://www.bluesky.com/alexandriaforil" target="_blank" aria-label="Bluesky">
+					<i class="fab fa-bluesky"></i>
+				</a>
+				<a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a>
+				<a href="https://www.discord.com/alexandriaforil" target="_blank" aria-label="Discord">
+					<i class="fab fa-discord"></i>
+				</a>
       </div>
     </nav>
   </header>
@@ -110,12 +138,15 @@
 						<button class="filter-pill" data-filter="FUNDRAISER" type="button">Fundraisers</button>
 						<button class="filter-pill" data-filter="CANVASS" type="button">Canvassing</button>
 					</div>
-
-					<button id="subscribeBtn" class="glass-yellow" type="button">Subscribe</button>
 				</div>
 			</div>
 
 			<div id="calendar"></div>
+		</section>
+
+		<section class="card">
+			<h2>Event Locations</h2>
+			<div id="eventMap"></div>
 		</section>
 
 	</main>
