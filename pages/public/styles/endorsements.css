@@ -2,9 +2,7 @@
 	 PAGE LAYOUT
 	 ======================= */
 .page-endorsements .endorsements-content {
-	max-width: 1100px;
   margin: 0 auto;
-  padding: 1.5rem;
 }
 
 .page-endorsements .endorsements-header h1 {
@@ -24,9 +22,16 @@
 /* ===========================
 	 Endorsement summary cards grid
 	 =========================== */
+.page-endorsements .endorsement-inner {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1.5rem;
+}
+
 .page-endorsements .endorsement-cards {
 	display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(260px, 320px));
+	justify-content: center;
   gap: 1.2rem;
   margin-top: 1.2rem;
   margin-bottom: 2rem;
@@ -150,4 +155,19 @@
 	object-fit: contain;      /* crops cleanly */
 
 	display: block;
+}
+
+/* ===========================
+	 Anti-Endorsements section
+	 =========================== */
+.page-endorsements .anti-endorsements {
+	background: rgba(0, 128, 55, 0.35);
+	padding: 2rem 1.5rem;
+}
+
+.page-endorsements .anti-endorsement-header {
+	margin: 0 auto;
+	max-width: 1100px;
+	padding: 1.5rem;
+	text-align: center;
 }
