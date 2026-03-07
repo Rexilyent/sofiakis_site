@@ -21,6 +21,10 @@
 	<!-- Page-Specific Styles -->
 	<link rel="stylesheet" href="/styles/news.css">
 
+	<!-- News Scripts -->
+	<script src="/scripts/news-index.js"></script>
+	<script src="/scripts/news-pages.js" defer></script>
+
 </head>
 <body class="page-news">
 	<!-- Shared site header -->
@@ -74,36 +78,57 @@
   </header>
 	<main class="news-content">
 		<section class="news-hero" aria-label="Latest News about Alexandria Sofiakis">
-			<div class="news-hero-inner">
-				<h1>Latest News</h1>
-				<p>Stay updated with the latest news and announcements about Alexandria's campaign for IL-10.</p>
-			</div>
+			<div class="news-hero-container">
+				<h1 id="news-title" class="news-title">
+					Campaign News
+				</h1>
+
+				<div class="news-content">
+					<p id="news-description" class="news-description">
+						Stay up to date with the latest news and updates from Alexandria's campaign for IL-10. 
+						From policy announcements to community events, find all the information you need right here.
+					</p>
+				</div>
 		</section>
 
-		<section class="news-list" aria-label="News Articles">
-			<!-- Example news article -->
-			<a href="/news/alexandria-announces-candidacy.html" class="news-card-link">
-				<article class="news-item">
-					<h2>Alexandria Announces Candidacy for IL-10</h2>
-					<p>Alexandria Sofiakis officially announces her candidacy for Illinois' 10th Congressional District, outlining her vision for a better future.</p>
-					<span class="read-more">Read More</span>
-				</article>
-			</a>
-
-			<a href="/news/alexandria-hosts-town-hall.html" class="news-card-link">
-				<article class="news-item">
-					<h2>Alexandria Hosts Town Hall Meeting in Springfield</h2>
-					<p>Alexandria Sofiakis engages with constituents in Springfield, discussing key issues and answering questions from the community.</p>
-					<span class="read-more">Read More</span>
-				</article>
-			</a>
-
-			</article>
-
-			<!-- More news articles can be added here -->
-
-		</section>
+		<!-- News Grid-->
+		<section class="news-list wrapper" id="news-list" aria-label="News Articles"></section>
 	</main>
 
+	<!-- Shared site footer-->
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+        <i class="fab fa-bluesky"></i>
+      </a>
+      <a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <i class="fab fa-tiktok"></i>
+      </a>
+      <a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+
+    <div class="footer-links">
+      <a href="/accessibility.html">Accessibility</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+
+    <div class="footer-paid-for">
+      <strong>Paid for by Alexandria Sofiakis</strong>
+    </div>
+  </footer>
 </body>
 </html>

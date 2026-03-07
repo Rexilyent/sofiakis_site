@@ -24,6 +24,10 @@
 	<!-- Cloudflare Turnstile -->
 	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 
+	<!-- News Loader Script -->
+	<!-- Must load before home.js -->
+	<script src="/scripts/news-index.js"></script>
+
 	<!-- Sticky Header Script -->
 	<script src="/scripts/home.js" defer></script>
 
@@ -39,7 +43,7 @@
 
 			<div class="home-join-cloud">
 				<div class="home-join-cloud-inner">
-					<h2>Join Alexandria's Campaign</h2>
+					<h2>Take The Step Into A Better World</h2>
 				</div>
 
 				<div class="home-join-form">
@@ -95,7 +99,12 @@
 
       	<div class="nav-links" id="nav-links">
         	<a href="/index.html" class="active">Home</a>
-        	<a href="/about.html">About</a>
+        	<div class="nav-dropdown">
+						<a href="/about.html" class="nav-about">About</a>
+						<div class="dropdown-menu">
+							<a href="/news/index.html">News</a>
+						</div>
+					</div>
 					<!-- Recomment this when money tracker is finished -->
 					<a href="/issues.html">Issues</a>
 					<!-- <div class="nav-dropdown">
@@ -159,7 +168,7 @@
 		<section class="meet-candidate" aria-label="Meet the Candidate">
 			<div class="meet-candidate-inner">
 				<div class="candidate-photo">
-					<img src="/images/candidate_photo.jpg" alt="Photo of Alexandria Sofiakis">
+					<img src="/assets/images/sofiakis_1.png" alt="Photo of Alexandria Sofiakis">
 				</div>
 				<div class="candidate-bio">
 					<h2>Meet Alexandria Sofiakis</h2>
@@ -293,36 +302,16 @@
 		<section class="news-section" aria-label="Latest News">
 			<div class="news-inner">
 				<h2>Latest News</h2>
-				<div class="news-articles">
-					<!-- News Article 1 -->
-					<article class="news-article">
-						<h3>Placeholder News Title 1</h3>
-						<p class="news-date">June 1, 2024</p>
-						<p class="news-summary">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-						</p>
-						<a href="#" class="read-more">Read More</a>
-					</article>
+				<div class="news-carousel">
+					<button class="news-scroll left" aria-label="Previous news">
+						<i class="fas fa-chevron-left"></i>
+					</button>
 
-					<!-- News Article 2 -->
-					<article class="news-article">
-						<h3>Placeholder News Title 2</h3>
-						<p class="news-date">May 15, 2024</p>
-						<p class="news-summary">
-							Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-						</p>
-						<a href="#" class="read-more">Read More</a>
-					</article>
-
-					<!-- News Article 3 -->
-					<article class="news-article">
-						<h3>Placeholder News Title 3</h3>
-						<p class="news-date">April 30, 2024</p>
-						<p class="news-summary">
-							Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-						</p>
-						<a href="#" class="read-more">Read More</a>
-					</article>
+					<div class="news-articles" id="homepage-news"></div>
+					
+					<button class="news-scroll right" aria-label="Next news">
+						<i class="fas fa-chevron-right"></i>
+					</button>
 				</div>
 			</div>
 		</section>
