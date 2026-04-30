@@ -19,7 +19,7 @@
   background-repeat: no-repeat;
 }
 
-/* Place the form ON TOP of the image, inside the white area */
+/* Place the form ON TOP of the image, inside the portal (No longer using cloud design, too lazy to change html and class names) */
 .page-home .home-join-cloud{
   position: absolute;
   z-index: 5;
@@ -71,7 +71,6 @@
 	}
 }
 
-/* Optional: tighter on small screens */
 @media (max-width: 600px){
   .page-home .home-join-cloud{
     padding: 1.25rem;
@@ -126,7 +125,6 @@
   color: rgba(20,40,30,0.7);
 }
 
-/* Focus state (friendly, not aggressive) */
 .page-home .home-join-form input:focus{
   outline: none;
   border: 1px solid rgba(120,255,180,0.9);
@@ -148,7 +146,7 @@
 }
 
 .consent-label input[type="checkbox"] {
-  accent-color: #1e8f4d; /* match your green button */
+  accent-color: #1e8f4d;
   width: 18px;
   height: 18px;
   margin-top: 2px;
@@ -160,43 +158,73 @@
   margin-top: 0.5rem;
   padding: 0.75rem 1.25rem;
 
-  border-radius: 999px;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   font-size: 0.95rem;
-  letter-spacing: 0.04em;
 
-  background: linear-gradient(
-    180deg,
-    #19a85a,
-    #0b7c3c
-  );
+  border-radius: 999px;
+  text-decoration: none;
 
-  border: none;
-  color: #fff;
-  cursor: pointer;
+  color: #0a2e1c;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(120,255,180,0.35),
+      rgba(94,214,255,0.25)
+    );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(120,255,180,0.6);
 
   box-shadow:
-    0 6px 0 #075a2a,   /* cartoon depth */
-    0 10px 30px rgba(0,255,150,0.18);
+    0 0 20px rgba(120,255,180,0.35),
+    inset 0 0 12px rgba(120,255,180,0.25);
 
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.4s ease,
+    background 0.6s ease;
+}
+
+.page-home .home-join-form .btn::before{
+	content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    rgba(120,255,180,0.8),
+    rgba(94,214,255,0.7),
+    rgba(120,255,180,0.8)
+  );
+
+  background-size: 200% 100%;
+  z-index: -1;
+
+  filter: blur(10px);
+  opacity: 0.6;
+
+  animation: portalFormAura 6s linear infinite;
+}
+
+@keyframes portalFormAura{
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
 }
 
 /* Button hover */
 .page-home .home-join-form .btn:hover{
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+
   box-shadow:
-    0 8px 0 #075a2a,
-    0 14px 22px rgba(0,0,0,0.2);
+    0 0 35px rgba(120,255,180,0.6),
+    inset 0 0 16px rgba(120,255,180,0.35);
 }
 
-/* Button press (cartoon press-in) */
-.page-home .home-join-form .btn:active{
-  transform: translateY(2px);
-  box-shadow:
-    0 3px 0 #075a2a,
-    0 6px 10px rgba(0,0,0,0.2);
-}
 
 /* ===========================
    PORTAL SUCCESS STATE
@@ -492,12 +520,16 @@ body.page-home.has-sticky-header{
 	display: block;           /* Important */
   width: fit-content;       /* So it doesn’t stretch */
   margin: 2.5rem auto 0;    /* TRUE centering */
-
   padding: 0.75rem 1.6rem;
-  border-radius: 999px;
 
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+
+  border-radius: 999px;
+  text-decoration: none;
+
+  color: #0a2e1c;
 
   background:
     linear-gradient(
@@ -506,27 +538,54 @@ body.page-home.has-sticky-header{
       rgba(94,214,255,0.25)
     );
 
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
   border: 1px solid rgba(120,255,180,0.6);
 
-  color: #0a2e1c;
-  text-decoration: none;
-
   box-shadow:
-    0 0 18px rgba(120,255,180,0.35),
-    inset 0 0 10px rgba(120,255,180,0.25);
+    0 0 20px rgba(120,255,180,0.35),
+    inset 0 0 12px rgba(120,255,180,0.25);
 
   transition:
     transform 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.4s ease,
+    background 0.6s ease;
+}
+
+.page-home .values-section .btn-issues::before{
+	content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    rgba(120,255,180,0.8),
+    rgba(94,214,255,0.7),
+    rgba(120,255,180,0.8)
+  );
+
+  background-size: 200% 100%;
+  z-index: -1;
+
+  filter: blur(10px);
+  opacity: 0.6;
+
+  animation: portalIssuesAura 6s linear infinite;
+}
+
+@keyframes portalIssuesAura{
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
 }
 
 .page-home .btn-issues:hover{
   transform: translateY(-4px);
 
   box-shadow:
-    0 0 30px rgba(120,255,180,0.6),
-    inset 0 0 14px rgba(120,255,180,0.35);
+    0 0 35px rgba(120,255,180,0.6),
+    inset 0 0 16px rgba(120,255,180,0.35);
 }
 
 /* ===========================

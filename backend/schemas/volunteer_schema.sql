@@ -10,6 +10,8 @@
 -- - IP hash is stored as TEXT to anonymize volunteer data while still allowing for duplicate detection
 -- ================================
 
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS volunteers (
 	volunteer_id TEXT PRIMARY KEY,
 	name TEXT NOT NULL,
@@ -28,7 +30,9 @@ CREATE TABLE IF NOT EXISTS volunteers (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_email ON volunteers(email);
-CREATE INDEX IF NOT EXISTS idx_volunteers_verification_token ON volunteers(verification_token);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_verification_token ON volunteers(verification_token) WHERE verification_token IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_volunteers_verify_lookup ON volunteers(verification_token, verification_expires_at);
+CREATE INDEX IF NOT EXISTS idx_volunteers_ip_hash ON volunteers(ip_hash);
 
 CREATE TABLE IF NOT EXISTS volunteer_interests (
 	volunteer_id TEXT NOT NULL,
@@ -56,6 +60,8 @@ CREATE TABLE IF NOT EXISTS volunteer_submissions (
 	ON DELETE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS idx_volunteer_submissions_volunteer_id ON volunteer_submissions(volunteer_id);
+
 -- =====================================================
 -- Deletion Log for GDPR Compliance
 -- =====================================================
@@ -64,7 +70,8 @@ CREATE TABLE IF NOT EXISTS deletion_requests (
 	volunteer_id TEXT NOT NULL,
 	email TEXT NOT NULL,
 	type TEXT NOT NULL, -- "soft" or "hard"
-	requested_at TEXT NOT NULL
+	requested_at TEXT NOT NULL,
+	processed_at TEXT
 );
 
 -- =====================================================

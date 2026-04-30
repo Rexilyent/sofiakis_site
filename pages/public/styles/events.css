@@ -39,7 +39,6 @@
 
 /* =========================================================
    CARD (CALENDAR CONTAINER)
-   NOTE: scoped to .page-events so it won't affect other pages
    ========================================================= */
 
 .page-events .events-content .card {

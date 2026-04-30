@@ -1,16 +1,58 @@
-body.page-vote .vote-info .vote-hero-inner{
-	max-width: 800px;
-	margin: 2rem auto 0;
-	padding: 0 1.5rem;
+/* ===========================
+	 VOTE: HERO SECTION
+	 =========================== */
+.page-vote .vote-hero {
 	text-align: center;
+  margin-bottom: 2rem;
+	padding-top: 0;
 }
 
-body.page-vote .vote-info .vote-hero-inner h1{
+.page-vote .vote-hero-wrapper{
+	position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  height: 360px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+.page-vote .vote-hero-wrapper img {
+	width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  filter: grayscale(100%);
+}
+
+.page-vote .vote-hero-wrapper::after {
+	content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 102, 51, 0.55);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.page-vote .vote-hero .vote-hero-text {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.page-vote .vote-hero .vote-hero-text h1{
 	margin: 0;
-	font-size: clamp(1.8rem, 4vw, 3rem);
-	font-weight: 800;
-	line-height: 1.15;
-	color: var(--primary);
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
 /* ===========================
@@ -54,10 +96,10 @@ body.page-vote .vote-card h2{
 }
 
 body.page-vote .vote-card-icon{
-	width: 40px;
-	height: 40px;
+	width: 50px;
+	height: 50px;
 	border-radius: 999px;
-	background: var(--primary-light);
+	color: var(--primary);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -97,7 +139,7 @@ body.page-vote .vote-registration-inner h2{
   font-weight: 800;
 }
 
-/* Yellow glass CTA button */
+/* Yellow glass button */
 body.page-vote .vote-registration-btn{
   display: inline-flex;
   align-items: center;
@@ -140,31 +182,90 @@ body.page-vote .vote-registration-btn:hover{
 /* ===========================
 	 VOTE: EARLY VOTING INFO
 	 =========================== */
-body.page-vote .vote-early-info{
+body.page-vote .voting-info{
 	max-width: 800px;
 	margin: 0 auto 3rem;
 	padding: 0 1.5rem;
 	text-align: center;
 }
 
-body.page-vote .vote-early-info h2{
+body.page-vote .voting-info h2{
 	margin-bottom: 1rem;
 	color: var(--primary);
 	font-size: 1.4rem;
 	font-weight: 800;
 }
 
-body.page-vote .vote-early-info p{
+body.page-vote .voting-info p{
 	color: var(--muted);
 	line-height: 1.6;
 	margin-bottom: 1rem;
 }
 
-body.page-vote .vote-early-info ul{
+body.page-vote .voting-info ul{
 	list-style: none;
 	padding: 0;
 	margin: 0 auto;
 	max-width: 400px;
 	text-align: left;
 	color: var(--muted);
+}
+
+/* ===========================
+	 VOTE: CTA HERO
+	 =========================== */
+
+.page-vote .cta-hero{
+	text-align: center;
+	padding-top: 0;
+}
+
+.page-vote .cta-hero-wrapper{
+	position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  height: 360px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+.page-vote .cta-hero-wrapper img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 60%;
+	display: block;
+	filter: grayscale(100%);
+}
+
+.page-vote .cta-hero-wrapper::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 102, 51, 0.55);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.page-vote .cta-hero-text {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 1rem;
+	gap: 1rem;
+}
+
+.page-vote .cta-hero-text h2{
+	margin: 0;
+	color: #fff;
+	font-size: clamp(1.8rem, 4vw, 3rem);
+	font-weight: 800;
+	line-height: 1.15;
+	text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }

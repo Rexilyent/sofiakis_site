@@ -31,8 +31,9 @@
 	<header class="site-header">
     <nav class="nav">
       <div class="nav-left">
-        <div class="nav-badge"></div>
-        <span>Alexandria Sofiakis</span>
+				<a href="/index.html" class="nav-logo" aria-label="Alexandria Sofiakis Home">
+        	<img src="/assets/images/sofiakis_logo_white_txt.png" alt="Alexandria Sofiakis Logo">
+				</a>
       </div>
 
       <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
@@ -40,10 +41,15 @@
       </button>
 
       <div class="nav-links" id="nav-links">
-        <a href="/index.html">Home</a>
-        <a href="/about.html">About</a>
+        <div class="nav-dropdown">
+					<a href="/about.html" class="nav-about">About</a>
+					<div class="dropdown-menu">
+						<a href="/news/index.html" class="active">News</a>
+					</div>
+				</div>
 				<!-- Recomment this when money tracker is finished -->
 				<a href="/issues.html">Issues</a>
+				<!-- Uncomment this when money tracker is finished-->
 				<!-- <div class="nav-dropdown">
 					<a href="/issues.html" class="nav-issues">Issues</a>
 					<div class="dropdown-menu">
@@ -58,21 +64,33 @@
 						<a href="/endorsements.html">Endorsements</a>
 					</div>
 				</div>
-        <a href="/volunteer.html" >Volunteer</a>
+        <a href="/volunteer.html">Volunteer</a>
       </div>
 
       <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
 
       <div class="nav-social">
-        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+        <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" aria-label="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/SofiakisGreen" target="_blank" aria-label="Twitter">
           <i class="fab fa-twitter"></i>
         </a>
-        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+        <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" aria-label="Instagram">
           <i class="fab fa-instagram"></i>
         </a>
+				<a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" aria-label="Bluesky">
+					<img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
+				</a>
+				<!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a> -->
+				<a href="https://www.discord.com/alexandriaforil" target="_blank" aria-label="Discord">
+					<i class="fab fa-discord"></i>
+				</a>
       </div>
     </nav>
   </header>
@@ -98,24 +116,24 @@
 	<!-- Shared site footer-->
   <footer class="site-footer">
     <div class="footer-social" aria-label="Footer Social Links">
-      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
         <i class="fab fa-facebook-f"></i>
       </a>
-      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+      <a href="https://x.com/SofiakisGreen" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
         <i class="fab fa-twitter"></i>
       </a>
-      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
-      <a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+      <a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
         <i class="fab fa-youtube"></i>
       </a>
-      <a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
-        <i class="fab fa-bluesky"></i>
+      <a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+        <img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
       </a>
-      <a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+      <!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
         <i class="fab fa-tiktok"></i>
-      </a>
+      </a> -->
       <a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
         <i class="fab fa-discord"></i>
       </a>

@@ -26,13 +26,13 @@
 		<link rel="stylesheet" href="/styles/vote.css">
 </head>
 <body class="page-vote">
-	<body class="page-money-tracker">
 	<!-- Shared site header -->
 	<header class="site-header">
     <nav class="nav">
       <div class="nav-left">
-        <div class="nav-badge"></div>
-        <span>Alexandria Sofiakis</span>
+				<a href="/index.html" class="nav-logo" aria-label="Alexandria Sofiakis Home">
+        	<img src="/assets/images/sofiakis_logo_white_txt.png" alt="Alexandria Sofiakis Logo">
+				</a>
       </div>
 
       <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
@@ -40,7 +40,6 @@
       </button>
 
       <div class="nav-links" id="nav-links">
-        <a href="/index.html">Home</a>
         <div class="nav-dropdown">
 					<a href="/about.html" class="nav-about">About</a>
 					<div class="dropdown-menu">
@@ -64,28 +63,30 @@
 						<a href="/endorsements.html">Endorsements</a>
 					</div>
 				</div>
-        <a href="/volunteer.html" >Volunteer</a>
+        <a href="/volunteer.html">Volunteer</a>
       </div>
 
-			<div class="nav-social">
-        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+      <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
+
+      <div class="nav-social">
+        <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" aria-label="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/SofiakisGreen" target="_blank" aria-label="Twitter">
           <i class="fab fa-twitter"></i>
         </a>
-        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+        <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" aria-label="Instagram">
           <i class="fab fa-instagram"></i>
         </a>
-				<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" aria-label="YouTube">
+				<a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" aria-label="YouTube">
 					<i class="fab fa-youtube"></i>
 				</a>
-				<a href="https://www.bluesky.com/alexandriaforil" target="_blank" aria-label="Bluesky">
-					<i class="fab fa-bluesky"></i>
+				<a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" aria-label="Bluesky">
+					<img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
 				</a>
-				<a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
+				<!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
 					<i class="fab fa-tiktok"></i>
-				</a>
+				</a> -->
 				<a href="https://www.discord.com/alexandriaforil" target="_blank" aria-label="Discord">
 					<i class="fab fa-discord"></i>
 				</a>
@@ -95,9 +96,12 @@
 
 	<!-- Main Content -->
 	<main class="vote-content">
-		<section class="vote-info" aria-label="Voting Information for IL-10">
-			<div class="vote-hero-inner">
-				<h1>Vote in IL-10</h1>
+		<section class="vote-hero" aria-label="Voting Information for IL-10">
+			<div class="vote-hero-wrapper">
+				<img src="/assets/images/vote_banner.jpg" alt="Voting Hero Image" class="vote-hero-image">
+				<div class="vote-hero-text">
+					<h1>Vote in IL-10</h1>
+				</div>
 			</div>
 		</section>
 
@@ -106,7 +110,7 @@
 			<!-- Ways to Vote 1-->
 			<div class="vote-card">
 				<div class="vote-card-icon">
-					<i class="fas fa-envelope"></i>
+					<i class="fas fa-envelope fa-3x"></i>
 				</div>
 
 				<div class="title-container">
@@ -114,7 +118,7 @@
 				</div>
 
 				<div class="description">
-					Request your mail-in ballot by 2/5/26. Mail-in voting begins 40 days before Election Day. Mailed ballots must be postmarked no later than election day and received within 14 days of Election Day.
+					You can request a mail-in ballot up to 5 days before the General Election. Applications can be submitted online, by mail, or in person at your local election office.
 				</div>
 
 				<div class="link">
@@ -125,7 +129,7 @@
 			<!-- Ways to Vote 2-->
 			<div class="vote-card">
 				<div class="vote-card-icon">
-					<i class="fas fa-box-check"></i>
+					<i class="fa-solid fa-check-to-slot fa-3x"></i>
 				</div>
 
 				<div class="title-container">
@@ -133,7 +137,8 @@
 				</div>
 
 				<div class="description">
-					Early voting begins 40 days before Election Day. You can vote at any early voting location in your county.
+					Early voting begins September 24, 2026. You can vote at any early voting location in your county.
+					Make sure to bring a valid ID with you when you go to vote early.
 				</div>
 
 				<div class="link">
@@ -144,7 +149,7 @@
 			<!-- Ways to Vote 3-->
 			<div class="vote-card">
 				<div class="vote-card-icon">
-					<i class="fas fa-person-booth"></i>
+					<i class="fas fa-person-booth fa-3x"></i>
 				</div>
 
 				<div class="title-container">
@@ -166,33 +171,63 @@
 			</div>
 		</section>
 
-		<section class="vote-early-info">
+		<section class="voting-info mail-info">
+			<article class="vote-mail-info-inner" id="voting-info-mail">
+				<h2>Vote by Mail Information</h2>
+				<p>
+					In Illinois, you can request a mail-in ballot up to 5 days before the General Election. 
+					Applications can be submitted online, by mail, or in person at your local election office.
+					You do not need to provide a reason for requesting a mail-in ballot as this requirement was removed in 2009.
+				</p>
+				<p><strong>
+					Mail-in ballot Application Deadlines and Instructions:
+				</strong></p>
+				<ul>
+					<li><strong>Deadline to Request:</strong> 5 days before Election Day</li>
+					<li><strong>How to Apply:</strong> Online, by mail, or in person at your local election office</li>
+					<li><strong>Return Method:</strong> Mail or drop off at designated locations</li>
+				</ul>
+				<p><strong>
+					Completed mail-in ballots must be postmarked by Election Day and received within 14 days after the election to be counted.
+				</strong></p>
+				<p>
+					For more information on how to request a mail-in ballot and important deadlines, visit the <strong>
+					<a href="https://www.elections.il.gov/InformationForVoters.aspx?MID=I0cuvBFuZRw%3d" target="_blank" rel="noopener noreferrer">Illinois State Board of Elections</a> website.</strong>
+				</p>
+			</article>
+		</section>
+
+
+		<section class="voting-info early-info">
 			<article class="vote-early-info-inner" id="voting-info-early">
 				<h2>Early In-Person Voting Information</h2>
 				<p>
-					Early voting in Illinois begins 40 days before Election Day. You can vote at any early voting location in your county.
+					Early voting in Illinois begins September 24, 2026. You can vote at any early voting location in your county.
 					Make sure to bring a valid ID with you when you go to vote early.
 				</p>
 				<p>
 
 				</p>
 				<ul>
-					<li><strong>When:</strong> Starts 40 days before Election Day</li>
+					<li><strong>When:</strong> September 24, 2026 - November 2, 2026</li>
 					<li><strong>Where:</strong> Any early voting location in your county</li>
 					<li><strong>ID Requirements:</strong> Valid government-issued ID</li>
 				</ul>
 				<p>
 					For more information on early voting locations and hours, visit the <strong>
-					<a href="https://www.elections.il.gov/" target="_blank" rel="noopener noreferrer">Illinois State Board of Elections</a> website.</strong>
+					<a href="https://ova.elections.il.gov/PollingPlaceLookup.aspx" target="_blank" rel="noopener noreferrer">Illinois State Board of Elections</a> website.</strong>
 				</p>
 			</article>
 		</section>
 
 		<!-- Call to Action Section -->
 		<section class="cta-hero" aria-label="Get Involved in IL-10">
-			<div class="cta-hero-inner">
-				<h2>Your Voice Matters in IL-10</h2>
-				<a class="cta-hero-btn" href="/volunteer.html">Get Involved</a>
+			<div class="cta-hero-wrapper">
+				<img src="/assets/images/volunteer_banner.jpg" alt="Volunteer Hero Image">
+				<div class="cta-hero-text">
+					<h2>Your Voice Matters in IL-10</h2>
+					<a class="cta-hero-btn" href="/volunteer.html">Get Involved</a>
+				</div>
 			</div>
 		</section>
 	</main>
@@ -200,24 +235,24 @@
 	<!-- Shared site footer -->
   <footer class="site-footer">
     <div class="footer-social" aria-label="Footer Social Links">
-      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
         <i class="fab fa-facebook-f"></i>
       </a>
-      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+      <a href="https://x.com/SofiakisGreen" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
         <i class="fab fa-twitter"></i>
       </a>
-      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
-			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+			<a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
 				<i class="fab fa-youtube"></i>
 			</a>
-			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
-				<i class="fab fa-bluesky"></i>
+			<a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
 			</a>
-			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+			<!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
 				<i class="fab fa-tiktok"></i>
-			</a>
+			</a> -->
 			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
 				<i class="fab fa-discord"></i>
 			</a>

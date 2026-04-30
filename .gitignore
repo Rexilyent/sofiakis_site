@@ -23,6 +23,24 @@ Thumbs.db
 # Logs
 *.log
 
+# HTML
+money_tracker.html
+contact.html
+donate.html
+
+# CSS
+money-tracker.css
+contact.css
+
+# JS
+money-tracker.js
+
+# Photoshop files
+*.psd
+
+# Illustrator files
+*.ai
+
 # FEC Bulk Data
 bulk_fec/
 

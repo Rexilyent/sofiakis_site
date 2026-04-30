@@ -2,9 +2,25 @@
 // VOLUNTEER FORM SCRIPT
 // =====================================
 // Handles dropdowns, Turnstile integration, and form submission for volunteer sign-up forms.
-// Designed to be reusable across multiple forms with different configurations.
+// Designed to be reusable across multiple forms
 // Note: This script assumes a certain HTML structure for the forms. Make sure to follow the
 // expected structure for dropdowns and form fields for it to work correctly.
+//
+// Expected HTML structure for dropdowns:
+//
+// ~~~~~~~~ Interests Dropdown ~~~~~~~~
+// <div class="interest-dropdown">
+//   <button type="button" class="interest-dropdown-btn">
+//     <span class="interest-btn-text">Select interests</span>
+//   </button>
+//   <div class="interest-dropdown-menu">
+//
+// ~~~~~~~~ Languages Dropdown ~~~~~~~~
+// <div class="language-dropdown">
+//   <button type="button" class="language-dropdown-btn">
+//     <span class="language-btn-text">Select languages</span>
+//   </button>
+//   <div class="language-dropdown-menu">
 
 // ====================================
 // CONFIG
@@ -280,8 +296,14 @@ async function submitVolunteer(payload) {
     body: JSON.stringify(payload)
   });
 
-  if (!res.ok) throw new Error("Submission failed");
-  return res.json();
+  const data = await res.json();
+
+	if (!res.ok) {
+		console.error("API Error:", data);
+		throw new Error(data.error || "Submission failed");
+	}
+
+	return data;
 }
 
 // =====================================================
@@ -398,6 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
   forms.forEach(form => {
 
 		let hasSubmitted = false; // Flag to prevent multiple submissions
+		const submitBtn = form.querySelector('button[type="submit"]');
 
     // 🔹 Detect if this form has dropdown sections
     const hasInterestDropdown = form.querySelector(".interest-dropdown");

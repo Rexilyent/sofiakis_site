@@ -4,6 +4,7 @@ export async function onRequestPost(context: {
     CORE_DB?: any;
     TURNSTILE_SECRET_KEY?: string;
     APP_ENV?: string;
+		RESEND_API_KEY?: string;
   };
 }) {
   const { request, env } = context;
@@ -81,20 +82,16 @@ export async function onRequestPost(context: {
     // -----------------------------
     if (env.APP_ENV === "development") {
       console.log("DEV MODE submission:", body);
-      return Response.json({
-        success: true,
-        message: "DEV MODE: Submission received (not stored)."
-      });
     }
 
     if (!env.CORE_DB) {
       return jsonError("CORE_DB not configured", 500);
     }
 
-    const now = new Date().toISOString();
-    const volunteerId = crypto.randomUUID();
-    const submissionId = crypto.randomUUID();
+		console.log("CORE_DB:", env.CORE_DB);
 
+		let volunteerId;
+    const now = new Date().toISOString();
     const ip = request.headers.get("CF-Connecting-IP") || "";
     const ipHash = await sha256(ip);
     const rawPayloadHash = await sha256(JSON.stringify(body));
@@ -102,70 +99,87 @@ export async function onRequestPost(context: {
     // -----------------------------
     // Insert Volunteer
     // -----------------------------
-    await env.CORE_DB.prepare(
-      `
-      INSERT OR IGNORE INTO volunteers (
-        volunteer_id,
-        name,
-        email,
-        phone,
-        zip,
-        consent,
-        source_form,
-        ip_hash,
-        created_at,
-        updated_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
-    )
-      .bind(
-        volunteerId,
-        name.trim(),
-        email.trim().toLowerCase(),
-        phone?.trim() || null,
-        zip.trim(),
-        1,
-        form_type || "unknown",
-        ipHash,
-        now,
-        now
-      )
-      .run();
+    const existing = await env.CORE_DB
+			.prepare(`SELECT volunteer_id FROM volunteers WHERE email = ?`)
+			.bind(email.trim().toLowerCase())
+			.first();
+
+		if (existing?.volunteer_id) {
+			volunteerId = existing.volunteer_id;
+		} else {
+			volunteerId = crypto.randomUUID();
+			
+			await env.CORE_DB.prepare(
+      	`
+      	INSERT OR IGNORE INTO volunteers (
+        	volunteer_id,
+        	name,
+        	email,
+        	phone,
+        	zip,
+        	consent,
+        	source_form,
+        	ip_hash,
+        	created_at,
+        	updated_at
+      	)
+      	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      	`
+    	)
+      	.bind(
+        	volunteerId,
+        	name.trim(),
+        	email.trim().toLowerCase(),
+        	phone?.trim() || null,
+        	zip.trim(),
+        	1,
+        	form_type || "unknown",
+        	ipHash,
+        	now,
+        	now
+      	)
+      	.run();
+		}
 
     // -----------------------------
     // Insert Interests
     // -----------------------------
-    for (const interest of safeInterests) {
-      await env.CORE_DB.prepare(
-        `
-        INSERT OR IGNORE INTO volunteer_interests (
-          volunteer_id,
-          interest
-        )
-        VALUES (?, ?)
-        `
-      )
-        .bind(volunteerId, interest)
-        .run();
-    }
+		if(safeInterests.length > 0) {
+    	for (const interest of safeInterests) {
+      	await env.CORE_DB.prepare(
+        	`
+        	INSERT OR IGNORE INTO volunteer_interests (
+          	volunteer_id,
+          	interest
+        	)
+        	VALUES (?, ?)
+        	`
+      	)
+        	.bind(volunteerId, interest)
+        	.run();
+    	}
+		}
 
     // -----------------------------
     // Insert Languages
     // -----------------------------
-    for (const language of safeLanguages) {
-      await env.CORE_DB.prepare(
-        `
-        INSERT OR IGNORE INTO volunteer_languages (
-          volunteer_id,
-          language
-        )
-        VALUES (?, ?)
-        `
-      )
-        .bind(volunteerId, language)
-        .run();
-    }
+		if(safeLanguages.length > 0) {
+    	for (const language of safeLanguages) {
+      	await env.CORE_DB.prepare(
+        	`
+        	INSERT OR IGNORE INTO volunteer_languages (
+          	volunteer_id,
+          	language
+        	)
+        	VALUES (?, ?)
+        	`
+      	)
+        	.bind(volunteerId, language)
+        	.run();
+    	}
+		}
+
+		const submissionId = crypto.randomUUID();
 
     // -----------------------------
     // Insert Submission Record
@@ -224,8 +238,18 @@ export async function onRequestPost(context: {
 
   } catch (error) {
     console.error("Volunteer submission error:", error);
-    return jsonError("Internal server error", 500);
-  }
+    
+		const message =
+			error instanceof Error ? error.message : "Internal Server Error";
+
+		return new Response(
+			JSON.stringify({ error: message }),
+			{
+				status: 500,
+				headers: { "Content-Type": "application/json" }
+			}
+		);
+	}
 }
 
 // -----------------------------

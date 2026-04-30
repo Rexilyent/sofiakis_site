@@ -1,0 +1,14 @@
+{
+	"name": "sofiakis_site",
+	"version": "0.0.1",
+	"description": "Official campaign website for Alexandria Sofiakis, candidate for Illinois’ 10th Congressional District.",
+	"private": true,
+	"scripts": {
+		"build-news": "node backend/tools/build-news-index.js",
+		"dev": "npm run build-news && wrangler pages dev public"
+	},
+	
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260228.0"
+  }
+}

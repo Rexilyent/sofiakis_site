@@ -161,7 +161,7 @@
 	 Anti-Endorsements section
 	 =========================== */
 .page-endorsements .anti-endorsements {
-	background: rgba(0, 128, 55, 0.35);
+	background: rgba(0, 128, 55, 0.75);
 	padding: 2rem 1.5rem;
 }
 
@@ -170,4 +170,75 @@
 	max-width: 1100px;
 	padding: 1.5rem;
 	text-align: center;
+}
+
+.page-endorsements .anti-endorsement-header h2 {
+	color: var(--accent);
+	font-size: 2.5rem;
+	font-weight: 800;
+	margin-bottom: 0.5rem;
+}
+
+.page-endorsements .anti-endorsement-header p {
+	font-size: 1.1rem;
+	color: white;
+	margin-top: 0;
+}
+
+.page-endorsements .anti-endorsement-cards {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(260px, 320px));
+	justify-content: center;
+	gap: 1.2rem;
+	margin-top: 1.2rem;
+	align-self: start;
+}
+
+.page-endorsements .anti-endorsement-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+
+	gap: 0.8rem;
+}
+
+.page-endorsements .anti-endorsement-icon {
+	width: 200px;
+	height: 200px;
+	overflow: hidden;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-endorsements .anti-endorsement-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.page-endorsements .anti-endorsement-card .title-container {
+	font-size: 2rem;
+	font-weight: 600;
+	color: var(--accent);
+}
+
+.page-endorsements .anti-endorsement-card .description {
+	font-size: 0.95rem;
+	color: white;
+	margin: 0;
+}
+
+@media (max-width: 900px) {
+	.page-endorsements .anti-endorsement-cards {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 600px) {
+	.page-endorsements .anti-endorsement-cards {
+		grid-template-columns: repeat(1, 1fr);
+	}
 }

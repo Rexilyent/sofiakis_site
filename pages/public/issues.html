@@ -30,8 +30,11 @@
 	<header class="site-header">
     <nav class="nav">
       <div class="nav-left">
-        <div class="nav-badge"></div>
-        <span>Alexandria Sofiakis</span>
+        <div class="nav-left">
+					<a href="/index.html" class="nav-logo" aria-label="Alexandria Sofiakis Home">
+        		<img src="/assets/images/sofiakis_logo_white_txt.png" alt="Alexandria Sofiakis Logo">
+					</a>
+      	</div>
       </div>
 
       <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
@@ -39,7 +42,6 @@
       </button>
 
       <div class="nav-links" id="nav-links">
-        <a href="/index.html" >Home</a>
         <div class="nav-dropdown">
 					<a href="/about.html" class="nav-about">About</a>
 					<div class="dropdown-menu">
@@ -68,24 +70,24 @@
       <!-- <button class="nav-cta" onclick="window.location='donate.html'">Donate</button> -->
 
       <div class="nav-social">
-        <a href="https://www.facebook.com/alexandriaforil10" target="_blank" aria-label="Facebook">
+        <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" aria-label="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="https://twitter.com/alexandriaforil" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/SofiakisGreen" target="_blank" aria-label="Twitter">
           <i class="fab fa-twitter"></i>
         </a>
-        <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" aria-label="Instagram">
+        <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" aria-label="Instagram">
           <i class="fab fa-instagram"></i>
         </a>
-				<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" aria-label="YouTube">
+				<a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" aria-label="YouTube">
 					<i class="fab fa-youtube"></i>
 				</a>
-				<a href="https://www.bluesky.com/alexandriaforil" target="_blank" aria-label="Bluesky">
-					<i class="fab fa-bluesky"></i>
+				<a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" aria-label="Bluesky">
+					<img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
 				</a>
-				<a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
+				<!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" aria-label="TikTok">
 					<i class="fab fa-tiktok"></i>
-				</a>
+				</a> -->
 				<a href="https://www.discord.com/alexandriaforil" target="_blank" aria-label="Discord">
 					<i class="fab fa-discord"></i>
 				</a>
@@ -106,7 +108,7 @@
       <!-- Healthcare -->
       <div class="issue-card">
         <div class="issue-icon">
-          <i class="fas fa-notes-medical"></i>
+          <i class="fas fa-notes-medical fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Medicare for All</h4>
@@ -125,7 +127,7 @@
       <!-- Housing -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/housing.jpg" alt="Housing icon" />
+          <i class="fa-solid fa-house-chimney fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Housing as a Human Right</h4>
@@ -144,7 +146,7 @@
       <!-- Climate / Green New Deal -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/green-new-deal.jpg" alt="Climate icon" />
+          <i class="fa-solid fa-tree-city fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Green New Deal</h4>
@@ -163,7 +165,7 @@
       <!-- Agriculture -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/Agriculture.jpg" alt="Agriculture icon" />
+          <i class="fa-solid fa-tractor fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Agriculture</h4>
@@ -183,7 +185,7 @@
       <!-- This Card will also house the unions section -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/workers.jpg" alt="Workers icon" />
+          <i class="fa-solid fa-building fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Justice for Workers & Small Businesses</h4>
@@ -203,7 +205,7 @@
       <!-- Criminal Justice Reform -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/criminaljustice.jpg" alt="Criminal Justice icon" />
+          <i class="fa-solid fa-handcuffs fa-3x"></i>
         </div>
       	<div class="title-container">
         	<h4 class="title">Criminal Justice Reform</h4>
@@ -222,7 +224,7 @@
       <!-- Education -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/education.jpg" alt="Education icon" />
+          <i class="fa-solid fa-graduation-cap fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Education</h4>
@@ -241,7 +243,7 @@
       <!-- Environmental Protection -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/environmental.jpg" alt="Environmental icon" />
+          <i class="fa-solid fa-tree fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Environmental Protection</h4>
@@ -260,7 +262,7 @@
       <!-- Human Rights -->
       <div class="issue-card">
         <div class="issue-icon">
-      		<img class="icon" src="/images/humanrights.jpg" alt="Human Rights icon" />
+      		<i class="fa-solid fa-person fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Human Rights</h4>
@@ -279,7 +281,7 @@
       <!-- Immigration Reform -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/immigration.jpg" alt="Immigration icon" />
+          <i class="fa-solid fa-passport fa-3x"></i>
         </div>
         <div class="title-container">
         	<h4 class="title">Immigration Reform</h4>
@@ -298,7 +300,7 @@
       <!-- International Relations -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/international.jpg" alt="international icon" />
+          <i class="fa-solid fa-globe fa-3x"></i>
         </div>
       	<div class="title-container">
           <h4 class="title">International Relations</h4>
@@ -317,7 +319,7 @@
       <!-- Public Transit -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/publictransit.jpg" alt="Public Transit icon" />
+          <i class="fa-solid fa-train-subway fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Public Transit</h4>
@@ -336,7 +338,7 @@
       <!-- Reproductive Rights -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/reproductiverights.jpg" alt="Reproductive Rights icon" />
+          <i class="fa-solid fa-baby fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">Reproductive Rights</h4>
@@ -355,7 +357,7 @@
       <!-- Democracy Revitalization -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/Revitalization.jpg" alt="Revitalization icon" />
+          <i class="fa-solid fa-flag-usa fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">R.A.D (Revitalizate American Democracy)</h4>
@@ -374,7 +376,7 @@
       <!-- LGBTQ+ Rights -->
       <div class="issue-card">
         <div class="issue-icon">
-          <img class="icon" src="/images/lgbtq.jpg" alt="LGBTQ+ icon" />
+          <i class="fa-solid fa-transgender fa-3x"></i>
         </div>
         <div class="title-container">
           <h4 class="title">LGBTQ+ Rights</h4>
@@ -2462,24 +2464,24 @@
   <!-- Shared site footer -->
   <footer class="site-footer">
     <div class="footer-social" aria-label="Footer Social Links">
-      <a href="https://www.facebook.com/alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
         <i class="fab fa-facebook-f"></i>
       </a>
-      <a href="https://twitter.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+      <a href="https://x.com/SofiakisGreen" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
         <i class="fab fa-twitter"></i>
       </a>
-      <a href="https://www.instagram.com/alexandriaforil10/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
-			<a href="https://www.youtube.com/@alexandriaforil10" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+			<a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
 				<i class="fab fa-youtube"></i>
 			</a>
-			<a href="https://www.bluesky.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
-				<i class="fab fa-bluesky"></i>
+			<a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+				<img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
 			</a>
-			<a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+			<!-- <a href="https://www.tiktok.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
 				<i class="fab fa-tiktok"></i>
-			</a>
+			</a> -->
 			<a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
 				<i class="fab fa-discord"></i>
 			</a>

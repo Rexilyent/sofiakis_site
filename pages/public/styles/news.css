@@ -149,3 +149,15 @@
 .page-news-article .share-btn:hover {
   background: rgba(255,255,255,0.3);
 }
+
+.page-news-article .article-content {
+	max-width: 1100px;
+	margin: 2rem auto 3rem;
+	padding: 0 1.5rem;
+	color: var(--muted);
+	line-height: 1.75;
+}
+
+.page-news-article .article-content p {
+	margin: 0 0 1.25rem;
+}

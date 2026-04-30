@@ -3,11 +3,8 @@
    PAGE LAYOUT
    ========================================================= */
 .page-il10 .il10-content {
-  max-width: 1100px;
-  margin: 0 auto;
   padding-left: 1.5rem;
 	padding-right: 1.5rem;
-	padding-bottom: 1.5rem;
 }
 
 /* =========================================================
@@ -69,6 +66,54 @@
 }
 
 /* ===========================
+		INFOGRAPHIC SECTION
+	 =========================== */
+.page-il10 .il10-infographics {
+	margin: 0 auto;
+	padding: 1.5rem;
+}
+
+.page-il10 .infographic-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 1.5rem;
+}
+
+.page-il10 .infographic-card {
+	position: relative;
+	padding: 0 1.2rem;
+  text-align: center;
+}
+
+.page-il10 .infographic-card:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -0.75rem;
+  top: 15%;
+  height: 80%;
+  width: 2px;
+  background: linear-gradient(
+  	to bottom,
+  	transparent,
+  	rgba(0,128,55,0.35),
+  	transparent
+	);
+}
+
+.page-il10 .infographic-card h3 {
+	font-size: 1.5rem;
+	font-weight: 800;
+	color: var(--primary);
+	margin: 0 0 0.5rem;
+}
+
+.page-il10 .infographic-card p {
+	font-size: 1rem;
+	color: var(--muted);
+	margin: 0;
+}
+
+/* ===========================
    IL-10 DISTRICT MAP SECTION
    =========================== */
 
@@ -106,12 +151,11 @@
 
 /* Selected district label */
 .page-il10 .district-label.is-selected {
-  background: rgba(0, 128, 55, 0.92); /* campaign green */
+  background: rgba(0, 128, 55, 0.92);
   color: #fff;
   border-color: rgba(0, 90, 35, 1);
 }
 
-/* Slightly smaller on phones */
 @media (max-width: 520px) {
   .page-il10 .district-label {
     font-size: 0.75rem;
@@ -121,7 +165,7 @@
 
 /* Highlight label for IL-10 */
 .page-il10 .district-label.is-target {
-  background: rgba(0, 128, 55, 0.92); /* campaign green */
+  background: rgba(0, 128, 55, 0.92);
   color: #fff;
   border-color: rgba(0, 90, 35, 1);
 }
@@ -142,7 +186,11 @@
   gap: 0.4rem;
 } */
 
-body.page-il10 .il10-body { margin-top: 1.25rem; }
+body.page-il10 .il10-body { 
+	margin: 0 auto;
+	max-width: 1100px;
+	padding: 1.5rem;
+}
 body.page-il10 .il10-body-header { margin-bottom: 1rem; }
 
 body.page-il10 .il10-body-header h2{
