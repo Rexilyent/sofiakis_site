@@ -26,7 +26,7 @@
 // CONFIG
 // ====================================
 
-const TURNSTILE_SITE_KEY = "0x4AAAAAACgWogBl9vBAjHlb"; // Dev key, replace with prod key in production
+const TURNSTILE_SITE_KEY = "0x4AAAAAADGm0uPo8ej66jcz";
 const API_BASE = "/api";
 
 // ====================================
