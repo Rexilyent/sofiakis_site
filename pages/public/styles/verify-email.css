@@ -1,0 +1,69 @@
+.verify-page {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.verify-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+}
+
+.verify-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.verify-card h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.verify-card p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.verify-card .btn {
+  display: inline-block;
+  margin-top: 1.75rem;
+  padding: 0.8rem 2rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.verify-card .btn:hover {
+  background: var(--primary-light);
+}
+
+/* Status-specific colors */
+.status-success .verify-icon { color: var(--primary); }
+.status-success h1             { color: var(--primary); }
+
+.status-already .verify-icon { color: var(--primary-light); }
+.status-already h1            { color: var(--primary-light); }
+
+.status-expired .verify-icon { color: #e6a817; }
+.status-expired h1            { color: #e6a817; }
+
+.status-invalid .verify-icon { color: #cc3333; }
+.status-invalid h1            { color: #cc3333; }
+
+.status-error .verify-icon { color: #cc3333; }
+.status-error h1            { color: #cc3333; }

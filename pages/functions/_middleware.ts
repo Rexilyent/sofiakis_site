@@ -1,6 +1,6 @@
 export async function onRequest(context: {
   request: Request;
-  env: { DB?: any; APP_ENV?: string };
+  env: { CORE_DB?: any; APP_ENV?: string };
   next: () => Promise<Response>;
 }) {
   const { request, env, next } = context;
@@ -17,7 +17,7 @@ export async function onRequest(context: {
     return next();
   }
 
-  if (!env.DB) {
+  if (!env.CORE_DB) {
     return next(); // fail-open if DB not available
   }
 
@@ -30,14 +30,14 @@ export async function onRequest(context: {
   const now = Date.now();
   const windowMs = WINDOW_SECONDS * 1000;
 
-  const existing = await env.DB.prepare(
+  const existing = await env.CORE_DB.prepare(
     `SELECT count, window_start FROM rate_limits WHERE key = ?`
   )
     .bind(key)
     .first();
 
   if (!existing) {
-    await env.DB.prepare(
+    await env.CORE_DB.prepare(
       `INSERT INTO rate_limits (key, count, window_start)
        VALUES (?, ?, ?)`
     )
@@ -50,7 +50,7 @@ export async function onRequest(context: {
   const windowStart = new Date(existing.window_start).getTime();
 
   if (now - windowStart > windowMs) {
-    await env.DB.prepare(
+    await env.CORE_DB.prepare(
       `UPDATE rate_limits
        SET count = ?, window_start = ?
        WHERE key = ?`
@@ -74,7 +74,7 @@ export async function onRequest(context: {
     );
   }
 
-  await env.DB.prepare(
+  await env.CORE_DB.prepare(
     `UPDATE rate_limits SET count = count + 1 WHERE key = ?`
   )
     .bind(key)

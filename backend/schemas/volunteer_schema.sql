@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
 	zip TEXT NOT NULL,
 	consent BOOLEAN NOT NULL DEFAULT 0,
 	email_verified BOOLEAN NOT NULL DEFAULT 0,
-	verification_token TEXT,
-	verification_expires_at TEXT,
+	email_verified_at TEXT,
 	source_form TEXT NOT NULL,
 	ip_hash TEXT NOT NULL,
 	created_at TEXT NOT NULL,
@@ -30,8 +29,6 @@ CREATE TABLE IF NOT EXISTS volunteers (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_email ON volunteers(email);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_verification_token ON volunteers(verification_token) WHERE verification_token IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_volunteers_verify_lookup ON volunteers(verification_token, verification_expires_at);
 CREATE INDEX IF NOT EXISTS idx_volunteers_ip_hash ON volunteers(ip_hash);
 
 CREATE TABLE IF NOT EXISTS volunteer_interests (
@@ -55,6 +52,7 @@ CREATE TABLE IF NOT EXISTS volunteer_submissions (
 	volunteer_id TEXT NOT NULL,
 	form_type TEXT NOT NULL,
 	submitted_at TEXT NOT NULL,
+	verification_expires_at TEXT,
 	raw_payload_hash TEXT NOT NULL,
 	FOREIGN KEY (volunteer_id) REFERENCES volunteers(volunteer_id)
 	ON DELETE CASCADE

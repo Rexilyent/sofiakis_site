@@ -26,7 +26,7 @@
 // CONFIG
 // ====================================
 
-const TURNSTILE_SITE_KEY = "0x4AAAAAADGm0uPo8ej66jcz";
+const TURNSTILE_SITE_KEY = "0x4AAAAAACgWogBl9vBAjHlb"; // Dev key, replace with prod key in production
 const API_BASE = "/api";
 
 // ====================================
@@ -340,13 +340,13 @@ function showHomepagePortalSuccess(form) {
 	// Update header text
 	header.textContent = "Welcome to the Movement ✨";
 
-	// Creat centered message
+	// Create centered message
 	const successMessage = document.createElement("div");
 	successMessage.className = "portal-success-message";
 	successMessage.innerHTML = `
-		<p>You're officially part of Alexandria’s grassroots campaign.</p>
-    <p>We'll be reaching out soon.</p>
-		<p>In the meantime, help someone else cross over.</p>
+		<p>You’re almost in — check your inbox to confirm your email and complete your sign-up.</p>
+		<p style="font-size:0.9rem;opacity:0.8;">The confirmation link expires in 24 hours. Check your spam if you don’t see it.</p>
+		<p style="margin-top:0.75rem;">In the meantime, help someone else through the portal.</p>
 
 		<button class="portal-share-btn">
 			Bring Someone Through
@@ -395,9 +395,11 @@ function showSuccessState(form) {
 	const successBox = document.createElement("div");
 	successBox.className ="form-success-state";
 	successBox.innerHTML = `
-		<div class="success-icon">✓</div>
-		<h2>Thank you for signing up to volunteer!</h2>
-		<p>We'll be in touch with more information soon.</p>
+		<div class="success-icon">✉️</div>
+		<h2>Almost there — check your inbox!</h2>
+		<p>We've sent a confirmation email to the address you provided.</p>
+		<p>Please click the link in that email to complete your sign-up. The link will expire in <strong>24 hours</strong>.</p>
+		<p style="margin-top:0.75rem;font-size:0.9rem;color:var(--muted);">Don't see it? Check your spam or junk folder.</p>
 	`;
 	form.appendChild(successBox);
 

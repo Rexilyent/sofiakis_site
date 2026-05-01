@@ -1,7 +1,7 @@
 export async function onRequestPost(context: {
   request: Request;
   env: {
-    MONEY_DB: D1Database;
+    CORE_DB: D1Database;
     TURNSTILE_SECRET_KEY?: string;
     ALLOW_HARD_DELETE?: string;
     ADMIN_DELETE_KEY?: string;
@@ -45,7 +45,7 @@ export async function onRequestPost(context: {
     // Find Volunteer
     // ==============================
 
-    const volunteer = await env.MONEY_DB.prepare(`
+    const volunteer = await env.CORE_DB.prepare(`
       SELECT volunteer_id FROM volunteers
       WHERE email = ?
     `)
@@ -71,7 +71,7 @@ export async function onRequestPost(context: {
         return jsonError("Unauthorized hard delete attempt", 403);
       }
 
-      await env.MONEY_DB.prepare(`
+      await env.CORE_DB.prepare(`
 				DELETE FROM volunteers WHERE volunteer_id = ?
       `)
       .bind(volunteerId)
@@ -89,7 +89,7 @@ export async function onRequestPost(context: {
     // SOFT DELETE (Default)
     // ==============================
 
-    await env.MONEY_DB.prepare(`
+    await env.CORE_DB.prepare(`
       UPDATE volunteers
       SET deleted_at = datetime('now'),
           updated_at = datetime('now')
@@ -116,7 +116,7 @@ async function logDeletion(
   email: string,
   type: "soft" | "hard"
 ) {
-  await env.MONEY_DB.prepare(`
+  await env.CORE_DB.prepare(`
     INSERT INTO deletion_requests
     (request_id, volunteer_id, email, type, requested_at)
     VALUES (?, ?, ?, ?, datetime('now'))
