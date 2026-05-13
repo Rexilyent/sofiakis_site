@@ -7,8 +7,8 @@
 		"build-news": "node backend/tools/build-news-index.js",
 		"dev": "npm run build-news && wrangler pages dev public"
 	},
-	
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260228.0"
-  }
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20260503.1",
+		"wrangler": "^4.87.0"
+	}
 }

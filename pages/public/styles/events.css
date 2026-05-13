@@ -374,3 +374,46 @@
 .leaflet-popup-tip {
   background: rgba(255, 255, 255, 0.85);
 }
+/* ===========================
+   EVENTS: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 600px) {
+
+  /* Stack calendar header controls vertically */
+  .page-events .events-content .card .calendar-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .page-events .events-content .card .calendar-header .header-right {
+    justify-content: flex-start;
+  }
+
+  /* Filters wrap naturally — give them more room */
+  .page-events .events-content .card .calendar-header .filters {
+    justify-content: flex-start;
+  }
+
+  /* Reduce calendar view height on small screens */
+  .page-events .events-content .card .fc .fc-view-harness {
+    min-height: 400px;
+  }
+
+  /* Event popup — prevent overflow beyond screen width */
+  .event-popup {
+    width: calc(100vw - 2rem);
+    max-width: 100%;
+  }
+
+  /* Map height reduced on mobile */
+  #eventMap {
+    height: 280px;
+  }
+
+  /* Tighten content padding */
+  .page-events .events-content {
+    padding: 1rem;
+  }
+}

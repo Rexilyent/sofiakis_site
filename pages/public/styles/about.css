@@ -63,3 +63,23 @@
 	margin-bottom: 1rem;
 }
 	 
+/* ===========================
+   ABOUT: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 700px) {
+
+  /* Stack hero grid — hide image to keep focus on text on small screens */
+  .page-about .about-hero .about-hero-container {
+    grid-template-columns: 1fr;
+  }
+
+  .page-about .about-hero-left {
+    display: none;
+  }
+
+  /* Tighten content padding */
+  .page-about .about-body {
+    padding: 1rem;
+  }
+}

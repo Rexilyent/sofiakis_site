@@ -269,3 +269,27 @@ body.page-vote .voting-info ul{
 	line-height: 1.15;
 	text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
+/* ===========================
+   VOTE: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 600px) {
+
+  /* Reduce hero and CTA image heights */
+  .page-vote .vote-hero-wrapper,
+  .page-vote .cta-hero-wrapper {
+    height: 220px;
+  }
+
+  /* Registration button — full width on mobile */
+  .page-vote .vote-registration-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Tighten section padding */
+  .page-vote .vote-registration,
+  .page-vote .voting-info {
+    padding: 0 1rem;
+  }
+}

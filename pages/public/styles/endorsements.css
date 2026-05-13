@@ -242,3 +242,33 @@
 		grid-template-columns: repeat(1, 1fr);
 	}
 }
+/* ===========================
+   ENDORSEMENTS: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 600px) {
+
+  /* Scale down the oversized anti-endorsement heading */
+  .page-endorsements .anti-endorsement-header h2 {
+    font-size: 1.75rem;
+  }
+
+  /* Reduce anti-endorsement icon sizes */
+  .page-endorsements .anti-endorsement-icon {
+    width: 140px;
+    height: 140px;
+  }
+
+  /* Tighten section padding */
+  .page-endorsements .endorsement-inner {
+    padding: 1rem;
+  }
+
+  .page-endorsements .anti-endorsements {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-endorsements .anti-endorsement-header {
+    padding: 1rem;
+  }
+}

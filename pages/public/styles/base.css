@@ -405,33 +405,1065 @@ a {
 .footer-paid-for {
 	text-align: center;
 	font-size: 1.25rem;
-	margin-top: 1rem;
-	margin-left: 45rem;
-	margin-right: 45rem;
-	padding: 0.5rem;
+	margin: 1rem auto 0;
+	max-width: 600px;
+	padding: 0.5rem 1.5rem;
 	color: #9aa2b7;
 	border: 1px solid #9aa2b7;
 }
 
 /* Mobile nav behavior (shared) */
 @media (max-width: 800px) {
-  .nav-links {
+
+  /* ---- Shrink logo so header stays compact ---- */
+  .nav-left img,
+  .nav-logo {
+    height: 52px;
+  }
+
+  /* ---- Toggle button: visible + white ---- */
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.6rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+    order: 3;
+    margin-left: auto;
+  }
+
+  .nav-toggle:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* ---- Hide social icons from the header bar on mobile ---- */
+  /* They are duplicated into the mobile menu via JS */
+  .nav-social {
     display: none;
-    position: absolute;
-    top: 54px;
+  }
+
+  /* ---- Mobile menu panel ---- */
+  .nav-links {
+    display: flex;
+    position: fixed;
+    top: 68px;
     left: 0;
     right: 0;
-    background: #fff;
+    bottom: 0;
+    background: #116e30;
     flex-direction: column;
-    padding: 0.75rem 1.5rem 1rem;
-    box-shadow: 0 4px 9px rgba(0, 0, 0, 0.08);
+    padding: 0.5rem 0 2rem;
+    gap: 0;
+    overflow-y: auto;
+    z-index: 1999;
+
+    /* Hidden by default via slide + fade */
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.28s ease, opacity 0.22s ease, visibility 0.28s ease;
   }
 
   .nav-links.open {
-    display: flex;
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
   }
 
-  .nav-toggle {
+  /* ---- Nav link rows ---- */
+  .nav-links > a {
     display: block;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-links > a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Remove desktop underline animation on mobile */
+  .nav-links a::after {
+    display: none;
+  }
+
+  /* ---- Dropdown rows — accordion style ---- */
+  .nav-dropdown {
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* The parent link row — add chevron via pseudo-element */
+  .nav-dropdown > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    color: #ffffff;
+    width: 100%;
+    cursor: pointer;
+    border-bottom: none;
+  }
+
+  .nav-dropdown > a::after {
+    content: "›";
+    display: inline-block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    font-size: 1.3rem;
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+  }
+
+  .nav-dropdown.mobile-open > a::after {
+    transform: rotate(90deg);
+  }
+
+  .nav-dropdown > a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Sub-menu — hidden until accordion opens */
+  .nav-dropdown .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 0;
+    min-width: 0;
+    width: 100%;
+    display: none;
+    transition: none;
+  }
+
+  .nav-dropdown.mobile-open .dropdown-menu {
+    display: block;
+  }
+
+  .nav-dropdown .dropdown-menu a {
+    display: block;
+    padding: 0.85rem 2rem;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-dropdown .dropdown-menu a:last-child {
+    border-bottom: none;
+  }
+
+  .nav-dropdown .dropdown-menu a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ---- Social icons injected at bottom of mobile menu ---- */
+  .mobile-nav-social {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.75rem 1.5rem 0;
+    margin-top: auto;
+    flex-wrap: wrap;
+  }
+
+  .mobile-nav-social a {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5rem;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-nav-social a:hover {
+    color: var(--accent);
+  }
+
+  .mobile-nav-social .bluesky-icon {
+    width: 22px;
+    height: 22px;
+    filter: invert(100%) sepia(100%) grayscale(100%) brightness(150%);
+  }
+
+  /* ---- Nav bar padding ---- */
+  .nav {
+    padding: 0.5rem 1rem;
+  }
+
+  /* ---- Wrapper padding ---- */
+  .wrapper {
+    padding: 1rem;
+  }
+
+  /* ---- Buttons: full width for easier touch targets ---- */
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ---- Footer padding ---- */
+  .site-footer {
+    padding: 1rem;
+  }
+
+  .footer-social {
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+
+  .footer-links {
+    padding: 1rem;
+  }
+
+  /* ---- Footer paid-for: reduce font size on mobile ---- */
+  .footer-paid-for {
+    font-size: 1rem;
+  }
+}
+
+/* ---- Overlay backdrop when mobile menu is open ---- */
+.nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1998;
+  backdrop-filter: blur(2px);
+}
+
+.nav-overlay.active {
+  display: block;
+}
+
+/* ============================================================
+   ACCESSIBILITY TOOLBAR
+   ============================================================ */
+
+/* ---- Nav trigger button ---- */
+/* Sits inside .nav-social so it looks native to the nav bar */
+#a11y-trigger {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+#a11y-trigger:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+#a11y-trigger:focus-visible {
+  outline: 2px solid #FFD700;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---- Panel ---- */
+/* Drops down from the nav, aligned to the right of the page */
+#a11y-panel {
+  position: fixed;
+  top: 5rem;
+  right: 1.5rem;
+  z-index: 9998;
+  width: 300px;
+  background: #fff;
+  border: 1px solid #d4d4d4;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  overflow: hidden;
+
+  /* Hidden state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+}
+
+#a11y-panel.a11y-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Panel header */
+.a11y-panel-header {
+  background: #008037;
+  color: #fff;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.a11y-panel-header h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.a11y-panel-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  border-radius: 4px;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+.a11y-panel-close:hover { opacity: 1; }
+.a11y-panel-close:focus-visible { outline: 2px solid #FFD700; }
+
+/* Panel body */
+.a11y-panel-body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Section label */
+.a11y-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6e6e6e;
+  margin-bottom: -0.2rem;
+}
+
+/* Mode buttons row */
+.a11y-mode-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.a11y-mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.4rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #444;
+  font-weight: 500;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  font-family: inherit;
+}
+
+.a11y-mode-btn i { font-size: 1.05rem; color: #555; }
+.a11y-mode-btn:hover { border-color: #008037; background: #f0f9f4; }
+.a11y-mode-btn:focus-visible { outline: 2px solid #008037; outline-offset: 2px; }
+.a11y-mode-btn.active {
+  border-color: #008037;
+  background: #e8f5ee;
+  color: #005f28;
+}
+.a11y-mode-btn.active i { color: #008037; }
+
+/* Toggle rows */
+.a11y-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.a11y-toggle-label {
+  font-size: 0.87rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.a11y-toggle-label i { color: #555; width: 1rem; text-align: center; }
+
+/* Custom toggle switch */
+.a11y-switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.a11y-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.a11y-slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.a11y-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+}
+
+.a11y-switch input:checked + .a11y-slider { background: #008037; }
+.a11y-switch input:checked + .a11y-slider::before { transform: translateX(18px); }
+.a11y-switch input:focus-visible + .a11y-slider {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Tint picker */
+.a11y-tint-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.a11y-tint-label {
+  font-size: 0.87rem;
+  font-weight: 500;
+  color: #333;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.a11y-tint-label i { color: #555; }
+
+.a11y-tint-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.a11y-tint-btn:hover  { transform: scale(1.15); }
+.a11y-tint-btn:focus-visible { outline: 2px solid #008037; outline-offset: 2px; }
+.a11y-tint-btn.active { border-color: #008037; transform: scale(1.15); }
+
+/* Reset button */
+.a11y-reset-btn {
+  width: 100%;
+  padding: 0.55rem;
+  border-radius: 8px;
+  border: 1px solid #d4d4d4;
+  background: #f5f5f5;
+  color: #555;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.a11y-reset-btn:hover { background: #e8e8e8; color: #222; }
+.a11y-reset-btn:focus-visible { outline: 2px solid #008037; }
+
+/* Divider */
+.a11y-divider {
+  height: 1px;
+  background: #ebebeb;
+  margin: 0.1rem 0;
+}
+
+/* Tint overlay */
+#a11y-tint-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: 0.13;
+  transition: background 0.3s ease;
+}
+
+/* ============================================================
+   ACCESSIBILITY MODES  (applied via html.a11y-* classes)
+   ============================================================ */
+
+/* ---- Comfort / Reading mode ---- */
+/* Warm off-white background, soft warm-gray text.
+   Reduces the stark black-on-white contrast that causes
+   visual stress while keeping text clearly legible. */
+html.a11y-comfort {
+  --bg:        #f7f3ec;
+  --text:      #3d3530;
+  --muted:     #7a706a;
+  --muted-dark:#5c504a;
+}
+html.a11y-comfort body           { background: #f7f3ec; color: #3d3530; }
+html.a11y-comfort .site-header   { background: rgba(50, 80, 40, 0.82); }
+html.a11y-comfort .site-footer   { background: #2a1f18; }
+html.a11y-comfort .contact-form-wrapper,
+html.a11y-comfort .a11y-gap-card,
+html.a11y-comfort .a11y-panel    { background: #fdf9f3; }
+
+/* ---- High-contrast mode ---- */
+/* Pure black on white, removes decorative colors from text. */
+html.a11y-highcontrast {
+  --bg:        #ffffff;
+  --text:      #000000;
+  --muted:     #444444;
+  --muted-dark:#222222;
+  --primary:   #005a25;
+  --primary-light: #005a25;
+}
+html.a11y-highcontrast body                     { background: #fff; color: #000; }
+html.a11y-highcontrast .site-header             { background: #003d18; }
+html.a11y-highcontrast .site-footer             { background: #000; }
+html.a11y-highcontrast a                        { color: #005a25; text-decoration: underline; }
+html.a11y-highcontrast .btn-contact-submit,
+html.a11y-highcontrast .btn-submit,
+html.a11y-highcontrast .btn                     { border: 2px solid #000; }
+
+/* ---- Dark mode ---- */
+html.a11y-dark {
+  --bg:        #1a1a1a;
+  --text:      #e8e8e8;
+  --muted:     #a0a0a0;
+  --muted-dark:#c0c0c0;
+  --primary:   #4cc97a;
+  --primary-light: #5ddb8a;
+}
+html.a11y-dark body                             { background: #1a1a1a; color: #e8e8e8; }
+html.a11y-dark .site-header                     { background: rgba(10, 30, 15, 0.92); }
+html.a11y-dark .site-footer                     { background: #0d0d0d; }
+html.a11y-dark .contact-form-wrapper,
+html.a11y-dark .privacy-wrapper,
+html.a11y-dark .a11y-wrapper,
+html.a11y-dark .volunteer-form-section,
+html.a11y-dark .about-body                      { background: #242424; color: #e8e8e8; }
+html.a11y-dark .contact-form input,
+html.a11y-dark .contact-form textarea,
+html.a11y-dark .contact-select-wrapper select   { background: #2e2e2e; color: #e8e8e8; border-color: #555; }
+html.a11y-dark .a11y-gap-card                   { background: #2e2e2e; border-color: #555; }
+html.a11y-dark .policy-section,
+html.a11y-dark .a11y-section                    { border-color: #333; }
+html.a11y-dark .a11y-panel                      { background: #1e1e1e; border-color: #444; color: #e8e8e8; }
+html.a11y-dark .a11y-mode-btn                   { background: #2a2a2a; border-color: #444; color: #ccc; }
+html.a11y-dark .a11y-mode-btn.active            { background: #1a3a25; border-color: #4cc97a; color: #4cc97a; }
+html.a11y-dark .a11y-section-label              { color: #888; }
+html.a11y-dark .a11y-toggle-label               { color: #ccc; }
+html.a11y-dark .a11y-reset-btn                  { background: #2a2a2a; border-color: #444; color: #aaa; }
+html.a11y-dark .a11y-divider                    { background: #333; }
+html.a11y-dark .nav-links a                     { color: #e8e8e8; }
+
+/* ---- Large text ---- */
+html.a11y-large body { font-size: 118%; }
+
+/* ---- Dyslexia-friendly fonts ---- */
+
+/* Option A: OpenDyslexic
+   Exaggerated letterform weights designed to reduce visual
+   letter-flipping (b/d/p/q confusion). Loaded on demand.   */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/fonts/OpenDyslexic-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/fonts/OpenDyslexic-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+html.a11y-dyslexia-od body,
+html.a11y-dyslexia-od input,
+html.a11y-dyslexia-od textarea,
+html.a11y-dyslexia-od select,
+html.a11y-dyslexia-od button { font-family: "OpenDyslexic", sans-serif !important; }
+
+/* Option B: BDA-recommended sans-serif
+   The British Dyslexia Association recommends Arial, Verdana,
+   and Tahoma: familiar, well-spaced letterforms with strong
+   differentiation between similar characters (e.g. I/l/1),
+   no visual stigma, and no download required.
+   Line-height and letter-spacing are also increased per BDA
+   Style Guide guidance.                                      */
+html.a11y-dyslexia-bda body,
+html.a11y-dyslexia-bda input,
+html.a11y-dyslexia-bda textarea,
+html.a11y-dyslexia-bda select,
+html.a11y-dyslexia-bda button {
+  font-family: Arial, Verdana, Tahoma, sans-serif !important;
+}
+
+html.a11y-dyslexia-bda body {
+  line-height:    1.8   !important;
+  letter-spacing: 0.05em !important;
+  word-spacing:   0.1em  !important;
+}
+
+html.a11y-dyslexia-bda p,
+html.a11y-dyslexia-bda li,
+html.a11y-dyslexia-bda td,
+html.a11y-dyslexia-bda label {
+  line-height:    1.8   !important;
+  letter-spacing: 0.05em !important;
+  word-spacing:   0.1em  !important;
+}
+
+/* ---- Reduce motion ---- */
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration:        0.001ms !important;
+  animation-iteration-count: 1       !important;
+  transition-duration:       0.001ms !important;
+  scroll-behavior:           auto    !important;
+}
+
+/* ---- Underline all links ---- */
+html.a11y-underline a { text-decoration: underline !important; }
+
+/* ---- Highlight inline body links ----
+   Draws a soft yellow background swatch behind links —
+   the "highlighter pen" effect.
+
+   Scope: descendants of <main> only. This naturally excludes
+   the site header, footer, nav, and the accessibility panel
+   itself, so social icons, nav items, and CTA buttons are
+   never highlighted.
+
+   Within main, we additionally exclude:
+     - .btn-* / .cta-* classes  (styled button links)
+     - [aria-label] without inner text (icon-only links e.g.
+       social icons that appear in content areas)
+     - .skip-nav  (always excluded globally)
+     - img-only anchors (logo links wrapping an <img>)
+
+   The highlight uses padding + negative margin to give the
+   swatch breathing room without shifting surrounding text.
+   border-radius softens it to look like a real highlighter
+   stroke rather than a raw box.
+
+   Three color variants:
+     Default / comfort  — soft amber-yellow  (#fff3b0 / 0.75 opacity)
+     High contrast      — vivid yellow       (#ffe000) with black text
+     Dark mode          — muted warm amber   (#5a4a00) so it doesn't
+                          blast against the dark background
+     Color-safe         — pale blue          (#c8deff) so the cue
+                          doesn't rely on yellow (which could be
+                          confused with the amber accent color)     */
+
+html.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo) {
+  background-color:  rgba(255, 243, 100, 0.55);
+  border-radius:     3px;
+  padding:           0.05em 0.25em;
+  margin:            0 -0.05em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  text-decoration-color: rgba(0, 0, 0, 0.4);
+}
+
+html.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo):hover {
+  background-color: rgba(255, 235, 50, 0.8);
+}
+
+/* High contrast variant — bolder highlight, black text for max legibility */
+html.a11y-highcontrast.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo) {
+  background-color: #ffe000 !important;
+  color:            #000000 !important;
+  border-radius:    2px;
+}
+
+/* Dark mode variant — warm amber swatch that reads well on dark bg */
+html.a11y-dark.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo) {
+  background-color: rgba(120, 95, 0, 0.55);
+  color:            #ffe58a;
+}
+
+html.a11y-dark.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo):hover {
+  background-color: rgba(140, 112, 0, 0.75);
+}
+
+/* Color-safe variant — pale blue highlight so it doesn't clash
+   with the amber accent used throughout color-safe mode         */
+html.a11y-colorsafe.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo) {
+  background-color: rgba(180, 215, 255, 0.6);
+  color:            #0d3a7a;
+}
+
+html.a11y-colorsafe.a11y-highlight-links main a:not([class*="btn"]):not([class*="cta"]):not(.skip-nav):not(.nav-logo):hover {
+  background-color: rgba(140, 190, 255, 0.85);
+}
+
+/* ---- Enhanced focus indicators ---- */
+html.a11y-focus *:focus-visible {
+  outline: 3px solid #FFD700 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(255, 215, 0, 0.35) !important;
+}
+
+/* ---- Skip navigation link (always present, visible on focus) ---- */
+.skip-nav {
+  position: absolute;
+  top: -999px;
+  left: 1rem;
+  z-index: 99999;
+  background: #FFD700;
+  color: #111;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0 0 8px 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-nav:focus { top: 0; }
+
+
+
+/* ============================================================
+   COLOR VISION MODES
+   ============================================================ */
+
+/* ---- Grayscale ----
+   Removes all color from the page. Useful for users with
+   achromatopsia (complete color blindness) or those who find
+   color distracting.
+
+   The filter is applied to body so that position:fixed elements
+   (like the accessibility panel itself) retain correct viewport
+   positioning — applying filter to html would make fixed children
+   position relative to the html element instead of the viewport.
+
+   Because the semi-transparent green header converts to roughly
+   rgb(109,109,109) when grayscaled — giving only ~5.2:1 contrast
+   with white text — we explicitly override the header and footer
+   backgrounds to near-black so they stay clearly readable at
+   AAA levels regardless of what the rest of the page looks like.
+
+   The same principle applies to any hero/banner element that uses
+   a green overlay: we override those to a dark neutral as well.  */
+
+html.a11y-grayscale body { filter: grayscale(100%); }
+
+/* Header: force dark background so white nav text stays AAA (>7:1)
+   after the green-to-gray conversion would otherwise produce ~5:1  */
+html.a11y-grayscale .site-header {
+  background: #1a1a1a !important;
+}
+
+/* Nav links and social icons — already white, fine on #1a1a1a       */
+html.a11y-grayscale .nav-links a,
+html.a11y-grayscale .nav-social a { color: #ffffff !important; }
+
+/* Active/hover underline accent: keep it white since gold
+   turns mid-gray and may lose sufficient contrast               */
+html.a11y-grayscale .nav-links a::after { background: #ffffff !important; }
+
+/* Footer: already dark green which converts to a near-black gray,
+   but make it explicit so it can't lighten under any backdrop     */
+html.a11y-grayscale .site-footer {
+  background: #111111 !important;
+  color: #dddddd !important;
+}
+
+html.a11y-grayscale .footer-social a { color: #dddddd !important; }
+html.a11y-grayscale .footer-links a  { color: #dddddd !important; }
+html.a11y-grayscale .footer-paid-for {
+  color: #bbbbbb !important;
+  border-color: #555555 !important;
+}
+
+/* Hero/banner overlays: override green overlay to dark neutral      */
+html.a11y-grayscale .cta-hero::after {
+  background: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* ---- Color-safe ----
+   Replaces the site's green-heavy palette with blue + amber.
+   Blue is processed by S-cones, which are intact in both
+   deuteranopia (green-weak) and protanopia (red-weak) — the
+   two most common CVD types affecting ~8% of men. Amber/gold
+   provides a warm accent distinguishable from blue by all
+   common CVD types. Tritanopia (blue-weak, <0.01%) is also
+   served since blue and amber differ in lightness.           */
+html.a11y-colorsafe {
+  --primary:       #1455A4;
+  --primary-light: #1a6bc7;
+  --accent:        #F9A825;
+}
+
+/* Header: solid dark blue so white nav text meets AAA (>7:1)
+   White on #0e3473 = approx 11:1 ✓                           */
+html.a11y-colorsafe .site-header {
+  background: #0e3473;
+}
+
+/* Nav links: keep white — high contrast on dark blue           */
+html.a11y-colorsafe .nav-links a,
+html.a11y-colorsafe .nav-social a { color: #ffffff; }
+
+/* Hover/active underline: amber accent rather than default gold
+   (same hue as --accent override, more saturated for visibility) */
+html.a11y-colorsafe .nav-links a::after { background: #F9A825; }
+
+/* Footer: dark navy background                                  */
+html.a11y-colorsafe .site-footer {
+  background: #0d1f3c;
+  color: #cdd8f0;
+}
+
+/* Footer text elements — ensure they inherit the lighter color  */
+html.a11y-colorsafe .footer-social a {
+  color: #cdd8f0;
+}
+
+html.a11y-colorsafe .footer-links a {
+  color: #cdd8f0;
+}
+
+/* "Paid for by" text and its border — lighten to readable level
+   on the dark navy background: #cdd8f0 on #0d1f3c = ~9.2:1 ✓   */
+html.a11y-colorsafe .footer-paid-for {
+  color: #cdd8f0;
+  border-color: #4a6fa5;
+}
+
+html.a11y-colorsafe .privacy-hero,
+html.a11y-colorsafe .a11y-hero,
+html.a11y-colorsafe .contact-hero {
+  background: linear-gradient(135deg, #0a2a6e 0%, #1455A4 60%, #1a6bc7 100%);
+}
+
+html.a11y-colorsafe .cta-hero::after {
+  background: rgba(14, 52, 115, 0.7);
+}
+
+html.a11y-colorsafe .policy-section-icon,
+html.a11y-colorsafe .a11y-section-icon {
+  background: rgba(20, 85, 164, 0.1);
+  color: #1455A4;
+}
+
+html.a11y-colorsafe .policy-list li i,
+html.a11y-colorsafe .a11y-list li i {
+  color: #1455A4;
+}
+
+html.a11y-colorsafe .a11y-gap-card {
+  border-left-color: #F9A825;
+}
+
+html.a11y-colorsafe .privacy-contact-cta,
+html.a11y-colorsafe .a11y-contact-cta {
+  background: rgba(20, 85, 164, 0.07);
+  border-color: rgba(20, 85, 164, 0.22);
+}
+
+html.a11y-colorsafe .privacy-contact-cta > i,
+html.a11y-colorsafe .a11y-contact-cta > i {
+  color: #1455A4;
+}
+
+html.a11y-colorsafe .contact-form-wrapper {
+  border-color: rgba(20, 85, 164, 0.28);
+}
+
+html.a11y-colorsafe .contact-form input:focus,
+html.a11y-colorsafe .contact-form textarea:focus,
+html.a11y-colorsafe .contact-select-wrapper select:focus {
+  border-color: rgba(20, 85, 164, 0.6);
+  box-shadow: 0 0 0 4px rgba(20, 85, 164, 0.13);
+}
+
+html.a11y-colorsafe .btn-primary { background: #1455A4; }
+html.a11y-colorsafe .btn-primary:hover { background: #1a6bc7; }
+
+html.a11y-colorsafe .a11y-panel-header { background: #1455A4; }
+html.a11y-colorsafe #a11y-trigger { color: #ffffff; }
+html.a11y-colorsafe .a11y-mode-btn.active,
+html.a11y-colorsafe .a11y-font-btn.active,
+html.a11y-colorsafe .a11y-cv-btn.active {
+  border-color: #1455A4;
+  background: #e8f0fb;
+  color: #0d3a7a;
+}
+html.a11y-colorsafe .a11y-mode-btn.active i,
+html.a11y-colorsafe .a11y-font-btn.active i,
+html.a11y-colorsafe .a11y-cv-btn.active i { color: #1455A4; }
+
+html.a11y-colorsafe .a11y-switch input:checked + .a11y-slider { background: #1455A4; }
+html.a11y-colorsafe .a11y-reset-btn:focus-visible { outline-color: #1455A4; }
+html.a11y-colorsafe .a11y-lang-btn.active {
+  border-color: #1455A4;
+  background: #e8f0fb;
+}
+html.a11y-colorsafe .a11y-lang-btn.active .a11y-lang-native { color: #0d3a7a; }
+
+/* Color vision note style (reuses same pattern as .a11y-lang-note) */
+.a11y-cv-note {
+  font-size: 0.74rem;
+  color: #888;
+  line-height: 1.5;
+  margin-top: 0.45rem;
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+.a11y-cv-note i {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: #aaa;
+  font-size: 0.7rem;
+}
+
+html.a11y-dark .a11y-cv-note { color: #666; }
+
+/* ---- Language selector ---- */
+
+/* Suppress Google Translate's own toolbar banner entirely —
+   we provide our own language UI in the accessibility panel. */
+.goog-te-banner-frame,
+.goog-te-gadget,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip-content,
+.skiptranslate                { display: none !important; }
+#google_translate_element     { display: none !important; }
+body                          { top: 0 !important; }
+
+/* RTL support — applied when a right-to-left language is active */
+html[dir="rtl"] body          { direction: rtl; text-align: right; }
+
+/* Language button grid — 2 columns, scrollable */
+.a11y-lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.a11y-lang-grid::-webkit-scrollbar { width: 4px; }
+.a11y-lang-grid::-webkit-scrollbar-track  { background: transparent; }
+.a11y-lang-grid::-webkit-scrollbar-thumb  { background: #ccc; border-radius: 2px; }
+
+/* Individual language button */
+.a11y-lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.a11y-lang-btn:hover {
+  border-color: #008037;
+  background: #f0f9f4;
+}
+
+.a11y-lang-btn:focus-visible {
+  outline: 2px solid #008037;
+  outline-offset: 2px;
+}
+
+.a11y-lang-btn.active {
+  border-color: #008037;
+  background: #e8f5ee;
+}
+
+.a11y-lang-native {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.2;
+}
+
+.a11y-lang-en {
+  font-size: 0.72rem;
+  color: #888;
+  line-height: 1.2;
+}
+
+.a11y-lang-btn.active .a11y-lang-native { color: #005a25; }
+.a11y-lang-btn.active .a11y-lang-en     { color: #3a8a5a; }
+
+/* Informational note below the grid */
+.a11y-lang-note {
+  font-size: 0.74rem;
+  color: #888;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.a11y-lang-note i {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: #aaa;
+  font-size: 0.7rem;
+}
+
+/* Dark mode adjustments */
+html.a11y-dark .a11y-lang-btn          { background: #2a2a2a; border-color: #444; }
+html.a11y-dark .a11y-lang-btn:hover    { border-color: #4cc97a; background: #1a3a25; }
+html.a11y-dark .a11y-lang-btn.active   { border-color: #4cc97a; background: #1a3a25; }
+html.a11y-dark .a11y-lang-native       { color: #e0e0e0; }
+html.a11y-dark .a11y-lang-btn.active .a11y-lang-native { color: #4cc97a; }
+html.a11y-dark .a11y-lang-note         { color: #666; }
+
+/* Mobile adjustments */
+@media (max-width: 500px) {
+  #a11y-panel {
+    right: 0.5rem;
+    width: calc(100vw - 1rem);
+    top: 4.5rem;
   }
 }

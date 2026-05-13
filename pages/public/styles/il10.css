@@ -186,14 +186,14 @@
   gap: 0.4rem;
 } */
 
-body.page-il10 .il10-body { 
+.page-il10 .il10-body { 
 	margin: 0 auto;
 	max-width: 1100px;
 	padding: 1.5rem;
 }
-body.page-il10 .il10-body-header { margin-bottom: 1rem; }
+.page-il10 .il10-body-header { margin-bottom: 1rem; }
 
-body.page-il10 .il10-body-header h2{
+.page-il10 .il10-body-header h2{
   color: var(--primary);
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 800;
@@ -202,36 +202,36 @@ body.page-il10 .il10-body-header h2{
 	text-align: center;
 }
 
-body.page-il10 .il10-prose{
+.page-il10 .il10-prose{
   color: var(--text);
   margin-top: 1.25rem;
 }
 
-body.page-il10 .il10-prose h2,
-body.page-il10 .il10-prose h3,
-body.page-il10 .il10-block > h3{
+.page-il10 .il10-prose h2,
+.page-il10 .il10-prose h3,
+.page-il10 .il10-block > h3{
   color: var(--primary);
 }
 
-body.page-il10 .il10-block > h3{
+.page-il10 .il10-block > h3{
   font-size: 1.22rem;
   font-weight: 800;
   margin: 1.25rem 0 0.55rem;
 }
 
-body.page-il10 .il10-prose p,
-body.page-il10 .il10-prose li{
+.page-il10 .il10-prose p,
+.page-il10 .il10-prose li{
   color: var(--muted);
   line-height: 1.75;
   font-size: 1rem;
 }
 
-body.page-il10 .il10-prose p{ margin: 0 0 0.9rem; }
-body.page-il10 .il10-prose ul{ margin: 0.25rem 0 1rem 1.25rem; }
-body.page-il10 .il10-prose li{ margin: 0.3rem 0; }
+.page-il10 .il10-prose p{ margin: 0 0 0.9rem; }
+.page-il10 .il10-prose ul{ margin: 0.25rem 0 1rem 1.25rem; }
+.page-il10 .il10-prose li{ margin: 0.3rem 0; }
 
 /* Last-resort lock if something else overrides h3 */
-body.page-il10 main.il10-content .il10-prose h3{
+.page-il10 main.il10-content .il10-prose h3{
   color: var(--primary) !important;
 }
 
@@ -327,5 +327,41 @@ body.page-il10 main.il10-content .il10-prose h3{
     min-height: 210px;
     background-size: 140%;
     background-position: 50% 40%;
+  }
+}
+/* ===========================
+   IL-10: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 600px) {
+
+  /* Reduce hero image height */
+  .page-il10 .hero-image-wrapper {
+    height: 220px;
+  }
+
+  /* Reduce map height */
+  .page-il10 .leaflet-map {
+    height: 260px;
+  }
+
+  /* Hides the vertical divider lines between infographic cards
+     — they don't make sense when cards stack vertically */
+  .page-il10 .infographic-card:not(:last-child)::after {
+    display: none;
+  }
+
+  /* Tighten content padding */
+  .page-il10 .il10-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .page-il10 .il10-infographics {
+    padding: 1rem;
+  }
+
+  body.page-il10 .il10-body {
+    padding: 1rem;
   }
 }

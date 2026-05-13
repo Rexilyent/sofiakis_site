@@ -4,6 +4,7 @@
 .page-volunteer .volunteer-hero {
   background: rgba(0, 128, 55, 0.75);
 	padding: 2rem 1.5rem;
+	overflow: hidden;
 }
 
 .page-volunteer .volunteer-hero .hero-container {
@@ -516,4 +517,44 @@ body.page-volunteer .volunteer-form-section label {
 .page-volunteer .btn-learn-more:hover {
 	background: rgba(255, 255, 255, 1);
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+/* ===========================
+   VOLUNTEER: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 700px) {
+
+  /* Stack volunteer hero grid */
+  .page-volunteer .volunteer-hero .hero-container {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hide the image column — it has a translateX(+30%) offset that breaks on mobile */
+  .page-volunteer .volunteer-hero .hero-left {
+    display: none;
+  }
+
+  /* Tighten hero padding */
+  .page-volunteer .volunteer-hero {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Reduce IL-10 hero image height */
+  .page-volunteer .hero-image-wrapper {
+    height: 220px;
+  }
+
+  /* Tighten form section padding */
+  .page-volunteer .volunteer-form-section {
+    padding: 0 1rem;
+  }
+
+  /* Submit button full width */
+  .page-volunteer .actions {
+    justify-content: stretch;
+  }
+
+  .page-volunteer .btn-submit {
+    width: 100%;
+  }
 }

@@ -2,19 +2,31 @@ export async function onRequestPost(context: {
   request: Request;
   env: {
     CORE_DB: D1Database;
-    TURNSTILE_SECRET_KEY?: string;
+    TURNSTILE_SECURITY_KEY?: string;
     ALLOW_HARD_DELETE?: string;
     ADMIN_DELETE_KEY?: string;
+    FIELD_HMAC_KEY?: string;
   };
 }) {
   const { request, env } = context;
 
   try {
-    if (!env.TURNSTILE_SECRET_KEY) {
-      return jsonError("Server configuration error", 500);
+    if (!env.TURNSTILE_SECURITY_KEY) {
+      return jsonError("Server configuration error: missing Turnstile key", 500);
     }
 
-    const body = await request.json();
+    if (!env.FIELD_HMAC_KEY) {
+      return jsonError("Server configuration error: missing HMAC key", 500);
+    }
+
+    interface DeleteBody {
+      email?: string;
+      turnstileToken?: string;
+      mode?: string;
+      adminKey?: string;
+    }
+
+    const body = await request.json() as DeleteBody;
     const { email, turnstileToken, mode = "soft", adminKey } = body;
 
     if (!email) return jsonError("Email is required", 400);
@@ -30,33 +42,35 @@ export async function onRequestPost(context: {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          secret: env.TURNSTILE_SECRET_KEY,
+          secret: env.TURNSTILE_SECURITY_KEY,
           response: turnstileToken,
         }),
       }
     );
 
-    const verifyData = await verifyRes.json();
+    const verifyData = await verifyRes.json() as { success: boolean };
     if (!verifyData.success) {
       return jsonError("Turnstile verification failed", 403);
     }
 
     // ==============================
-    // Find Volunteer
+    // Find Volunteer via email_hash
     // ==============================
+
+    const emailDigest = await hmacSha256(email.trim().toLowerCase(), env.FIELD_HMAC_KEY);
 
     const volunteer = await env.CORE_DB.prepare(`
       SELECT volunteer_id FROM volunteers
-      WHERE email = ?
+      WHERE email_hash = ?
     `)
-      .bind(email.toLowerCase())
+      .bind(emailDigest)
       .first();
 
     if (!volunteer) {
       return jsonError("No record found", 404);
     }
 
-    const volunteerId = volunteer.volunteer_id;
+    const volunteerId = volunteer.volunteer_id as string;
 
     // ==============================
     // HARD DELETE (Admin Only)
@@ -72,12 +86,12 @@ export async function onRequestPost(context: {
       }
 
       await env.CORE_DB.prepare(`
-				DELETE FROM volunteers WHERE volunteer_id = ?
+        DELETE FROM volunteers WHERE volunteer_id = ?
       `)
       .bind(volunteerId)
       .run();
 
-      await logDeletion(env, volunteerId, email, "hard");
+      await logDeletion(env, volunteerId, emailDigest, "hard");
 
       return jsonResponse({
         success: true,
@@ -98,7 +112,7 @@ export async function onRequestPost(context: {
       .bind(volunteerId)
       .run();
 
-    await logDeletion(env, volunteerId, email, "soft");
+    await logDeletion(env, volunteerId, emailDigest, "soft");
 
     return jsonResponse({
       success: true,
@@ -113,7 +127,7 @@ export async function onRequestPost(context: {
 async function logDeletion(
   env: any,
   volunteerId: string,
-  email: string,
+  emailDigest: string,
   type: "soft" | "hard"
 ) {
   await env.CORE_DB.prepare(`
@@ -124,11 +138,52 @@ async function logDeletion(
     .bind(
       crypto.randomUUID(),
       volunteerId,
-      email.toLowerCase(),
+      emailDigest, // store the HMAC digest — never log plaintext email
       type
     )
     .run();
 }
+
+// ============================================================
+//  CRYPTO HELPERS
+// ============================================================
+
+/**
+ * HMAC-SHA256 keyed digest.
+ * Deterministic — same email always produces the same digest,
+ * but cannot be reversed to recover the original value without the key.
+ */
+async function hmacSha256(value: string, keyHex: string): Promise<string> {
+  const keyBytes = hexToBytes(keyHex);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyBytes,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const data = new TextEncoder().encode(value);
+  const sig  = await crypto.subtle.sign("HMAC", key, data);
+
+  return Array.from(new Uint8Array(sig))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function hexToBytes(hex: string): Uint8Array<ArrayBuffer> {
+  if (hex.length % 2 !== 0) throw new Error("Invalid hex string length");
+  const buf = new ArrayBuffer(hex.length / 2);
+  const bytes = new Uint8Array(buf);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+// ============================================================
+//  RESPONSE HELPERS
+// ============================================================
 
 function jsonResponse(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {

@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
 	consent BOOLEAN NOT NULL DEFAULT 0,
 	email_verified BOOLEAN NOT NULL DEFAULT 0,
 	email_verified_at TEXT,
+	email_hash TEXT,
 	source_form TEXT NOT NULL,
 	ip_hash TEXT NOT NULL,
 	created_at TEXT NOT NULL,
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS volunteers (
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_email ON volunteers(email);
 CREATE INDEX IF NOT EXISTS idx_volunteers_ip_hash ON volunteers(ip_hash);
+CREATE INDEX IF NOT EXISTS idx_volunteers_email_hash ON volunteers(email_hash);
 
 CREATE TABLE IF NOT EXISTS volunteer_interests (
 	volunteer_id TEXT NOT NULL,

@@ -2,15 +2,305 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact the Alexandria Sofiakis for IL-10 campaign.">
+    <meta name="author" content="Alexandria Sofiakis">
+    <title>Contact | Alexandria Sofiakis for IL-10</title>
+
+    <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/contact.css">
+
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+
+		<!-- Base Scripts -->
+    <script src="/scripts/base.js" defer></script>
+
+		<!-- Page-Specific Scripts -->
+    <script src="/scripts/contact.js" defer></script>
 </head>
-<body>
-    <main class="wrapper">
+<body class="page-contact">
+  <!-- Shared site header -->
+  <header class="site-header">
+  	<nav class="nav">
+      <div class="nav-left">
+        <a href="/index.html" class="nav-logo" aria-label="Alexandria Sofiakis Home">
+          <img src="/assets/images/sofiakis_logo_white_txt.png" alt="Alexandria Sofiakis Logo">
+        </a>
+      </div>
 
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
 
-    </main>
-    <footer>
+      <div class="nav-links" id="nav-links">
+        <div class="nav-dropdown">
+          <a href="/about.html" class="nav-about">About</a>
+          <div class="dropdown-menu">
+            <a href="/news/index.html">News</a>
+          </div>
+        </div>
+        <a href="/issues.html">Issues</a>
+        <a href="/events.html">Events</a>
+        <a href="/il10.html">IL-10</a>
+        <div class="nav-dropdown">
+          <a href="/vote.html" class="nav-vote">Vote</a>
+          <div class="dropdown-menu">
+            <a href="/endorsements.html">Endorsements</a>
+          </div>
+        </div>
+        <a href="/volunteer.html">Volunteer</a>
+      </div>
 
-    </footer>
+      <div class="nav-social">
+        <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://x.com/SofiakisGreen" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" aria-label="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" aria-label="Bluesky">
+          <img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
+        </a>
+        <a href="https://www.discord.com/alexandriaforil" target="_blank" aria-label="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="contact-content">
+  	<!-- Hero -->
+    <section class="contact-hero">
+      <div class="contact-hero-inner">
+        <h1>Get in Touch</h1>
+        <p class="contact-hero-sub">Alexandria Sofiakis for IL-10</p>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <div class="contact-wrapper">
+      <div class="contact-layout">
+        <!-- Left: Info Panel -->
+        <aside class="contact-info" aria-label="Contact Information">
+          <p class="contact-info-intro">
+            We want to hear from you. Whether you have a question, a media request,
+            a concern about accessibility or privacy, or just want to reach out —
+            fill out the form and a member of the campaign team will get back
+            to you as soon as possible.
+          </p>
+
+          <ul class="contact-info-list" aria-label="What you can contact us about">
+            <li>
+              <div class="contact-info-icon" aria-hidden="true">
+                <i class="fas fa-comment-dots"></i>
+              </div>
+              <div>
+                <strong>General Inquiries</strong>
+                <p>Questions about the campaign, Alexandria's platform, or upcoming events.</p>
+              </div>
+            </li>
+            <li>
+              <div class="contact-info-icon" aria-hidden="true">
+                                <i class="fas fa-universal-access"></i>
+                            </div>
+                            <div>
+                                <strong>Accessibility Requests</strong>
+                                <p>Report a barrier on this site or request content in an alternative format.</p>
+                            </div>
+            </li>
+            <li>
+              <div class="contact-info-icon" aria-hidden="true">
+                <i class="fas fa-user-shield"></i>
+              </div>
+              <div>
+                <strong>Privacy &amp; Data Requests</strong>
+                <p>Request updates to or removal of your volunteer data from our records.</p>
+              </div>
+            </li>
+            <li>
+              <div class="contact-info-icon" aria-hidden="true">
+                <i class="fas fa-newspaper"></i>
+              </div>
+              <div>
+                <strong>Press &amp; Media</strong>
+                <p>Interview requests, press credentials, or media inquiries of any kind.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="contact-social-block" aria-label="Campaign Social Media">
+            <p class="contact-social-label">Follow the Campaign</p>
+            <div class="contact-social-links">
+              <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://x.com/SofiakisGreen" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+              </a>
+              <a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+                <img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
+              </a>
+              <a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+                <i class="fab fa-discord"></i>
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right: Form -->
+        <div class="contact-form-wrapper">
+          <form
+            class="contact-form"
+            id="contact-form"
+            novalidate
+            aria-label="Contact Form">
+            <!-- Row 1: Name + Email -->
+            <div class="contact-form-row">
+              <div class="contact-field">
+                <label for="contact-name">Full Name <span class="required" aria-hidden="true">*</span></label>
+                  <input
+                    type="text"
+                    id="contact-name"
+                    name="name"
+                                    autocomplete="name"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="contact-name-error">
+                  <span class="field-error" id="contact-name-error" role="alert" aria-live="polite"></span>
+							</div>
+              <div class="contact-field">
+                                <label for="contact-email">Email Address <span class="required" aria-hidden="true">*</span></label>
+                                <input
+                                    type="email"
+                                    id="contact-email"
+                                    name="email"
+                                    autocomplete="email"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="contact-email-error"
+                                >
+                                <span class="field-error" id="contact-email-error" role="alert" aria-live="polite"></span>
+                            </div>
+              </div>
+
+              <!-- Row 2: Subject -->
+              <div class="contact-field">
+                <label for="contact-subject">Subject <span class="required" aria-hidden="true">*</span></label>
+                <div class="contact-select-wrapper">
+                  <select
+                    id="contact-subject"
+                    name="subject"
+                    required
+                    aria-required="true"
+                    aria-describedby="contact-subject-error">
+                    <option value="" disabled selected>Select a topic…</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="accessibility">Accessibility Request</option>
+                    <option value="privacy">Privacy / Data Request</option>
+                    <option value="press">Press &amp; Media</option>
+                  </select>
+                  <i class="fas fa-chevron-down contact-select-caret" aria-hidden="true"></i>
+                </div>
+                <span class="field-error" id="contact-subject-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <!-- Row 3: Message -->
+              <div class="contact-field">
+                <label for="contact-message">
+                  Message <span class="required" aria-hidden="true">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows="6"
+                  placeholder="Tell us how we can help…"
+                  required
+                  aria-required="true"
+                  aria-describedby="contact-message-error contact-char-count"
+                  maxlength="1000"></textarea>
+                <div class="contact-message-meta">
+                  <span class="field-error" id="contact-message-error" role="alert" aria-live="polite"></span>
+                  <span class="contact-char-count" id="contact-char-count" aria-live="polite">0 / 1000</span>
+                </div>
+              </div>
+
+              <!-- Turnstile -->
+              <div class="turnstile-container" id="contact-turnstile" aria-label="Spam Prevention"></div>
+
+              <!-- Submit -->
+              <div class="contact-actions">
+                <button type="submit" class="btn-contact-submit" id="contact-submit-btn">
+                  <span class="btn-label">Send Message</span>
+                  <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <!-- Success State (hidden until submission) -->
+              <div class="contact-success" id="contact-success" aria-live="polite" hidden>
+                <div class="contact-success-icon" aria-hidden="true">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Message Sent!</h3>
+                <p>Thank you for reaching out. A member of the campaign team will get back to you soon.</p>
+              </div>
+						</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared site footer -->
+  <footer class="site-footer">
+    <div class="footer-social" aria-label="Footer Social Links">
+      <a href="https://www.facebook.com/people/Alexandria-Keating-Sofiakis-for-IL-10/61574599503560/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://x.com/SofiakisGreen" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.instagram.com/alexandriakeatingsofiakis/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.youtube.com/@AlexandriaKeating-Sofiakis" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://bsky.app/profile/keating-sofiakis.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky">
+        <img src="/assets/images/icons/Bluesky_Logo.svg" alt="Bluesky Icon" class="bluesky-icon">
+      </a>
+      <a href="https://www.discord.com/alexandriaforil" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+
+    <div class="footer-links">
+      <a href="/accessibility.html">Accessibility</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+
+    <div class="footer-paid-for">
+      <strong>Paid for by Alexandria Sofiakis</strong>
+    </div>
+  </footer>
 </body>
 </html>

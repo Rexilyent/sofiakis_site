@@ -2,23 +2,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Alexandria Sofiakis for IL-10">
-    <meta name="author" content="Alexandria Sofiakis">
-    <title>Accessibility | Alexandria Sofiakis for IL-10</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Accessibility statement for the Alexandria Sofiakis for IL-10 campaign website, including the on-site toolbar, known limitations, and how to report issues.">
+  <meta name="author" content="Alexandria Sofiakis">
+  <title>Accessibility | Alexandria Sofiakis for IL-10</title>
 
-    <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 
-    <link rel="stylesheet" href="/styles/base.css">
-    <link rel="stylesheet" href="/styles/accessibility.css">
+  <link rel="stylesheet" href="/styles/base.css">
+  <link rel="stylesheet" href="/styles/accessibility.css">
 
-    <script src="/scripts/accessibility.js" defer></script>
+	<!-- Base Scripts -->
+	<script src="/scripts/base.js" defer></script>
 </head>
 <body class="page-accessibility">
 	<!-- Shared site header -->
@@ -89,8 +90,377 @@
     </nav>
   </header>
 
-	<main class="accessibility-content">
-		
+	<main id="main-content" class="accessibility-content">
+
+		<!-- Page Hero -->
+		<section class="a11y-hero">
+			<div class="a11y-hero-inner">
+				<h1>Accessibility Statement</h1>
+				<p class="a11y-hero-sub">Alexandria Sofiakis for IL-10</p>
+			</div>
+		</section>
+
+		<!-- Statement Body -->
+		<div class="a11y-wrapper">
+
+			<p class="a11y-updated">Last reviewed: <time datetime="2026-05-02">May 2, 2026</time></p>
+
+			<p class="a11y-intro">
+				The Alexandria Sofiakis for IL-10 campaign is committed to ensuring this website is
+				accessible to all people, regardless of ability or the technology they use to browse the web.
+				We believe accessibility is a civil right, and that commitment extends to how we build and
+				maintain our digital presence. This page documents what we have built, what remains
+				incomplete, and how to reach us if you encounter a problem.
+			</p>
+
+			<!-- Section 1: Our Standard -->
+			<section class="a11y-section" aria-labelledby="section-standard">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-medal"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-standard">Our Accessibility Goal</h2>
+					<p>
+						We aim to conform to the <strong>Web Content Accessibility Guidelines (WCAG) 2.1
+						Level AAA</strong> — the highest standard set by the World Wide Web Consortium (W3C).
+						These guidelines define how to make web content more accessible to people with a wide
+						range of disabilities, including visual, auditory, motor, cognitive, and neurological
+						differences.
+					</p>
+					<p>
+						Achieving full AAA conformance across every page is an ongoing effort. We continuously
+						review and improve the site as it grows. Where we have identified gaps, we have
+						documented them honestly in the Known Limitations section below.
+					</p>
+				</div>
+			</section>
+
+			<!-- Section 2: Structural Measures -->
+			<section class="a11y-section" aria-labelledby="section-measures">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-check-double"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-measures">Structural Accessibility Measures</h2>
+					<p>
+						The following measures are built into every page of the site as a baseline, independent
+						of any user-adjustable settings:
+					</p>
+					<ul class="a11y-list">
+						<li><i class="fas fa-check-circle"></i> A <strong>skip-to-content link</strong> is present on every page, visible on keyboard focus, allowing keyboard and switch-access users to bypass the navigation and jump directly to the main content</li>
+						<li><i class="fas fa-check-circle"></i> Semantic HTML landmarks (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;section&gt;</code>) are used throughout to support screen reader landmark navigation</li>
+						<li><i class="fas fa-check-circle"></i> All interactive elements — navigation links, buttons, and form inputs — are reachable and fully operable via keyboard alone</li>
+						<li><i class="fas fa-check-circle"></i> Images include descriptive <code>alt</code> text; purely decorative icons carry <code>aria-hidden="true"</code> so they are not announced by screen readers</li>
+						<li><i class="fas fa-check-circle"></i> ARIA labels and roles are applied to navigation regions, forms, buttons, dialogs, and interactive widgets to provide context to assistive technologies</li>
+						<li><i class="fas fa-check-circle"></i> Form fields include associated <code>&lt;label&gt;</code> elements, <code>aria-required</code> attributes, and inline error messages delivered via <code>aria-live</code> regions</li>
+						<li><i class="fas fa-check-circle"></i> The site uses <strong>Lexend</strong> as its default typeface — a font developed specifically to reduce visual stress and improve reading fluency</li>
+						<li><i class="fas fa-check-circle"></i> Pages are structured with a logical heading hierarchy (<code>h1</code> → <code>h2</code> → <code>h3</code>) to support navigation by heading in screen readers</li>
+						<li><i class="fas fa-check-circle"></i> All pages include a <code>lang="en"</code> attribute on the <code>&lt;html&gt;</code> element; right-to-left languages are supported via an automatic <code>dir="rtl"</code> attribute when an RTL language is selected</li>
+						<li><i class="fas fa-check-circle"></i> All external links include <code>rel="noopener noreferrer"</code> and carry <code>aria-label</code> attributes describing their destination</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- Section 3: Accessibility Toolbar -->
+			<section class="a11y-section" aria-labelledby="section-toolbar">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-universal-access"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-toolbar">On-Site Accessibility Toolbar</h2>
+					<p>
+						This site includes a built-in accessibility toolbar, accessible via the
+						<strong><i class="fas fa-universal-access" aria-hidden="true"></i> universal access icon</strong>
+						in the navigation bar at the top of every page. All settings are saved to your
+						browser and automatically restored on every visit — you only need to configure them once.
+					</p>
+					<p>The toolbar provides the following adjustable settings:</p>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-circle-half-stroke" aria-hidden="true"></i>
+							Display Mode
+						</div>
+						<p>
+							Choose from four site-wide display modes. <strong>Default</strong> is the standard
+							site design. <strong>Comfort</strong> replaces the white background with a warm
+							cream tone and softens the text color — designed for users who experience visual
+							stress or discomfort with high black-on-white contrast, including those with
+							<abbr title="Meares-Irlen syndrome, also called Visual Stress Syndrome">Meares-Irlen syndrome</abbr>.
+							<strong>High contrast</strong> renders the site in pure black and white to meet
+							the strictest AAA contrast thresholds throughout. <strong>Dark mode</strong>
+							inverts the palette to a dark background with light text and adjusted green accents.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-droplet" aria-hidden="true"></i>
+							Color Vision Mode
+						</div>
+						<p>
+							For users with color vision deficiency, two alternative palettes are available.
+							<strong>Grayscale</strong> removes all color from the page entirely, ensuring no
+							information is conveyed by color alone. <strong>Color-safe</strong> replaces the
+							site's green-based palette with a blue and amber combination — colors processed by
+							different cone types in the eye — making all visual cues distinguishable across
+							deuteranopia, protanopia, and tritanopia. Both the header and footer are explicitly
+							overridden in these modes to maintain AAA contrast ratios throughout.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-palette" aria-hidden="true"></i>
+							Reading Tint Overlay
+						</div>
+						<p>
+							A transparent color overlay can be applied across the entire page in five tints:
+							none, cream, blue, green, and rose. Colored overlays are a recognised accommodation
+							for visual stress and Meares-Irlen syndrome, and individual users often respond
+							differently to different tints. All five are offered so you can find what works
+							best for you.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-font" aria-hidden="true"></i>
+							Reading Font
+						</div>
+						<p>
+							Three font options are available. <strong>Default</strong> keeps Lexend.
+							<strong>OpenDyslexic</strong> applies a font with weighted letterform bottoms
+							designed to reduce visual letter-flipping common in some forms of dyslexia.
+							<strong>BDA Sans</strong> switches to Arial with increased line height, letter
+							spacing, and word spacing per the
+							<a href="https://www.bdadyslexia.org.uk/advice/employers/creating-a-dyslexia-friendly-workplace/dyslexia-friendly-style-guide" target="_blank" rel="noopener noreferrer">British Dyslexia Association Style Guide</a>
+							— recommended for users who find a familiar font with generous spacing more
+							comfortable than a specialist font.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-text-height" aria-hidden="true"></i>
+							Larger Text
+						</div>
+						<p>
+							Increases the base font size across the site by approximately 18%. This is separate
+							from browser zoom — it scales text only, leaving layout proportions intact. Users
+							who need more significant magnification are encouraged to use their browser's built-in
+							zoom (<kbd>Ctrl</kbd> + <kbd>+</kbd> on Windows, <kbd>Cmd</kbd> + <kbd>+</kbd> on Mac),
+							which scales the full layout including images and spacing.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-circle-pause" aria-hidden="true"></i>
+							Reduce Motion
+						</div>
+						<p>
+							Disables all CSS transitions and animations across the site. This setting is also
+							automatically activated if your operating system's "reduce motion" preference is
+							enabled — you do not need to set it manually if you have already done so at the
+							OS level.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-link" aria-hidden="true"></i>
+							Link Visibility Aids
+						</div>
+						<p>
+							Two independent link aids are available. <strong>Underline all links</strong> adds
+							an underline to every link on the page, ensuring links are never distinguished by
+							color alone. <strong>Highlight body links</strong> applies a soft background swatch
+							(similar to a highlighter pen) behind inline text links in the main content area —
+							helping users who scan pages non-linearly, or who benefit from a clear unambiguous
+							visual cue beyond color or underline. The highlight color automatically adapts to
+							whichever display or color vision mode is active.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-border-all" aria-hidden="true"></i>
+							Enhanced Focus Rings
+						</div>
+						<p>
+							Replaces the browser's default focus outline with a high-visibility gold ring and
+							halo on every focused element, making keyboard navigation position clearly visible
+							at all times. This setting goes beyond the WCAG 2.4.11 minimum and targets the
+							stricter 2.4.12 AAA enhanced focus appearance criterion.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-globe" aria-hidden="true"></i>
+							Language / Translation
+						</div>
+						<p>
+							The site can be translated into 16 languages directly from the accessibility toolbar,
+							including Spanish, Polish, Korean, Chinese, Hindi, Filipino, Arabic, Ukrainian,
+							Japanese, Vietnamese, Hebrew, Gujarati, Russian, Amharic, and Bengali. Translations
+							are currently powered by Google Translate. Machine translation quality varies and
+							nuance may be lost in some cases — we are working toward hand-translated versions of
+							key pages for the most-requested languages, which will be made available as they are
+							completed. Arabic and Hebrew are displayed in right-to-left layout automatically.
+						</p>
+					</div>
+
+				</div>
+			</section>
+
+			<!-- Section 4: Known Limitations -->
+			<section class="a11y-section" aria-labelledby="section-gaps">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-exclamation-triangle"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-gaps">Known Limitations</h2>
+					<p>
+						In the interest of transparency, we want to be upfront about areas of the site that
+						do not yet fully meet our accessibility goal. We are actively working to address these
+						where possible.
+					</p>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-map" aria-hidden="true"></i>
+							Interactive District Map
+						</div>
+						<p>
+							The interactive map on the <a href="/il10.html">IL-10 page</a> is powered by
+							<a href="https://leafletjs.com" target="_blank" rel="noopener noreferrer">Leaflet.js</a>,
+							a third-party mapping library. While the map receives keyboard focus, it does not
+							fully support screen reader navigation and does not provide a programmatic text
+							alternative to its visual content. Descriptive text about the district is provided
+							directly below the map for users who cannot interact with it. We are evaluating
+							a static accessible alternative for a future update.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-shield-alt" aria-hidden="true"></i>
+							CAPTCHA on Volunteer Forms
+						</div>
+						<p>
+							Volunteer forms on this site use
+							<a href="https://www.cloudflare.com/products/turnstile/" target="_blank" rel="noopener noreferrer">Cloudflare Turnstile</a>
+							as a spam prevention measure. While Turnstile is designed to be less intrusive than
+							traditional CAPTCHAs, it is a third-party widget and its full compatibility with all
+							assistive technologies cannot be guaranteed. If you experience difficulty completing
+							a volunteer form, please <a href="/contact.html">contact us directly</a> and we will
+							sign you up manually.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fab fa-youtube" aria-hidden="true"></i>
+							Embedded YouTube Video
+						</div>
+						<p>
+							The homepage features an embedded YouTube video. Closed captioning depends on
+							captions provided within the video on YouTube's platform, which is governed by
+							<a href="https://support.google.com/youtube/answer/100078" target="_blank" rel="noopener noreferrer">YouTube's own accessibility features</a>
+							rather than this site. We encourage use of YouTube's built-in caption and playback
+							controls. A text transcript of the video's content is planned for a future update.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-adjust" aria-hidden="true"></i>
+							Base Color Contrast
+						</div>
+						<p>
+							The site's default design uses muted secondary text colors that do not fully meet
+							the WCAG 2.1 Level AAA threshold of 7:1 in all contexts. Users who require higher
+							contrast can activate <strong>High contrast mode</strong> or <strong>Color-safe
+							mode</strong> via the accessibility toolbar — both modes are explicitly designed
+							to meet AAA contrast ratios throughout, including in the header and footer. We
+							are also progressively improving contrast in the default theme on an ongoing basis.
+						</p>
+					</div>
+
+					<div class="a11y-gap-card">
+						<div class="a11y-gap-label">
+							<i class="fas fa-language" aria-hidden="true"></i>
+							Machine Translation Quality
+						</div>
+						<p>
+							Languages selected via the toolbar are currently translated by Google Translate.
+							Automated machine translation may produce inaccuracies, miss cultural nuance, or
+							render poorly for complex political content. We are working toward hand-translated
+							versions of key pages for the highest-demand languages and will update this
+							statement as those become available.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- Section 5: Assistive Tech -->
+			<section class="a11y-section" aria-labelledby="section-assistive">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-laptop"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-assistive">Assistive Technology Compatibility</h2>
+					<p>
+						This site is intended to be compatible with commonly used assistive technologies,
+						including screen readers such as <abbr title="NonVisual Desktop Access">NVDA</abbr>,
+						<abbr title="Job Access With Speech">JAWS</abbr>, and VoiceOver, as well as
+						keyboard-only navigation, switch access, and browser zoom up to 200%. The
+						accessibility toolbar itself is fully keyboard-navigable and announces state
+						changes via <code>aria-pressed</code> and <code>aria-live</code> attributes.
+					</p>
+					<p>
+						If you are using an assistive technology not listed here and encounter a problem,
+						please let us know — compatibility details help us prioritise fixes.
+					</p>
+				</div>
+			</section>
+
+			<!-- Section 6: Feedback -->
+			<section class="a11y-section" aria-labelledby="section-feedback">
+				<div class="a11y-section-icon" aria-hidden="true">
+					<i class="fas fa-comment-alt"></i>
+				</div>
+				<div class="a11y-section-body">
+					<h2 id="section-feedback">Reporting an Accessibility Issue</h2>
+					<p>
+						We welcome feedback on the accessibility of this site. If you encounter a barrier,
+						experience difficulty accessing any content, find a feature of the toolbar that is
+						not working as described, or would like to request content in an alternative format,
+						please reach out through our <a href="/contact.html">contact page</a> and select
+						<strong>Accessibility Request</strong> as the subject.
+					</p>
+					<p>
+						When reporting an issue, it helps to include the page URL, a description of the
+						problem, the assistive technology or browser you were using, and — if applicable —
+						which toolbar settings were active at the time. We will do our best to respond
+						promptly and work toward a solution.
+					</p>
+				</div>
+			</section>
+
+			<!-- Contact CTA -->
+			<div class="a11y-contact-cta">
+				<i class="fas fa-universal-access" aria-hidden="true"></i>
+				<div>
+					<strong>Need help or found an issue?</strong>
+					<p>Reach out through our <a href="/contact.html">contact page</a> and we'll get back to you as soon as possible.</p>
+				</div>
+			</div>
+
+		</div>
+
 	</main>
 
 	<!-- Shared site footer -->

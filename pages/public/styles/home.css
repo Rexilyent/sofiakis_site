@@ -155,6 +155,7 @@
 
 /* Submit button */
 .page-home .home-join-form .btn{
+  position: relative;
   margin-top: 0.5rem;
   padding: 0.75rem 1.25rem;
 
@@ -517,6 +518,7 @@ body.page-home.has-sticky-header{
 
 /* Issues Button */
 .page-home .values-section .btn-issues{
+	position: relative;
 	display: block;           /* Important */
   width: fit-content;       /* So it doesn’t stretch */
   margin: 2.5rem auto 0;    /* TRUE centering */
@@ -739,4 +741,52 @@ body.page-home.has-sticky-header{
   padding: 0.6rem;
   border-radius: 50%;
   cursor: pointer;
+}
+/* ===========================
+   HOME: MOBILE OVERRIDES
+   =========================== */
+
+@media (max-width: 800px) {
+
+  /* Reduce banner height so page doesn't feel endless */
+  .page-home .home-join-banner {
+    height: clamp(420px, 75vw, 560px);
+  }
+
+  /* Re-center the portal form — base style uses left: 27% which offsets on mobile */
+  .page-home .home-join-cloud {
+    left: 50%;
+    top: 50%;
+    width: calc(100% - 2rem);
+  }
+
+  /* Stack meet-candidate section vertically */
+  .page-home .meet-candidate-inner {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Candidate photo — full width when stacked */
+  .page-home .candidate-photo img {
+    max-width: 100%;
+  }
+
+  /* Issue cards — single column */
+  .page-home .issue-cards {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+
+  /* Issues / Meet buttons — full width */
+  .page-home .values-section .btn-issues,
+  .page-home .btn-meet {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* News section padding */
+  .page-home .news-inner {
+    padding: 0 1rem;
+  }
 }
