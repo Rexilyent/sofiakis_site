@@ -1,5 +1,5 @@
 name = "sofiakissite"
-account_id = 7d9f45f8ee719e4240acd7cf354acc47
+account_id = "7d9f45f8ee719e4240acd7cf354acc47"
 compatibility_date = "2026-02-22"
 pages_build_output_dir = "public"
 
