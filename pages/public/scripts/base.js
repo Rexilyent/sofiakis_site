@@ -2,14 +2,118 @@
    BASE JS — shared across all pages
    ============================================================ */
 
-// ---- Mobile nav toggle ----
-function toggleNav() {
-  const nav = document.getElementById("nav-links");
-  const btn = document.querySelector(".nav-toggle");
-  if (!nav || !btn) return;
-  const isOpen = nav.classList.toggle("open");
-  btn.setAttribute("aria-expanded", isOpen);
-}
+// ---- Mobile nav drawer ----
+(function () {
+  // Ensure overlay element exists in the DOM
+  function getOverlay() {
+    let overlay = document.getElementById("nav-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "nav-overlay";
+      overlay.className = "nav-overlay";
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.appendChild(overlay);
+    }
+    return overlay;
+  }
+
+  // Inject a close button inside the drawer (once)
+  function ensureCloseBtn(drawer) {
+    if (drawer.querySelector(".nav-drawer-close")) return;
+    const btn = document.createElement("button");
+    btn.className = "nav-drawer-close";
+    btn.setAttribute("aria-label", "Close navigation");
+    btn.setAttribute("type", "button");
+    btn.innerHTML = "&#x2715;";
+    btn.addEventListener("click", closeNav);
+    drawer.insertBefore(btn, drawer.firstChild);
+  }
+
+  // Inject social icons at the bottom of the drawer (once)
+  function ensureSocialIcons(drawer) {
+    if (drawer.querySelector(".mobile-nav-social")) return;
+    const source = document.querySelector(".nav-social");
+    if (!source) return;
+    const social = document.createElement("div");
+    social.className = "mobile-nav-social";
+    social.innerHTML = source.innerHTML;
+    drawer.appendChild(social);
+  }
+
+  function openNav() {
+    const drawer  = document.getElementById("nav-links");
+    const toggle  = document.querySelector(".nav-toggle");
+    const overlay = getOverlay();
+    if (!drawer) return;
+
+    ensureCloseBtn(drawer);
+    ensureSocialIcons(drawer);
+
+    drawer.classList.add("open");
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+    toggle && toggle.setAttribute("aria-expanded", "true");
+
+    const firstFocusable = drawer.querySelector("button, a, [tabindex]");
+    if (firstFocusable) firstFocusable.focus();
+  }
+
+  function closeNav() {
+    const drawer  = document.getElementById("nav-links");
+    const toggle  = document.querySelector(".nav-toggle");
+    const overlay = getOverlay();
+    if (!drawer) return;
+
+    drawer.classList.remove("open");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "";
+    toggle && toggle.setAttribute("aria-expanded", "false");
+    toggle && toggle.focus();
+
+    drawer.querySelectorAll(".nav-dropdown.mobile-open")
+          .forEach(d => d.classList.remove("mobile-open"));
+  }
+
+  function initAccordions(drawer) {
+    drawer.querySelectorAll(".nav-dropdown > a").forEach(link => {
+      if (link.dataset.mobileInit) return;
+      link.dataset.mobileInit = "1";
+      link.addEventListener("click", function (e) {
+        if (window.innerWidth > 800) return;
+        e.preventDefault();
+        const dropdown = this.closest(".nav-dropdown");
+        const isOpen   = dropdown.classList.toggle("mobile-open");
+        this.setAttribute("aria-expanded", isOpen);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const drawer  = document.getElementById("nav-links");
+    const toggle  = document.querySelector(".nav-toggle");
+    const overlay = getOverlay();
+
+    if (!drawer || !toggle) return;
+
+    toggle.removeAttribute("onclick");
+    toggle.addEventListener("click", function () {
+      drawer.classList.contains("open") ? closeNav() : openNav();
+    });
+
+    overlay.addEventListener("click", closeNav);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && drawer.classList.contains("open")) closeNav();
+    });
+
+    initAccordions(drawer);
+  });
+
+  window.toggleNav = function () {
+    const drawer = document.getElementById("nav-links");
+    drawer && drawer.classList.contains("open") ? closeNav() : openNav();
+  };
+})();
 
 /* ============================================================
    ACCESSIBILITY TOOLBAR
