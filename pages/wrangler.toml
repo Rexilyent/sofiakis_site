@@ -1,6 +1,5 @@
 name = "sofiakissite"
-account_id = "7d9f45f8ee719e4240acd7cf354acc47"
-compatibility_date = "2026-02-22"
+compatibility_date = "2026-05-20"
 pages_build_output_dir = "public"
 
 # =====================================
@@ -17,7 +16,7 @@ database_id = "c87df1e0-4523-493f-af98-ddefb874969f"
 # =====================================
 # PRODUCTION ENVIRONMENT VARIABLES
 # =====================================
-[env.production]
+[env.production.vars]
 
 [[env.production.d1_databases]]
 binding = "CORE_DB"
