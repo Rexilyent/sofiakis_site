@@ -405,7 +405,7 @@ export async function onRequestPost(context: {
           html: `
             <p>Thank you for signing up to volunteer!</p>
             <p>Please confirm your email by clicking below:</p>
-            <a href="${baseUrl}/verify-email?token=${submissionId}">Confirm Email</a>
+            <a href="${baseUrl}/api/verify-email?token=${submissionId}">Confirm Email</a>
             <p>If you did not sign up, please ignore this email.</p>
             <p>This link will expire in 24 hours.</p>
           `
@@ -421,8 +421,8 @@ export async function onRequestPost(context: {
     // Log the full error server-side for debugging
     console.error("Volunteer submission error:", error);
 
-    // TEMPORARY: always expose real error for debugging — revert after fix
-    const message = error instanceof Error
+    // In development expose the real message; in production return a generic one
+    const message = isDev && error instanceof Error
       ? error.message
       : "An unexpected error occurred. Please try again.";
 
