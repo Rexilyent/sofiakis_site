@@ -1,5 +1,5 @@
 name = "sofiakissite"
-compatibility_date = "2026-5-20"
+compatibility_date = "2026-05-20"
 pages_build_output_dir = "public"
 
 # =====================================
@@ -19,7 +19,7 @@ database_id = "c87df1e0-4523-493f-af98-ddefb874969f"
 # =====================================
 # PRODUCTION ENVIRONMENT VARIABLES
 # =====================================
-[env.production]
+[env.production.vars]
 APP_ENV = "production"
 ALLOW_HARD_DELETE = "false"
 CONTACT_TO_EMAIL = "contact@alexandriasofiakis.com"
