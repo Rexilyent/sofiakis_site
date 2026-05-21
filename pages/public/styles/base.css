@@ -949,8 +949,33 @@ html.a11y-highcontrast {
 }
 html.a11y-highcontrast body                     { background: #fff; color: #000; }
 html.a11y-highcontrast .site-header             { background: #003d18; }
-html.a11y-highcontrast .site-footer             { background: #000; }
+html.a11y-highcontrast .site-footer             { background: #003d18; }
+
+/* General content links: dark green on white = ~8.2:1 ✓ (AAA) */
 html.a11y-highcontrast a                        { color: #005a25; text-decoration: underline; }
+
+/* Nav links sit on the dark green header (#003d18).
+   #005a25 on #003d18 produces only ~1.4:1 — essentially invisible.
+   Force white (on #003d18 = ~12.5:1 ✓) and suppress the underline
+   that would look odd on nav items. */
+html.a11y-highcontrast .nav-links a,
+html.a11y-highcontrast .nav-social a            { color: #ffffff !important; text-decoration: none !important; }
+
+/* Keep the hover/active underline accent visible on the dark header */
+html.a11y-highcontrast .nav-links a::after      { background: #FFD700 !important; }
+
+/* Mobile nav: .nav-links panel has a dark green background (#116e30),
+   so white text remains readable there too — no override needed.
+   If the panel background ever changes to light, revisit this. */
+
+/* Footer links sit on #000 black.
+   #005a25 on #000 = ~2.6:1 — fails AA.
+   White on black = 21:1 ✓ (AAA). */
+html.a11y-highcontrast .footer-links a,
+html.a11y-highcontrast .footer-social a         { color: #ffffff !important; }
+
+html.a11y-highcontrast .footer-paid-for         { color: #ffffff !important; border-color: rgba(255,255,255,0.6) !important; }
+
 html.a11y-highcontrast .btn-contact-submit,
 html.a11y-highcontrast .btn-submit,
 html.a11y-highcontrast .btn                     { border: 2px solid #000; }
@@ -966,7 +991,7 @@ html.a11y-dark {
 }
 html.a11y-dark body                             { background: #1a1a1a; color: #e8e8e8; }
 html.a11y-dark .site-header                     { background: rgba(10, 30, 15, 0.92); }
-html.a11y-dark .site-footer                     { background: #0d0d0d; }
+html.a11y-dark .site-footer                     { background: #0a1f10; }
 html.a11y-dark .contact-form-wrapper,
 html.a11y-dark .privacy-wrapper,
 html.a11y-dark .a11y-wrapper,
@@ -978,13 +1003,37 @@ html.a11y-dark .contact-select-wrapper select   { background: #2e2e2e; color: #e
 html.a11y-dark .a11y-gap-card                   { background: #2e2e2e; border-color: #555; }
 html.a11y-dark .policy-section,
 html.a11y-dark .a11y-section                    { border-color: #333; }
-html.a11y-dark .a11y-panel                      { background: #1e1e1e; border-color: #444; color: #e8e8e8; }
+html.a11y-dark #a11y-panel                      { background: #1e1e1e; border-color: #444; color: #e8e8e8; }
+html.a11y-dark .a11y-panel-body                 { background: #1e1e1e; }
+
+/* Mode / CV / font buttons */
 html.a11y-dark .a11y-mode-btn                   { background: #2a2a2a; border-color: #444; color: #ccc; }
+html.a11y-dark .a11y-mode-btn i                 { color: #aaa; }
+html.a11y-dark .a11y-mode-btn:hover             { background: #1a3a25; border-color: #4cc97a; }
 html.a11y-dark .a11y-mode-btn.active            { background: #1a3a25; border-color: #4cc97a; color: #4cc97a; }
+html.a11y-dark .a11y-mode-btn.active i          { color: #4cc97a; }
+
+/* Section labels */
 html.a11y-dark .a11y-section-label              { color: #888; }
+
+/* Toggle rows */
 html.a11y-dark .a11y-toggle-label               { color: #ccc; }
+html.a11y-dark .a11y-toggle-label i             { color: #888; }
+
+/* Toggle switch track — unchecked state */
+html.a11y-dark .a11y-slider                     { background: #555; }
+html.a11y-dark .a11y-switch input:checked + .a11y-slider { background: #4cc97a; }
+
+/* Tint picker label */
+html.a11y-dark .a11y-tint-label                 { color: #ccc; }
+html.a11y-dark .a11y-tint-label i               { color: #888; }
+html.a11y-dark .a11y-tint-btn.active            { border-color: #4cc97a; }
+
+/* Reset button & divider */
 html.a11y-dark .a11y-reset-btn                  { background: #2a2a2a; border-color: #444; color: #aaa; }
+html.a11y-dark .a11y-reset-btn:hover            { background: #333; color: #e8e8e8; }
 html.a11y-dark .a11y-divider                    { background: #333; }
+
 html.a11y-dark .nav-links a                     { color: #e8e8e8; }
 
 /* ---- Large text ---- */

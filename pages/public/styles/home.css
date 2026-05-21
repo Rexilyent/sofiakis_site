@@ -742,51 +742,45 @@ body.page-home.has-sticky-header{
   border-radius: 50%;
   cursor: pointer;
 }
-/* ===========================
-   HOME: MOBILE OVERRIDES
-   =========================== */
 
-@media (max-width: 800px) {
+/* ============================================================
+   DARK MODE — home page form card
+   ============================================================ */
 
-  /* Reduce banner height so page doesn't feel endless */
-  .page-home .home-join-banner {
-    height: clamp(420px, 75vw, 560px);
-  }
+/* Card: swap the frosted-glass white tint for a dark tint,
+   keep the portal glow so it still looks cohesive             */
+html.a11y-dark .page-home .home-join-cloud {
+  background: rgba(15, 30, 20, 0.72);
+  border-color: rgba(76, 201, 122, 0.3);
+  box-shadow:
+    0 0 50px rgba(76, 201, 122, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.55);
+}
 
-  /* Re-center the portal form — base style uses left: 27% which offsets on mobile */
-  .page-home .home-join-cloud {
-    left: 50%;
-    top: 50%;
-    width: calc(100% - 2rem);
-  }
+/* Heading */
+html.a11y-dark .page-home .home-join-cloud h2 {
+  color: #e8e8e8;
+}
 
-  /* Stack meet-candidate section vertically */
-  .page-home .meet-candidate-inner {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+/* Inputs */
+html.a11y-dark .page-home .home-join-form input {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e8e8e8;
+}
 
-  /* Candidate photo — full width when stacked */
-  .page-home .candidate-photo img {
-    max-width: 100%;
-  }
+html.a11y-dark .page-home .home-join-form input::placeholder {
+  color: rgba(200, 220, 210, 0.55);
+}
 
-  /* Issue cards — single column */
-  .page-home .issue-cards {
-    grid-template-columns: 1fr;
-    padding: 0.5rem;
-  }
+html.a11y-dark .page-home .home-join-form input:focus {
+  border-color: rgba(76, 201, 122, 0.75);
+  box-shadow:
+    0 0 0 3px rgba(76, 201, 122, 0.25),
+    inset 0 1px 4px rgba(0, 0, 0, 0.3);
+}
 
-  /* Issues / Meet buttons — full width */
-  .page-home .values-section .btn-issues,
-  .page-home .btn-meet {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-  }
-
-  /* News section padding */
-  .page-home .news-inner {
-    padding: 0 1rem;
-  }
+/* Consent label */
+html.a11y-dark .page-home .home-join-form .consent-label {
+  color: rgba(200, 220, 210, 0.8);
 }
