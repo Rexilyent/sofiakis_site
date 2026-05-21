@@ -46,6 +46,16 @@
     const overlay = getOverlay();
     if (!drawer) return;
 
+    // Move drawer to <body> so it escapes the site-header stacking context.
+    // While inside site-header (z-index:2000 stacking context), the overlay
+    // paints over it regardless of the drawer's own z-index. As a direct
+    // child of body it gets its own independent stacking layer.
+    if (drawer.parentElement !== document.body) {
+      drawer._origParent  = drawer.parentElement;
+      drawer._origSibling = drawer.nextSibling;
+      document.body.appendChild(drawer);
+    }
+
     ensureCloseBtn(drawer);
     ensureSocialIcons(drawer);
 
@@ -69,6 +79,13 @@
     document.body.style.overflow = "";
     toggle && toggle.setAttribute("aria-expanded", "false");
     toggle && toggle.focus();
+
+    // Return drawer to its original position inside the header
+    if (drawer._origParent) {
+      drawer._origParent.insertBefore(drawer, drawer._origSibling || null);
+      drawer._origParent  = null;
+      drawer._origSibling = null;
+    }
 
     drawer.querySelectorAll(".nav-dropdown.mobile-open")
           .forEach(d => d.classList.remove("mobile-open"));
