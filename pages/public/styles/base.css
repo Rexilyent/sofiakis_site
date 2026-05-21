@@ -458,7 +458,7 @@ a {
     padding: 5rem 0 2rem;
     gap: 0;
     overflow-y: auto;
-    z-index: 2001; /* above nav header (2000) so drawer is fully visible */
+    z-index: 2001;
 
     /* Hidden: slide off to the right */
     transform: translateX(100%);
@@ -660,11 +660,15 @@ a {
 }
 
 /* ---- Overlay backdrop ---- */
+/* z-index: 1999 keeps the overlay BELOW the site-header stacking context
+   (z-index: 2000). Since nav-links lives inside site-header, it paints at
+   the header's root level (2000) — above the overlay — so touches reach
+   the drawer. The overlay still dims all page content below the header. */
 .nav-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 2000; /* above page, below drawer (2001) */
+  z-index: 1999;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   opacity: 0;
