@@ -72,11 +72,43 @@
 }
 
 @media (max-width: 600px){
+  /* On mobile the banner needs more height to accommodate the centered form */
+  .page-home .home-join-banner{
+    height: clamp(680px, 120vw, 820px);
+    background-position: 68% center; /* pull portal further right on narrow screens */
+  }
+
+  /* Reset the desktop left-offset positioning and center the card */
   .page-home .home-join-cloud{
-    padding: 1.25rem;
-    border-radius: 0.9rem;
-    right: 16px;
-    bottom: 16px;
+    /* Clear desktop values */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: calc(100% - 2rem); /* full width minus safe margins */
+    max-width: 420px;         /* don't let it get huge on wide-ish phones */
+
+    padding: 1.25rem 1rem;
+    border-radius: 1.1rem;
+  }
+
+  /* Tighten the heading on small screens */
+  .page-home .home-join-cloud h2{
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+    margin-bottom: 0.9rem;
+  }
+
+  /* Make inputs comfortably tappable */
+  .page-home .home-join-form input{
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  /* Full-width submit button */
+  .page-home .home-join-form .btn{
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
   }
 }
 
