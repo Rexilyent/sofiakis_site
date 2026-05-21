@@ -30,13 +30,16 @@
   }
 
   // Inject social icons at the bottom of the drawer (once)
+  // Clones only <a> children — excludes #a11y-trigger which is a <button>
   function ensureSocialIcons(drawer) {
     if (drawer.querySelector(".mobile-nav-social")) return;
     const source = document.querySelector(".nav-social");
     if (!source) return;
     const social = document.createElement("div");
     social.className = "mobile-nav-social";
-    social.innerHTML = source.innerHTML;
+    source.querySelectorAll("a").forEach(link => {
+      social.appendChild(link.cloneNode(true));
+    });
     drawer.appendChild(social);
   }
 
