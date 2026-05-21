@@ -148,14 +148,43 @@ export async function onRequestPost(context: {
     // Validate interests + languages against allowlists
     // ----------------------------------------
     const VALID_INTERESTS = [
-      "canvassing", "phone_banking", "text_banking", "data_entry",
-      "event_support", "fundraising", "social_media", "yard_signs",
-      "voter_registration", "translation", "other"
+      "Phone banking",
+      "Text banking",
+      "Canvassing / Door knocking",
+      "Events",
+      "Social media",
+      "I'm not sure yet",
+      "Other"
     ];
 
     const VALID_LANGUAGES = [
-      "english", "spanish", "polish", "arabic", "hindi",
-      "mandarin", "tagalog", "french", "other"
+      "Albanian", "Amharic", "Arabic", "Armenian", "Belarusian",
+      "Bulgarian", "Bengali", "Cantonese", "Croatian", "Czech",
+      "Danish", "Dutch", "Estonian", "Finnish", "French",
+      "German", "Greek", "Gujarati", "Hebrew", "Hindi",
+      "Hungarian", "Icelandic", "Indonesian", "Italian", "Japanese",
+      "Khmer", "Korean", "Kurdish", "Latvian", "Lao",
+      "Lithuanian", "Luxembourgish", "Macedonian", "Malay", "Maltese",
+      "Mandarin", "Norwegian", "Polish", "Portuguese", "Punjabi",
+      "Romanian", "Russian", "Serbian", "Slovak", "Slovenian",
+      "Somali", "Spanish", "Swedish", "Swahili", "Tagalog",
+      "Tamil", "Thai", "Turkish", "Ukrainian", "Urdu",
+      "Vietnamese",
+      "ASL (American Sign Language)",
+      "Auslan (Australian Sign Language)",
+      "BSL (British Sign Language)",
+      "CSL (Chinese Sign Language)",
+      "DGS (German Sign Language)",
+      "IPSL (Indonesian Sign Language)",
+      "ISL (Irish Sign Language)",
+      "JSL (Japanese Sign Language)",
+      "KSL (Korean Sign Language)",
+      "LIS (Italian Sign Language)",
+      "LSF (French Sign Language)",
+      "LSQ (Quebec Sign Language)",
+      "NZSL (New Zealand Sign Language)",
+      "PNG (Papua New Guinea Sign Language)",
+      "Other"
     ];
 
     const safeInterests = Array.isArray(interests)
