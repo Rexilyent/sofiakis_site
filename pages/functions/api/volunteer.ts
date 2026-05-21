@@ -421,8 +421,8 @@ export async function onRequestPost(context: {
     // Log the full error server-side for debugging
     console.error("Volunteer submission error:", error);
 
-    // In development expose the real message; in production return a generic one
-    const message = isDev && error instanceof Error
+    // TEMPORARY: always expose real error for debugging — revert after fix
+    const message = error instanceof Error
       ? error.message
       : "An unexpected error occurred. Please try again.";
 
