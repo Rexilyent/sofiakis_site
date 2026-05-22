@@ -95,16 +95,33 @@
   }
 
   function initAccordions(drawer) {
-    drawer.querySelectorAll(".nav-dropdown > a").forEach(link => {
-      if (link.dataset.mobileInit) return;
-      link.dataset.mobileInit = "1";
-      link.addEventListener("click", function (e) {
-        if (window.innerWidth > 800) return;
-        e.preventDefault();
-        const dropdown = this.closest(".nav-dropdown");
-        const isOpen   = dropdown.classList.toggle("mobile-open");
-        this.setAttribute("aria-expanded", isOpen);
-      });
+    drawer.querySelectorAll(".nav-dropdown").forEach(dropdown => {
+      if (dropdown.dataset.mobileInit) return;
+      dropdown.dataset.mobileInit = "1";
+
+      // Inject a dedicated chevron button so the <a> link can navigate freely.
+      // The button is the only thing that expands/collapses the sub-menu.
+      if (!dropdown.querySelector(".nav-dropdown-chevron")) {
+        const chevron = document.createElement("button");
+        chevron.className = "nav-dropdown-chevron";
+        chevron.setAttribute("type", "button");
+        chevron.setAttribute("aria-expanded", "false");
+        chevron.setAttribute("aria-label", "Expand submenu");
+        chevron.innerHTML = "›";
+
+        const parentLink = dropdown.querySelector(":scope > a");
+        if (parentLink) {
+          parentLink.insertAdjacentElement("afterend", chevron);
+        } else {
+          dropdown.appendChild(chevron);
+        }
+
+        chevron.addEventListener("click", function () {
+          if (window.innerWidth > 800) return;
+          const isOpen = dropdown.classList.toggle("mobile-open");
+          chevron.setAttribute("aria-expanded", String(isOpen));
+        });
+      }
     });
   }
 

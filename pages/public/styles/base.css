@@ -197,7 +197,12 @@ a {
 }
 
 
-/* Buttons (shared) */
+/* Chevron toggle button — mobile only, hidden on desktop */
+.nav-dropdown-chevron {
+  display: none;
+}
+
+
 .btn {
   padding: 0.7rem 1.4rem;
   border-radius: 999px;
@@ -516,46 +521,62 @@ a {
 
   /* ---- Dropdown rows — accordion style ---- */
   .nav-dropdown {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .nav-dropdown > a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 1.75rem;
+    flex: 1;
+    display: block;
+    padding: 1.1rem 0.5rem 1.1rem 1.75rem;
     font-size: 1.15rem;
     font-weight: 500;
     color: #ffffff;
-    width: 100%;
     cursor: pointer;
     border-bottom: none;
     text-decoration: none;
   }
 
+  /* Hide the old CSS pseudo-element chevron on mobile — the JS button takes over */
   .nav-dropdown > a::after {
-    content: "›";
-    display: inline-block !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    background: none !important;
-    font-size: 1.4rem;
-    line-height: 1;
-    transition: transform 0.2s ease;
-    opacity: 0.65;
-    flex-shrink: 0;
+    display: none !important;
   }
 
-  .nav-dropdown.mobile-open > a::after {
+  /* Dedicated chevron toggle button (mobile only) */
+  .nav-dropdown-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 1.6rem;
+    line-height: 1;
+    padding: 0.5rem 1.25rem 0.5rem 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+    /* Generous tap target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .nav-dropdown.mobile-open .nav-dropdown-chevron {
     transform: rotate(90deg);
-    opacity: 1;
+    color: #ffffff;
   }
 
   .nav-dropdown > a:hover,
   .nav-dropdown > a:focus-visible {
     background: rgba(255, 255, 255, 0.1);
+    outline: none;
+  }
+
+  .nav-dropdown-chevron:hover,
+  .nav-dropdown-chevron:focus-visible {
+    color: #ffffff;
     outline: none;
   }
 
@@ -571,6 +592,7 @@ a {
     padding: 0;
     min-width: 0;
     width: 100%;
+    flex-basis: 100%; /* ensures it breaks to its own row inside the flex container */
     display: none;
     transition: none;
     backdrop-filter: none;
