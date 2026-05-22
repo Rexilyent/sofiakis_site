@@ -661,6 +661,18 @@ body.page-home.has-sticky-header{
     inset 0 0 16px rgba(120,255,180,0.35);
 }
 
+@media (max-width: 700px){
+	.page-home .issue-cards{
+		display: grid;
+		grid-template-columns: repeat(2,1fr);
+		gap: 1.5rem;
+		padding: 1.5rem;
+		color: var(--primary);
+		text-align: center;
+		align-items: center;
+	}
+}
+
 /* ===========================
 	 HOME: NEWS SECTION
 	 =========================== */
