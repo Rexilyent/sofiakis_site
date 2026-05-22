@@ -439,6 +439,45 @@ body.page-home.has-sticky-header{
 	border-radius: 1rem;
 }
 
+@media (max-width: 700px){
+  .page-home .meet-candidate{
+    padding: 2.5rem 1.25rem 3rem;
+  }
+
+  /* Stack photo above text */
+  .page-home .meet-candidate-inner{
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  /* Photo sits first, centered, meaningfully large */
+  .page-home .candidate-photo{
+    width: 65%;
+    max-width: 280px;
+    flex-shrink: 0;
+  }
+
+  .page-home .candidate-photo img{
+    width: 100%;
+    max-width: unset;
+    border-radius: 1rem;
+  }
+
+  /* Bio fills width below */
+  .page-home .meet-candidate .candidate-bio{
+    width: 100%;
+  }
+
+  /* Keep button centered */
+  .page-home .btn-meet{
+    display: block;
+    width: fit-content;
+    margin: 1.5rem auto 0;
+  }
+}
+
 /* ===========================
 	 HOME: CANDIDATE BUTTON
    =========================== */
