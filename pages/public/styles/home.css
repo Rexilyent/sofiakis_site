@@ -75,7 +75,7 @@
   /* On mobile the banner needs more height to accommodate the centered form */
   .page-home .home-join-banner{
     height: clamp(680px, 120vw, 820px);
-    background-position: 68% center; /* pull portal further right on narrow screens */
+    background-position: 42% center; /* pull portal further right on narrow screens */
   }
 
   /* Reset the desktop left-offset positioning and center the card */
