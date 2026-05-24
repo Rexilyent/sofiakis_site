@@ -1026,6 +1026,13 @@ html.a11y-highcontrast .nav-social a            { color: #ffffff !important; tex
 /* Keep the hover/active underline accent visible on the dark header */
 html.a11y-highcontrast .nav-links a::after      { background: #FFD700 !important; }
 
+/* Dropdown menu: override white forced on .nav-links a so links are legible.
+   Use high-contrast black text on white panel (21:1) — !important needed to
+   beat the .nav-links a rule above which uses !important itself. */
+html.a11y-highcontrast .nav-dropdown .dropdown-menu     { background: #ffffff; border: 2px solid #000; }
+html.a11y-highcontrast .nav-dropdown .dropdown-menu a   { color: #000000 !important; text-decoration: underline !important; }
+html.a11y-highcontrast .nav-dropdown .dropdown-menu a:hover { background: #f0f0f0; }
+
 /* Mobile nav: .nav-links panel has a dark green background (#116e30),
    so white text remains readable there too — no override needed.
    If the panel background ever changes to light, revisit this. */
@@ -1097,6 +1104,13 @@ html.a11y-dark .a11y-reset-btn:hover            { background: #333; color: #e8e8
 html.a11y-dark .a11y-divider                    { background: #333; }
 
 html.a11y-dark .nav-links a                     { color: #e8e8e8; }
+
+/* Dropdown menu: dark background + light text in dark mode so links are readable
+   against the panel (the default white panel would be invisible with light text).
+   Higher specificity (0,3,1) beats the .nav-links a rule above (0,2,2). */
+html.a11y-dark .nav-dropdown .dropdown-menu     { background: rgba(20, 35, 25, 0.97); }
+html.a11y-dark .nav-dropdown .dropdown-menu a   { color: #e8e8e8; }
+html.a11y-dark .nav-dropdown .dropdown-menu a:hover { background: rgba(255, 255, 255, 0.08); }
 
 /* ---- Large text ---- */
 html.a11y-large body { font-size: 118%; }
