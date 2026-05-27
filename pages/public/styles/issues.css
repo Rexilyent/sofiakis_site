@@ -485,3 +485,210 @@
   .page-issues .cta-content { text-align: center; }
   .page-issues .cta-row { flex-direction: column; }
 }
+/* ============================================================
+   ACCESSIBILITY: DARK MODE
+   ============================================================ */
+
+html.a11y-dark .page-issues .issue-card {
+  background: #242424;
+  border-color: #444;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+html.a11y-dark .page-issues .issue-card:hover {
+  border-color: #4cc97a;
+}
+
+html.a11y-dark .page-issues .issue-icon {
+  background: #2e2e2e;
+}
+
+html.a11y-dark .page-issues .issue-detail {
+  background: #242424;
+  border-color: #444;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+html.a11y-dark .page-issues .issue-divider {
+  background: #444;
+}
+
+html.a11y-dark .page-issues .cta-signup {
+  background: rgba(15, 40, 22, 0.95);
+}
+
+html.a11y-dark .page-issues .cta-row input,
+html.a11y-dark .page-issues .cta-form select {
+  background: #2e2e2e;
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+html.a11y-dark .page-issues .cta-row input:focus,
+html.a11y-dark .page-issues .cta-form select:focus {
+  border-color: rgba(76, 201, 122, 0.55);
+  box-shadow: 0 0 0 3px rgba(76, 201, 122, 0.15);
+}
+
+html.a11y-dark .page-issues .interest-dropdown-btn {
+  background: #2e2e2e;
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+html.a11y-dark .page-issues .interest-dropdown-btn:focus,
+html.a11y-dark .page-issues .interest-dropdown-btn:hover {
+  border-color: rgba(76, 201, 122, 0.55);
+  box-shadow: 0 0 0 3px rgba(76, 201, 122, 0.15);
+}
+
+html.a11y-dark .page-issues .interest-dropdown-menu {
+  background: #242424;
+  border-color: #555;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
+html.a11y-dark .page-issues .dropdown-option {
+  color: #e8e8e8;
+}
+
+html.a11y-dark .page-issues .dropdown-option:hover {
+  color: #4cc97a;
+}
+
+html.a11y-dark .page-issues .cta-label {
+  color: #a0a0a0;
+}
+
+/* ============================================================
+   ACCESSIBILITY: COMFORT MODE
+   ============================================================ */
+
+html.a11y-comfort .page-issues .issue-card {
+  background: #faf5ee;
+  border-color: #e0d5c5;
+}
+
+html.a11y-comfort .page-issues .issue-card:hover {
+  border-color: var(--primary);
+}
+
+html.a11y-comfort .page-issues .issue-icon {
+  background: #fdf9f3;
+}
+
+html.a11y-comfort .page-issues .issue-detail {
+  background: #faf5ee;
+  border-color: #e0d5c5;
+}
+
+html.a11y-comfort .page-issues .issue-divider {
+  background: #e0d5c5;
+}
+
+html.a11y-comfort .page-issues .cta-signup {
+  background: #ede8df;
+}
+
+html.a11y-comfort .page-issues .cta-row input,
+html.a11y-comfort .page-issues .cta-form select {
+  background: #fdf9f3;
+  border-color: #d4c5b0;
+  color: #3d3530;
+}
+
+html.a11y-comfort .page-issues .interest-dropdown-btn {
+  background: #fdf9f3;
+  border-color: #d4c5b0;
+  color: #3d3530;
+}
+
+html.a11y-comfort .page-issues .interest-dropdown-menu {
+  background: #fdf9f3;
+  border-color: #d4c5b0;
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGH CONTRAST
+   ============================================================ */
+
+html.a11y-highcontrast .page-issues .issue-card {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .issue-card:hover {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px #000000;
+}
+
+html.a11y-highcontrast .page-issues .issue-icon {
+  background: #ffffff;
+  border: 2px solid #000000;
+}
+
+html.a11y-highcontrast .page-issues .issue-detail {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .issue-divider {
+  background: #000000;
+  opacity: 1;
+}
+
+html.a11y-highcontrast .page-issues .cta-signup {
+  background: #f0f0f0;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .cta-row input,
+html.a11y-highcontrast .page-issues .cta-form select {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+html.a11y-highcontrast .page-issues .cta-row input:focus,
+html.a11y-highcontrast .page-issues .cta-form select:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+html.a11y-highcontrast .page-issues .interest-dropdown-btn {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .interest-dropdown-btn:focus,
+html.a11y-highcontrast .page-issues .interest-dropdown-btn:hover {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
+}
+
+html.a11y-highcontrast .page-issues .interest-dropdown-menu {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .dropdown-option {
+  border: 1px solid #888888;
+}
+
+html.a11y-highcontrast .page-issues .cta-btn {
+  background: #FFD700;
+  border: 2px solid #000000;
+  color: #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-issues .cta-btn:hover {
+  background: #FFE44A;
+  box-shadow: none;
+}

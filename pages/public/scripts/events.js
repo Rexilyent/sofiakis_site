@@ -63,7 +63,16 @@ async function loadEvents() {
   const raw = await res.json();
 
   return raw.map(e => {
-    const { tag, cleanTitle } = parseBracketTag(e.title);
+    // New format: build_events.py pre-parses category into its own field.
+    // Legacy format: bracket prefix is still embedded in the title.
+    // Support both so either format works without re-running the build script.
+    let tag, cleanTitle;
+    if (e.category) {
+      tag        = normalizeTag(e.category);
+      cleanTitle = e.title;
+    } else {
+      ({ tag, cleanTitle } = parseBracketTag(e.title));
+    }
 
     return {
       title: cleanTitle,

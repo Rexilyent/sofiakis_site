@@ -293,3 +293,76 @@ body.page-vote .voting-info ul{
     padding: 0 1rem;
   }
 }
+/* ============================================================
+   ACCESSIBILITY: DARK MODE
+   ============================================================ */
+
+html.a11y-dark body.page-vote .vote-card {
+  background: #242424;
+  border-color: #444;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+html.a11y-dark body.page-vote .vote-card:hover {
+  border-color: #4cc97a;
+}
+
+html.a11y-dark body.page-vote .vote-card h2 {
+  color: #4cc97a;
+}
+
+html.a11y-dark body.page-vote .vote-registration-btn {
+  background: rgba(255, 215, 0, 0.88);
+  border-color: rgba(255, 215, 0, 0.72);
+  color: #111;
+}
+
+html.a11y-dark body.page-vote .voting-info p {
+  color: #a0a0a0;
+}
+
+html.a11y-dark body.page-vote .voting-info ul {
+  color: #a0a0a0;
+}
+
+/* ============================================================
+   ACCESSIBILITY: COMFORT MODE
+   ============================================================ */
+
+html.a11y-comfort body.page-vote .vote-card {
+  background: #faf5ee;
+  border-color: #e0d5c5;
+}
+
+html.a11y-comfort body.page-vote .vote-card:hover {
+  border-color: var(--primary);
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGH CONTRAST
+   ============================================================ */
+
+html.a11y-highcontrast body.page-vote .vote-card {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast body.page-vote .vote-card:hover {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px #000000;
+}
+
+html.a11y-highcontrast body.page-vote .vote-registration-btn {
+  background: #FFD700;
+  border: 2px solid #000000;
+  color: #000000;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast body.page-vote .vote-registration-btn:hover {
+  background: #FFE44A;
+  box-shadow: none;
+}

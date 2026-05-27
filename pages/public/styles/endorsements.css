@@ -272,3 +272,90 @@
     padding: 1rem;
   }
 }
+/* ============================================================
+   ACCESSIBILITY: DARK MODE
+   ============================================================ */
+
+html.a11y-dark .page-endorsements a.endorsement-card {
+  background: #242424;
+  border-color: #444;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+html.a11y-dark .page-endorsements a.endorsement-card:hover {
+  border-color: #4cc97a;
+}
+
+html.a11y-dark .page-endorsements .endorsement-card h4 {
+  color: #4cc97a;
+}
+
+html.a11y-dark .page-endorsements .endorsement-card .link span {
+  color: #4cc97a;
+}
+
+html.a11y-dark .page-endorsements .anti-endorsements {
+  background: rgba(10, 28, 16, 0.97);
+}
+
+/* ============================================================
+   ACCESSIBILITY: COMFORT MODE
+   ============================================================ */
+
+html.a11y-comfort .page-endorsements a.endorsement-card {
+  background: #faf5ee;
+  border-color: #e0d5c5;
+}
+
+html.a11y-comfort .page-endorsements a.endorsement-card:hover {
+  border-color: var(--primary);
+}
+
+html.a11y-comfort .page-endorsements .anti-endorsements {
+  background: rgba(55, 44, 28, 0.88);
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGH CONTRAST
+   ============================================================ */
+
+html.a11y-highcontrast .page-endorsements a.endorsement-card {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-endorsements a.endorsement-card:hover {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px #000000;
+}
+
+html.a11y-highcontrast .page-endorsements a.endorsement-card:focus-visible {
+  outline: 3px solid #000000;
+  outline-offset: 4px;
+}
+
+html.a11y-highcontrast .page-endorsements .endorsement-card .link span {
+  color: #005a25;
+  text-decoration: underline;
+}
+
+html.a11y-highcontrast .page-endorsements .anti-endorsements {
+  background: #003d18;
+}
+
+html.a11y-highcontrast .page-endorsements .anti-endorsement-header h2 {
+  color: #FFD700;
+}
+
+html.a11y-highcontrast .page-endorsements .anti-endorsement-header p {
+  color: #ffffff;
+}
+
+html.a11y-highcontrast .page-endorsements .anti-endorsement-card .title-container {
+  color: #FFD700;
+}
+
+html.a11y-highcontrast .page-endorsements .anti-endorsement-card .description {
+  color: #ffffff;
+}

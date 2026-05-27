@@ -558,3 +558,188 @@ body.page-volunteer .volunteer-form-section label {
     width: 100%;
   }
 }
+/* ============================================================
+   ACCESSIBILITY: DARK MODE
+   ============================================================ */
+
+html.a11y-dark .page-volunteer .volunteer-form {
+  background: #242424;
+  border-color: rgba(76, 201, 122, 0.35);
+}
+
+html.a11y-dark .page-volunteer .volunteer-form label,
+html.a11y-dark .page-volunteer .consent-label {
+  color: #a0a0a0;
+}
+
+html.a11y-dark .page-volunteer .volunteer-form input[type="text"],
+html.a11y-dark .page-volunteer .volunteer-form input[type="email"],
+html.a11y-dark .page-volunteer .volunteer-form input[type="tel"] {
+  background: #2e2e2e;
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+html.a11y-dark .page-volunteer .volunteer-form input:focus {
+  border-color: rgba(76, 201, 122, 0.55);
+  box-shadow: 0 0 0 4px rgba(76, 201, 122, 0.12);
+}
+
+html.a11y-dark .page-volunteer .language-dropdown-btn,
+html.a11y-dark .page-volunteer .interest-dropdown-btn {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: #555;
+  color: #e8e8e8;
+}
+
+html.a11y-dark .page-volunteer .language-dropdown-btn:focus,
+html.a11y-dark .page-volunteer .interest-dropdown-btn:focus {
+  border-color: rgba(76, 201, 122, 0.55);
+  box-shadow: 0 0 0 4px rgba(76, 201, 122, 0.12);
+}
+
+html.a11y-dark .page-volunteer .language-dropdown-menu,
+html.a11y-dark .page-volunteer .interest-dropdown-menu {
+  background: rgba(28, 28, 28, 0.99);
+  border-color: #555;
+}
+
+html.a11y-dark .page-volunteer .dropdown-option {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #e8e8e8;
+}
+
+html.a11y-dark .page-volunteer .dropdown-option:hover {
+  background: rgba(55, 55, 55, 0.95);
+}
+
+html.a11y-dark .page-volunteer .dropdown-option.is-selected {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.92), rgba(255, 215, 0, 0.72));
+  color: #111;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+html.a11y-dark .page-volunteer .field-error {
+  color: #ff6b7a;
+}
+
+html.a11y-dark .page-volunteer .interest-dropdown-btn.invalid {
+  border-color: #ff6b7a;
+  box-shadow: 0 0 0 3px rgba(255, 107, 122, 0.2);
+}
+
+/* ============================================================
+   ACCESSIBILITY: COMFORT MODE
+   ============================================================ */
+
+html.a11y-comfort .page-volunteer .volunteer-form {
+  background: rgba(253, 249, 243, 0.97);
+  border-color: rgba(180, 158, 130, 0.45);
+}
+
+html.a11y-comfort .page-volunteer .volunteer-form input[type="text"],
+html.a11y-comfort .page-volunteer .volunteer-form input[type="email"],
+html.a11y-comfort .page-volunteer .volunteer-form input[type="tel"] {
+  background: #fdf9f3;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #3d3530;
+}
+
+html.a11y-comfort .page-volunteer .language-dropdown-btn,
+html.a11y-comfort .page-volunteer .interest-dropdown-btn {
+  background: rgba(253, 249, 243, 0.97);
+  color: #3d3530;
+}
+
+html.a11y-comfort .page-volunteer .language-dropdown-menu,
+html.a11y-comfort .page-volunteer .interest-dropdown-menu {
+  background: rgba(253, 249, 243, 0.99);
+}
+
+html.a11y-comfort .page-volunteer .dropdown-option {
+  background: rgba(253, 249, 243, 0.95);
+  color: #3d3530;
+}
+
+/* ============================================================
+   ACCESSIBILITY: HIGH CONTRAST
+   ============================================================ */
+
+html.a11y-highcontrast .page-volunteer .volunteer-form {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-volunteer .volunteer-form label,
+html.a11y-highcontrast .page-volunteer .consent-label {
+  color: #000000;
+}
+
+html.a11y-highcontrast .page-volunteer .volunteer-form input[type="text"],
+html.a11y-highcontrast .page-volunteer .volunteer-form input[type="email"],
+html.a11y-highcontrast .page-volunteer .volunteer-form input[type="tel"] {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+html.a11y-highcontrast .page-volunteer .volunteer-form input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+html.a11y-highcontrast .page-volunteer .language-dropdown-btn,
+html.a11y-highcontrast .page-volunteer .interest-dropdown-btn {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-volunteer .language-dropdown-btn:focus,
+html.a11y-highcontrast .page-volunteer .interest-dropdown-btn:focus {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+html.a11y-highcontrast .page-volunteer .language-dropdown-menu,
+html.a11y-highcontrast .page-volunteer .interest-dropdown-menu {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-volunteer .dropdown-option {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #666666;
+}
+
+html.a11y-highcontrast .page-volunteer .dropdown-option.is-selected {
+  background: #FFD700;
+  color: #000000;
+  border: 2px solid #000000;
+  font-weight: 700;
+}
+
+html.a11y-highcontrast .page-volunteer .btn-submit {
+  background: #FFD700;
+  border: 2px solid #000000;
+  color: #000000;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-volunteer .btn-submit:hover {
+  background: #FFE44A;
+  box-shadow: none;
+}
+
+html.a11y-highcontrast .page-volunteer .field-error {
+  font-weight: 700;
+}
+
+html.a11y-highcontrast .page-volunteer .interest-dropdown-btn.invalid {
+  border-color: #b00020;
+  box-shadow: 0 0 0 3px rgba(176, 0, 32, 0.25);
+}

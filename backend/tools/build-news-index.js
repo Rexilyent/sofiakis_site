@@ -1,3 +1,22 @@
+/*
+=================================================
+Build News Index Script
+-------------------------------------------------
+This script generates a JSON index of news articles by reading HTML
+files in the news directory and extracting metadata from meta tags.
+It is intended to be run as part of the build process to create an
+up-to-date index for the news section of the website.
+=================================================
+Requirements:
+- Node.js installed on your machine
+
+=================================================
+Usage:
+	node build-news-index.js
+
+=================================================
+*/
+
 import fs from "fs";
 import path from "path";
 
