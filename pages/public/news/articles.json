@@ -1,13 +1,13 @@
 [
   {
-    "slug": "candidacy-announcement",
-    "title": "Alexandria Sofiakis Announces Candidacy for IL-10",
-    "date": "2026-02-16",
-    "summary": "Alexandria Sofiakis launches a grassroots campaign focused on community empowerment and economic fairness.",
-    "category": "Campaign",
+    "slug": "a-day-saving-puppies",
+    "title": "A Day Saving Puppies",
+    "date": "2026-06-08",
+    "summary": "My firsthand experience taking part in the open rescue attempt at Ridglan Farms",
+    "category": "Article",
     "featured": false,
-    "image": "/images/news/candidacy-announcement.jpg",
-    "author": "Campaign Team"
+    "image": "",
+    "author": "Alexandria Sofiakis"
   },
   {
     "slug": "first-townhall",
@@ -17,6 +17,16 @@
     "category": "Article",
     "featured": true,
     "image": "/images/news/first-townhall.jpg",
+    "author": "Campaign Team"
+  },
+  {
+    "slug": "candidacy-announcement",
+    "title": "Alexandria Sofiakis Announces Candidacy for IL-10",
+    "date": "2026-02-16",
+    "summary": "Alexandria Sofiakis launches a grassroots campaign focused on community empowerment and economic fairness.",
+    "category": "Campaign",
+    "featured": false,
+    "image": "/images/news/candidacy-announcement.jpg",
     "author": "Campaign Team"
   }
 ]
