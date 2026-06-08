@@ -90,7 +90,7 @@ async function loadEvents() {
 }
 
 /* =========================================================
-   Filtering (kept from your original logic)
+   Filtering
 ========================================================= */
 
 let activeFilters = new Set(["ALL"]);
@@ -142,7 +142,7 @@ function toggleFilter(filterKey) {
 }
 
 /* =========================================================
-   Map (NO GEOCODING ANYMORE)
+   Map
 ========================================================= */
 
 async function updateMap(events) {
