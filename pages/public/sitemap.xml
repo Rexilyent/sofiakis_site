@@ -1,85 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
     <loc>https://alexandriasofiakis.com/</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/about.html</loc>
+    <loc>https://alexandriasofiakis.com/about</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://alexandriasofiakis.com/issues</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://alexandriasofiakis.com/il10</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/issues.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alexandriasofiakis.com/il10.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://alexandriasofiakis.com/events.html</loc>
+    <loc>https://alexandriasofiakis.com/events</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/volunteer.html</loc>
+    <loc>https://alexandriasofiakis.com/vote</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://alexandriasofiakis.com/endorsements</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/endorsements.html</loc>
+    <loc>https://alexandriasofiakis.com/volunteer</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alexandriasofiakis.com/contact</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/contact.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://alexandriasofiakis.com/money_tracker</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/vote.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://alexandriasofiakis.com/news/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/accessibility.html</loc>
+    <loc>https://alexandriasofiakis.com/accessibility</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/privacy.html</loc>
+    <loc>https://alexandriasofiakis.com/privacy</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
-  <!-- News Articles -->
   <url>
-    <loc>https://alexandriasofiakis.com/candidacy-announcement.html</loc>
-    <lastmod>2026-02-16</lastmod>
-    <changefreq>never</changefreq>
+    <loc>https://alexandriasofiakis.com/news/a-day-saving-puppies</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
-
   <url>
-    <loc>https://alexandriasofiakis.com/first-townhall.html</loc>
+    <loc>https://alexandriasofiakis.com/news/first-townhall</loc>
     <lastmod>2026-02-22</lastmod>
-    <changefreq>never</changefreq>
+    <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
-
+  <url>
+    <loc>https://alexandriasofiakis.com/news/candidacy-announcement</loc>
+    <lastmod>2026-02-16</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
