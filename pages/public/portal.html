@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://alexandriasofiakis.com/portal">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Staff Portal | Alexandria Sofiakis for IL-10</title>
+	<link rel="icon" href="/assets/images/sofiakis_logo_32x32.png" type="image/x-icon">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/styles/portal.css">
+</head>
+<body>
+
+  <!-- ── Portal header ── -->
+  <header class="portal-header">
+    <div class="portal-header-inner">
+
+      <div class="portal-header-left">
+        <img src="/assets/images/sofiakis_logo_white_txt.png"
+             alt="Alexandria Sofiakis for IL-10"
+             class="portal-logo">
+        <span class="portal-badge" aria-label="Staff Portal">
+          <i class="fas fa-shield-halved" aria-hidden="true"></i>
+          Staff Portal
+        </span>
+      </div>
+
+      <div class="portal-header-right">
+        <span class="portal-user-chip" id="portal-user-chip" aria-live="polite">
+          <i class="fas fa-circle-user" aria-hidden="true"></i>
+          <span id="portal-username">—</span>
+        </span>
+        <button class="portal-logout-btn" id="portal-logout-btn" aria-label="Sign out">
+          <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i>
+          Sign Out
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── Tab navigation ── -->
+  <nav class="portal-tabs" aria-label="Portal sections">
+    <div class="portal-tabs-inner">
+      <button class="portal-tab active" id="tab-volunteers" data-tab="volunteers"
+              aria-selected="true" role="tab">
+        <i class="fas fa-people-group" aria-hidden="true"></i>
+        Volunteers
+      </button>
+      <button class="portal-tab" id="tab-calendar" data-tab="calendar"
+              aria-selected="false" role="tab">
+        <i class="fas fa-calendar-days" aria-hidden="true"></i>
+        Calendar
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main content ── -->
+  <main class="portal-main" id="portal-main">
+
+    <!-- Session expiry countdown -->
+    <div class="portal-session-bar" id="portal-session-bar" hidden>
+      <i class="fas fa-clock" aria-hidden="true"></i>
+      <span id="portal-session-countdown">Session expires in —</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         VOLUNTEERS SECTION
+         ══════════════════════════════════════════ -->
+    <div id="section-volunteers">
+
+    <!-- Page heading + summary stats -->
+    <div class="portal-page-head">
+      <div>
+        <h1 class="portal-page-title">Volunteer Records</h1>
+        <p class="portal-page-sub" id="portal-record-summary">Loading…</p>
+      </div>
+      <button class="portal-export-btn" id="portal-export-btn" aria-label="Export visible records as CSV" hidden>
+        <i class="fas fa-file-csv" aria-hidden="true"></i>
+        Export CSV
+      </button>
+    </div>
+
+    <!-- Filters bar -->
+    <div class="portal-filters" id="portal-filters">
+      <div class="portal-filter-group">
+        <label class="portal-filter-label" for="filter-source">Source Form</label>
+        <select class="portal-filter-select" id="filter-source">
+          <option value="">All forms</option>
+          <option value="volunteer_page">Volunteer Page</option>
+          <option value="contact_page">Contact Page</option>
+          <option value="homepage">Home Page</option>
+        </select>
+      </div>
+
+      <div class="portal-filter-group">
+        <label class="portal-filter-label" for="filter-verified">Status</label>
+        <select class="portal-filter-select" id="filter-verified">
+          <option value="">All</option>
+          <option value="1">Verified only</option>
+        </select>
+      </div>
+
+      <div class="portal-filter-group">
+        <label class="portal-filter-label" for="filter-since">From</label>
+        <input type="date" class="portal-filter-input" id="filter-since">
+      </div>
+
+      <div class="portal-filter-group">
+        <label class="portal-filter-label" for="filter-until">To</label>
+        <input type="date" class="portal-filter-input" id="filter-until">
+      </div>
+
+      <button class="portal-filter-apply" id="filter-apply">
+        <i class="fas fa-filter" aria-hidden="true"></i>
+        Apply
+      </button>
+      <button class="portal-filter-reset" id="filter-reset">
+        <i class="fas fa-xmark" aria-hidden="true"></i>
+        Reset
+      </button>
+    </div>
+
+    <!-- Loading state -->
+    <div class="portal-loading" id="portal-loading" role="status" aria-live="polite">
+      <span class="portal-spinner" aria-hidden="true">
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </span>
+      <span>Loading volunteer records…</span>
+    </div>
+
+    <!-- Error state -->
+    <div class="portal-fetch-error" id="portal-fetch-error" hidden role="alert">
+      <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>Failed to load records</strong>
+        <p id="portal-fetch-error-msg">An error occurred.</p>
+      </div>
+      <button class="portal-retry-btn" id="portal-retry-btn">Retry</button>
+    </div>
+
+    <!-- Empty state -->
+    <div class="portal-empty" id="portal-empty" hidden>
+      <i class="fas fa-inbox" aria-hidden="true"></i>
+      <p>No volunteer records match the current filters.</p>
+    </div>
+
+    <!-- Data table -->
+    <div class="portal-table-wrap" id="portal-table-wrap" hidden>
+      <table class="portal-table" aria-label="Volunteer records">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">ZIP</th>
+            <th scope="col">Interests</th>
+            <th scope="col">Source</th>
+            <th scope="col">Status</th>
+            <th scope="col">Submitted</th>
+            <th scope="col" class="portal-th-action"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="portal-tbody">
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="portal-pagination" id="portal-pagination" aria-label="Record pagination" hidden>
+      <button class="portal-pag-btn" id="pag-prev" aria-label="Previous page">
+        <i class="fas fa-chevron-left" aria-hidden="true"></i> Prev
+      </button>
+      <span class="portal-pag-info" id="pag-info" aria-live="polite"></span>
+      <button class="portal-pag-btn" id="pag-next" aria-label="Next page">
+        Next <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </nav>
+
+  </main>
+
+    </div><!-- /section-volunteers -->
+
+    <!-- ══════════════════════════════════════════
+         CALENDAR SECTION
+         ══════════════════════════════════════════ -->
+    <div id="section-calendar" hidden>
+
+      <div class="portal-page-head">
+        <div>
+          <h1 class="portal-page-title">Campaign Calendar</h1>
+          <p class="portal-page-sub">Create and manage events on the campaign Google Calendar.</p>
+        </div>
+      </div>
+
+      <div class="cal-layout">
+
+        <!-- ── Event creation form ── -->
+        <section class="cal-form-card" aria-label="Create new event">
+          <div class="cal-card-header">
+            <i class="fas fa-circle-plus" aria-hidden="true"></i>
+            <h2 class="cal-card-title">New Event</h2>
+          </div>
+
+          <!-- Success / Error banners -->
+          <div class="cal-banner cal-banner--success" id="cal-success" hidden role="status" aria-live="polite">
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <div>
+              <strong>Event created!</strong>
+              <p id="cal-success-msg">Your event has been added to the campaign calendar.</p>
+            </div>
+            <a class="cal-banner-link" id="cal-event-link" href="#" target="_blank" rel="noopener">
+              View in Calendar <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <div class="cal-banner cal-banner--error" id="cal-error" hidden role="alert" aria-live="assertive">
+            <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+            <span id="cal-error-msg">Failed to create event.</span>
+          </div>
+
+          <!-- Form fields -->
+          <div class="cal-form">
+
+            <div class="cal-field">
+              <label class="cal-label" for="cal-category">
+                Category <span class="cal-required">*</span>
+              </label>
+              <select id="cal-category" class="cal-input cal-select" aria-required="true">
+                <option value="">— Select a category —</option>
+                <option value="TOWN_HALL">🏛 Town Hall</option>
+                <option value="VOLUNTEER">🤝 Volunteer</option>
+                <option value="FUNDRAISER">💛 Fundraiser</option>
+                <option value="CANVASS">🗺 Canvassing</option>
+              </select>
+              <span class="cal-field-hint">Sets the filter tag on the public Events page.</span>
+            </div>
+
+            <div class="cal-field">
+              <label class="cal-label" for="cal-title">
+                Event Title <span class="cal-required">*</span>
+              </label>
+              <input type="text" id="cal-title" class="cal-input"
+                     placeholder="e.g. Waukegan Community Meeting" maxlength="200"
+                     aria-required="true">
+              <span class="cal-field-hint">Do not add a category prefix — it is added automatically.</span>
+            </div>
+
+            <!-- Title preview -->
+            <div class="cal-field cal-field--full" id="cal-title-preview-wrap" hidden>
+              <span class="cal-label">Google Calendar title preview</span>
+              <div class="cal-title-preview" id="cal-title-preview"></div>
+            </div>
+
+            <div class="cal-field">
+              <label class="cal-label" for="cal-start">Start Date &amp; Time <span class="cal-required">*</span></label>
+              <input type="datetime-local" id="cal-start" class="cal-input">
+            </div>
+
+            <div class="cal-field">
+              <label class="cal-label" for="cal-end">End Date &amp; Time <span class="cal-required">*</span></label>
+              <input type="datetime-local" id="cal-end" class="cal-input">
+            </div>
+
+            <div class="cal-field cal-field--full">
+              <label class="cal-label" for="cal-location">Location</label>
+              <input type="text" id="cal-location" class="cal-input"
+                     placeholder="Address or virtual link" maxlength="300">
+            </div>
+
+            <div class="cal-field cal-field--full">
+              <label class="cal-label" for="cal-description">Description</label>
+              <textarea id="cal-description" class="cal-textarea" rows="4"
+                        placeholder="Event details, agenda, talking points…" maxlength="2000"></textarea>
+            </div>
+
+            <div class="cal-field cal-field--full">
+              <label class="cal-label" for="cal-attendees">
+                Invite Attendees
+                <span class="cal-label-hint">(comma-separated email addresses)</span>
+              </label>
+              <input type="text" id="cal-attendees" class="cal-input"
+                     placeholder="volunteer@example.com, staff@example.com">
+            </div>
+
+            <div class="cal-field cal-field--full cal-field--visibility">
+              <label class="cal-label" for="cal-visibility">Visibility</label>
+              <select id="cal-visibility" class="cal-input cal-select">
+                <option value="default">Default (calendar setting)</option>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
+
+            <div class="cal-form-footer">
+              <button class="cal-submit-btn" id="cal-submit-btn">
+                <span class="cal-btn-text">
+                  <i class="fas fa-calendar-plus" aria-hidden="true"></i>
+                  Create Event
+                </span>
+                <span class="cal-btn-spinner" hidden aria-hidden="true">
+                  <i class="fas fa-circle-notch fa-spin"></i>
+                  Creating…
+                </span>
+              </button>
+              <button class="cal-clear-btn" id="cal-clear-btn">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
+                Clear
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── Upcoming events list ── -->
+        <section class="cal-events-card" aria-label="Upcoming events">
+          <div class="cal-card-header">
+            <i class="fas fa-calendar-week" aria-hidden="true"></i>
+            <h2 class="cal-card-title">Upcoming Events</h2>
+            <button class="cal-refresh-btn" id="cal-refresh-btn" aria-label="Refresh events list">
+              <i class="fas fa-rotate-right" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="cal-events-loading" id="cal-events-loading" role="status" aria-live="polite" hidden>
+            <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            Loading events…
+          </div>
+
+          <div class="cal-events-error" id="cal-events-error" hidden role="alert">
+            <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+            <span id="cal-events-error-msg">Failed to load events.</span>
+          </div>
+
+          <ul class="cal-events-list" id="cal-events-list" aria-label="Upcoming campaign events">
+            <!-- Populated by JS -->
+          </ul>
+
+          <p class="cal-events-empty" id="cal-events-empty" hidden>
+            No upcoming events found on the campaign calendar.
+          </p>
+
+        </section>
+
+      </div><!-- /cal-layout -->
+
+    </div><!-- /section-calendar -->
+
+  <!-- ── Detail modal ── -->
+  <div class="portal-modal-overlay" id="portal-modal-overlay" hidden role="dialog"
+       aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+    <div class="portal-modal" id="portal-modal">
+      <div class="portal-modal-header">
+        <h2 class="portal-modal-title" id="modal-title">Volunteer Details</h2>
+        <button class="portal-modal-close" id="modal-close" aria-label="Close detail view">
+          <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="portal-modal-body" id="modal-body">
+        <!-- Populated by JS -->
+      </div>
+      <div class="portal-modal-footer">
+        <span class="portal-modal-watermark" id="modal-watermark"></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="/scripts/portal.js" defer></script>
+</body>
+</html>
