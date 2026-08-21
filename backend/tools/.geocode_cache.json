@@ -57,5 +57,37 @@
   "zoom": {
     "lat": 37.3329622,
     "lon": -121.8950563
+  },
+  "1170 n midlothian rd, mundelein, il 60060, usa": {
+    "lat": 42.2821424,
+    "lon": -88.020105
+  },
+  "1200 university center dr, grayslake, il 60030, usa": null,
+  "14 s genesee st, waukegan, il 60085, usa": {
+    "lat": 42.3592925,
+    "lon": -87.8314668
+  },
+  "230 s dearborn st, chicago, il 60604, usa": {
+    "lat": 41.8783735,
+    "lon": -87.630203
+  },
+  "254 e rollins rd, round lake beach, il 60073, usa": {
+    "lat": 42.3793768,
+    "lon": -88.0763807
+  },
+  "267 center st, grayslake, il 60030, usa": {
+    "lat": 42.3442203,
+    "lon": -88.0394948
+  },
+  "401 n riverside dr ste 27, gurnee, il 60031, usa": null,
+  "microsoft teams meeting": null,
+  "panera bread(254 e rollins rd)": {
+    "lat": 42.3793768,
+    "lon": -88.0763807
+  },
+  "seymour ave & center st, grayslake, il 60030, usa": null,
+  "wescott park, northbrook, il 60062, usa": {
+    "lat": 42.1198869,
+    "lon": -87.8400859
   }
 }
