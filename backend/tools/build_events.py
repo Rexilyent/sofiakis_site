@@ -59,8 +59,13 @@ load_dotenv()
 # =================================================
 
 ICS_URL     = os.environ.get("GOOGLE_CALENDAR_ICS")
-OUTPUT_PATH = Path("pages/public/data/events.json")
-CACHE_PATH  = Path("backend/tools/.geocode_cache.json")
+# Anchor all paths to the repo root, derived from this file's own location.
+# This script lives at <repo>/backend/tools/build_events.py, so parents[2]
+# is the repo root regardless of the directory the script is invoked from.
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+OUTPUT_PATH = REPO_ROOT / "pages/public/data/events.json"
+CACHE_PATH  = REPO_ROOT / "backend/tools/.geocode_cache.json"
 
 USER_AGENT        = "alexandriasofiakis.com build script"
 GEOCODE_ENDPOINT  = "https://nominatim.openstreetmap.org/search"
@@ -263,6 +268,16 @@ def geocode_location(location: str) -> dict | None:
 def main():
     if not ICS_URL:
         die("GOOGLE_CALENDAR_ICS environment variable not set")
+
+    # ── Sanity check the resolved repo root ───────────────
+    # write_json() creates parent directories, so a wrong root would
+    # silently produce a phantom tree instead of updating the real site.
+    if not (REPO_ROOT / "pages" / "public").is_dir():
+        die(
+            f"Resolved repo root looks wrong: {REPO_ROOT}\n"
+            f"Expected to find 'pages/public' there. "
+            f"Is build_events.py still at <repo>/backend/tools/?"
+        )
 
     # ── Fetch ICS ─────────────────────────────────────────
     print("📥 Fetching ICS...")
