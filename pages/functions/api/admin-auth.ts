@@ -70,10 +70,38 @@ export async function onRequest(context: {
   const { request, env } = context;
   const method = request.method.toUpperCase();
 
-  if (method === "POST")   return handleLogin(request, env);
-  if (method === "DELETE") return handleLogout(request, env);
+  // Any uncaught throw here is returned by the runtime as a plain-text
+  // 500, which the login page can only report as "the login service
+  // returned an error". Catching it means the browser gets JSON with a
+  // usable hint, and the real message still goes to the Worker log.
+  try {
+    if (method === "POST")   return await handleLogin(request, env);
+    if (method === "DELETE") return await handleLogout(request, env);
+    return jsonError("Method not allowed", 405);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("admin-auth failed:", detail);
 
-  return jsonError("Method not allowed", 405);
+    // A missing table is a setup problem, not a credentials problem,
+    // and it is worth saying so plainly -- the alternative is someone
+    // retyping a correct password over and over. The table name is
+    // deliberately NOT echoed to the browser: this endpoint is public.
+    if (/no such table/i.test(detail)) {
+      return jsonError(
+        "The staff portal database is not fully set up. Apply the migrations " +
+        "in migrations/ to this environment, then try again.", 503);
+    }
+    if (/no such column/i.test(detail)) {
+      return jsonError(
+        "The staff portal database schema is out of date. Run schema_audit.py " +
+        "against this environment to see what is missing.", 503);
+    }
+    if (/D1_ERROR|SQLITE/i.test(detail)) {
+      return jsonError(
+        "The database rejected the request. Check the Worker logs for details.", 503);
+    }
+    return jsonError("Login failed due to a server error. Check the Worker logs.", 500);
+  }
 }
 
 // ============================================================
