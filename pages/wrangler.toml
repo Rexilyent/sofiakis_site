@@ -1,5 +1,5 @@
 name = "sofiakissite"
-compatibility_date = "2026-05-20"
+compatibility_date = "2026-05-28"
 pages_build_output_dir = "public"
 
 # =====================================
@@ -14,7 +14,7 @@ CONTACT_FROM_EMAIL = "no-reply@alexandriasofiakis.com"
 [[d1_databases]]
 binding = "CORE_DB"
 database_name = "campaign-core-db-dev"
-database_id = "c87df1e0-4523-493f-af98-ddefb874969f"
+database_id = "614d0081-1713-4550-a5c5-3803c1e19736"
 
 # =====================================
 # PRODUCTION ENVIRONMENT VARIABLES
