@@ -6,14 +6,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!list) return;
 
-  const res = await fetch("/news/articles.json");
+  // Articles now come from /api/news, which merges articles published
+  // through the staff portal (stored in D1) with the legacy static
+  // index. If that endpoint is unavailable — an older deployment, or
+  // a Worker problem — fall back to the static file so the news page
+  // degrades to its previous behaviour instead of showing an error.
+  const articles = await loadArticles();
 
-  if (!res.ok) {
+  if (articles === null) {
     list.innerHTML = `<p style="opacity:.8;">Failed to load articles.</p>`;
     return;
   }
-
-  const articles = await res.json();
 
   if (!articles.length) {
     list.innerHTML = `<p style="opacity:.8;">No news articles yet.</p>`;
@@ -49,6 +52,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       list.appendChild(link);
 
     });
+
+  /**
+   * Try the API first, then the static index. Returns null only if
+   * BOTH are unavailable, so a Worker outage doesn't blank the page.
+   */
+  async function loadArticles() {
+    for (const url of ["/api/news", "/news/articles.json"]) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (Array.isArray(data)) return data;
+      } catch {
+        // Network or parse failure — try the next source
+      }
+    }
+    return null;
+  }
 
   function escapeHtml(s) {
     return (s || "").replace(/[&<>"']/g, c => ({

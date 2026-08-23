@@ -61,8 +61,17 @@ export async function onRequestPost(context: {
       return jsonError("Server configuration error: missing Turnstile key", 500);
     }
 
-    if (!isDev && (!env.FIELD_ENCRYPT_KEY || !env.FIELD_HMAC_KEY)) {
-      return jsonError("Server configuration error: missing encryption keys", 500);
+    // Both keys are required in EVERY environment. Dev used to skip
+    // this and fall back to plaintext + plain SHA-256, which meant dev
+    // and production stored fundamentally different data — and made
+    // delete-me.ts (which always uses HMAC) unable to find dev rows.
+    // Failing loudly here is the point: a missing key should stop the
+    // request, never silently downgrade the protection.
+    if (!env.FIELD_ENCRYPT_KEY) {
+      return jsonError("Server configuration error: FIELD_ENCRYPT_KEY is not set", 500);
+    }
+    if (!env.FIELD_HMAC_KEY) {
+      return jsonError("Server configuration error: FIELD_HMAC_KEY is not set", 500);
     }
 
     // ----------------------------------------
@@ -227,10 +236,12 @@ export async function onRequestPost(context: {
     }
 
     // ----------------------------------------
-    // Development mode — log, skip encryption
+    // Development mode — logging only
     // ----------------------------------------
+    // Encryption and hashing behave identically in dev and production;
+    // this block only echoes the payload to the wrangler console.
     if (isDev) {
-      console.log("DEV MODE submission (unencrypted):", body);
+      console.log("DEV MODE submission:", body);
     }
 
     if (!env.CORE_DB) {
@@ -249,7 +260,6 @@ export async function onRequestPost(context: {
      * In dev mode, returns the plaintext prefixed with "dev:" for clarity.
      */
     async function encryptField(value: string): Promise<string> {
-      if (isDev) return `dev:${value}`;
       return aesGcmEncrypt(value, encryptKey);
     }
 
@@ -260,7 +270,6 @@ export async function onRequestPost(context: {
      * the digest cannot be reversed to recover the email.
      */
     async function emailHmac(value: string): Promise<string> {
-      if (isDev) return await sha256(value); // plain SHA-256 in dev is fine
       return hmacSha256(value.trim().toLowerCase(), hmacKey);
     }
 

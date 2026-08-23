@@ -1,0 +1,2038 @@
+/* ============================================================
+   STAFF PORTAL  —  portal.css
+   ============================================================ */
+
+:root {
+  --primary:        #008037;
+  --primary-light:  #00A84B;
+  --primary-dark:   #005c27;
+  --primary-dim:    rgba(0,128,55,0.08);
+  --accent:         #FFD700;
+  --bg:             #f0f2f1;
+  --surface:        #ffffff;
+  --surface-2:      #f7f9f8;
+  --text:           #111111;
+  --muted:          #6E6E6E;
+  --muted-light:    #9e9e9e;
+  --border:         #e4e7e5;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow-sm:      0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md:      0 8px 20px rgba(0,0,0,0.08);
+  --shadow-lg:      0 20px 48px rgba(0,0,0,0.14);
+  --header-h:       60px;
+
+  /* Matches the public site's interior-page hero gradient */
+  --gradient:       linear-gradient(135deg, #0a5c28 0%, #008037 60%, #00a84b 100%);
+  --accent-dim:     rgba(255,215,0,0.16);
+  --danger:         #b91c1c;
+  --danger-bg:      #fef2f2;
+  --danger-border:  #fecaca;
+
+  /* Event category colours — shared by pills, calendar and map */
+  --cat-town-hall:  #1d4ed8;
+  --cat-volunteer:  #059669;
+  --cat-fundraiser: #d97706;
+  --cat-canvass:    #7c3aed;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* The [hidden] attribute is this page's show/hide mechanism, but the UA
+   rule `[hidden] { display: none }` is a bare attribute selector, so ANY
+   class rule setting `display` beats it and the element stays visible.
+   This one line makes `hidden` authoritative everywhere, instead of
+   relying on remembering to add a per-component [hidden] override each
+   time a new flex/grid element is introduced.
+   (The individual `.x[hidden] { display: none !important }` rules further
+   down are now redundant but harmless.) */
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Lexend", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: var(--header-h);
+  background: rgba(0, 90, 40, 0.93);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.15);
+}
+
+.portal-header-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.portal-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.portal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+
+.portal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.portal-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.1);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.portal-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.portal-logout-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.portal-logout-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+
+.portal-main {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3rem;
+}
+
+/* ---- Session expiry bar ---- */
+.portal-session-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.83rem;
+  color: #7c4f00;
+  background: #fff8e1;
+  border: 1px solid rgba(180,120,0,0.25);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.portal-session-bar.urgent {
+  color: #8b1a1a;
+  background: #fff0f0;
+  border-color: rgba(180,30,30,0.25);
+}
+
+/* ---- Page heading ---- */
+.portal-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.portal-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.portal-page-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+.portal-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  background: var(--primary-dim);
+  border: 1px solid rgba(0,128,55,0.2);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.portal-export-btn:hover {
+  background: rgba(0,128,55,0.14);
+}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+
+.portal-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.portal-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 130px;
+}
+
+.portal-filter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.portal-filter-select,
+.portal-filter-input {
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.7rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+  min-width: 0;
+}
+
+.portal-filter-select:focus,
+.portal-filter-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0,128,55,0.1);
+}
+
+.portal-filter-apply,
+.portal-filter-reset {
+  font-family: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.48rem 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  align-self: flex-end;
+  transition: background 0.15s ease;
+}
+
+.portal-filter-apply {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,128,55,0.25);
+}
+
+.portal-filter-apply:hover { background: var(--primary-light); }
+
+.portal-filter-reset {
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+}
+
+.portal-filter-reset:hover { background: #eee; }
+
+/* ============================================================
+   STATES — loading / error / empty
+   ============================================================ */
+
+.portal-loading,
+.portal-fetch-error,
+.portal-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.portal-fetch-error {
+  color: #8b1a1a;
+  background: #fff8f8;
+  border-color: rgba(180,30,30,0.2);
+}
+
+.portal-fetch-error i { color: #b91c1c; font-size: 1.1rem; flex-shrink: 0; }
+
+.portal-fetch-error div { flex: 1; }
+.portal-fetch-error strong { display: block; margin-bottom: 0.2rem; }
+.portal-fetch-error p { font-size: 0.83rem; }
+
+.portal-retry-btn {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid rgba(180,30,30,0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.portal-retry-btn:hover { background: #fecaca; }
+
+.portal-empty {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  min-height: 140px;
+}
+
+.portal-empty i {
+  font-size: 2rem;
+  color: #ccc;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.portal-table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.portal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.portal-table thead {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.portal-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.portal-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+.portal-table tbody tr:last-child td { border-bottom: none; }
+
+.portal-table tbody tr {
+  transition: background 0.1s ease;
+}
+
+.portal-table tbody tr:hover {
+  background: rgba(0,128,55,0.03);
+}
+
+/* Truncate long values */
+.portal-table td.td-name     { max-width: 160px; }
+.portal-table td.td-email    { max-width: 200px; }
+.portal-table td.td-phone    { white-space: nowrap; }
+.portal-table td.td-zip      { white-space: nowrap; }
+.portal-table td.td-interests { max-width: 200px; }
+
+.portal-cell-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Status badge */
+.portal-badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.portal-badge-verified.verified {
+  background: rgba(0,128,55,0.1);
+  color: var(--primary-dark);
+}
+
+.portal-badge-verified.unverified {
+  background: rgba(110,110,110,0.1);
+  color: var(--muted);
+}
+
+/* Interests chips */
+.portal-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.portal-interest-chip {
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(0,128,55,0.07);
+  color: var(--primary-dark);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Null / error value */
+.portal-null {
+  color: #ccc;
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.portal-decrypt-err {
+  color: #b91c1c;
+  font-size: 0.78rem;
+}
+
+/* View button */
+.portal-view-btn {
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-dim);
+  border: 1px solid rgba(0,128,55,0.18);
+  border-radius: 5px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.portal-view-btn:hover {
+  background: rgba(0,128,55,0.14);
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+
+.portal-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.portal-pag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.portal-pag-btn:hover:not(:disabled) {
+  background: var(--primary-dim);
+  border-color: rgba(0,128,55,0.3);
+}
+
+.portal-pag-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.portal-pag-info {
+  font-size: 0.83rem;
+  color: var(--muted);
+  min-width: 120px;
+  text-align: center;
+}
+
+/* ============================================================
+   DETAIL MODAL
+   ============================================================ */
+
+/* Prevent display:flex/block overriding the hidden attribute */
+.portal-modal-overlay[hidden],
+.portal-session-bar[hidden],
+.portal-loading[hidden],
+.portal-fetch-error[hidden],
+.portal-empty[hidden],
+.portal-table-wrap[hidden],
+.portal-pagination[hidden],
+.portal-export-btn[hidden] { display: none !important; }
+
+.portal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: overlay-in 0.2s ease both;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.portal-modal {
+  background: var(--surface);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.portal-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.portal-modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.portal-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 1rem;
+  padding: 0.3rem;
+  border-radius: 5px;
+  transition: color 0.15s ease, background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-modal-close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.portal-modal-close:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.portal-modal-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Modal field rows */
+.modal-field {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.5rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.modal-field:last-child { border-bottom: none; }
+
+.modal-field-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.modal-field-value {
+  font-size: 0.9rem;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.modal-field-value.modal-null { color: #ccc; font-style: italic; }
+.modal-field-value.modal-err  { color: #b91c1c; }
+
+.portal-modal-footer {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 0 0 14px 14px;
+}
+
+.portal-modal-watermark {
+  font-size: 0.72rem;
+  color: var(--muted-light);
+  font-style: italic;
+  display: block;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .portal-header-left .portal-badge { display: none; }
+  .portal-main { padding: 1.25rem 1rem 2rem; }
+
+  .portal-filters {
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .portal-filter-group { min-width: 100px; }
+
+  .portal-table th,
+  .portal-table td { padding: 0.6rem 0.75rem; }
+
+  .portal-modal-overlay { padding: 0.75rem; align-items: flex-end; }
+
+  .portal-modal {
+    max-height: 80vh;
+    border-radius: 14px 14px 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-user-chip { display: none; }
+  .portal-page-head { flex-direction: column; }
+}
+
+/* ============================================================
+   TAB NAVIGATION
+   ============================================================ */
+
+.portal-tabs {
+  background: rgba(0, 70, 32, 0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.portal-tabs-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.portal-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.85rem 1rem 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.portal-tab:hover {
+  color: rgba(255,255,255,0.9);
+}
+
+.portal-tab.active {
+  color: #fff;
+  border-bottom-color: var(--accent);
+}
+
+.portal-tab i { font-size: 0.82rem; }
+
+.portal-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ============================================================
+   CALENDAR LAYOUT
+   ============================================================ */
+
+.cal-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .cal-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Shared card shell ── */
+.cal-form-card,
+.cal-events-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.cal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.cal-card-header > i {
+  color: var(--primary);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.cal-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+/* ============================================================
+   CALENDAR BANNERS
+   ============================================================ */
+
+.cal-banner[hidden] { display: none !important; }
+
+.cal-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  animation: alert-in 0.25s ease both;
+}
+
+.cal-banner > i { flex-shrink: 0; margin-top: 0.1rem; }
+.cal-banner div { flex: 1; }
+.cal-banner strong { display: block; margin-bottom: 0.15rem; }
+
+.cal-banner--success {
+  background: rgba(0,128,55,0.06);
+  border-bottom: 1px solid rgba(0,128,55,0.15);
+  color: var(--primary-dark);
+}
+
+.cal-banner--error {
+  background: #fff8f8;
+  border-bottom: 1px solid rgba(180,30,30,0.2);
+  color: #991b1b;
+}
+
+.cal-banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(0,128,55,0.25);
+  border-radius: 5px;
+  background: rgba(0,128,55,0.06);
+  transition: background 0.15s ease;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.cal-banner-link:hover { background: rgba(0,128,55,0.12); }
+
+/* ============================================================
+   CALENDAR FORM
+   ============================================================ */
+
+.cal-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  padding: 1.25rem;
+}
+
+.cal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cal-field--full  { grid-column: 1 / -1; }
+.cal-field--visibility { max-width: 240px; }
+
+.cal-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cal-required { color: #b91c1c; font-size: 0.75rem; }
+
+.cal-label-hint {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.cal-input,
+.cal-textarea,
+.cal-select {
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--text);
+  background: #fafafa;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 0.6rem 0.85rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.cal-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+.cal-input:focus,
+.cal-textarea:focus,
+.cal-select:focus {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,128,55,0.1);
+}
+
+.cal-input.invalid,
+.cal-textarea.invalid {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 3px rgba(185,28,28,0.1);
+}
+
+.cal-form-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+
+.cal-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  border-radius: 7px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,128,55,0.3);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.cal-submit-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.cal-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+
+.cal-btn-spinner[hidden] { display: none !important; }
+
+.cal-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cal-clear-btn:hover { background: #eee; color: var(--text); }
+
+/* ============================================================
+   UPCOMING EVENTS LIST
+   ============================================================ */
+
+.cal-refresh-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease, transform 0.3s ease;
+}
+
+.cal-refresh-btn:hover { color: var(--primary); }
+.cal-refresh-btn.spinning i { animation: spin 0.6s linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.cal-events-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.cal-event-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s ease;
+}
+
+.cal-event-item:last-child { border-bottom: none; }
+.cal-event-item:hover { background: rgba(0,128,55,0.02); }
+
+.cal-event-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+}
+
+.cal-event-body { flex: 1; min-width: 0; }
+
+.cal-event-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.2rem;
+}
+
+.cal-event-meta {
+  font-size: 0.77rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cal-event-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.cal-event-meta i { font-size: 0.7rem; flex-shrink: 0; }
+
+.cal-event-link {
+  font-size: 0.75rem;
+  color: var(--primary);
+  text-decoration: none;
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0,128,55,0.2);
+  background: rgba(0,128,55,0.04);
+  transition: background 0.15s ease;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.cal-event-link:hover { background: rgba(0,128,55,0.1); }
+
+.cal-events-loading,
+.cal-events-error,
+.cal-events-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.cal-events-loading[hidden],
+.cal-events-error[hidden],
+.cal-events-empty[hidden] { display: none !important; }
+
+.cal-events-error {
+  color: #991b1b;
+}
+
+.cal-events-empty { justify-content: center; }
+
+@media (max-width: 700px) {
+  .cal-form { grid-template-columns: 1fr; }
+  .cal-field--full { grid-column: 1; }
+  .cal-form-footer { flex-wrap: wrap; }
+}
+
+/* ============================================================
+   CALENDAR — CATEGORY TAGS + PREVIEW
+   ============================================================ */
+
+.cal-field-hint {
+  font-size: 0.73rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+  line-height: 1.4;
+}
+
+.cal-title-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: var(--surface-2);
+  border: 1.5px dashed var(--border);
+  border-radius: 7px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  min-height: 2.4rem;
+}
+
+/* Shared category tag pill — used in form preview + event list */
+.cal-preview-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tag-color, var(--primary));
+  background: color-mix(in srgb, var(--tag-color, var(--primary)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tag-color, var(--primary)) 30%, transparent);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cal-preview-tag i { font-size: 0.65rem; }
+
+/* Category row above event title in upcoming list */
+.cal-event-cat-row {
+  margin-bottom: 0.25rem;
+}
+/* ============================================================
+   ACCESSIBILITY MODES
+   ============================================================
+   Mirrors the html.a11y-* classes used on the public site so the
+   portal honours the same appearance choices. Only tokens are
+   overridden — component rules below all read from the tokens,
+   so no per-component duplication is needed.
+   ============================================================ */
+
+html.a11y-dark {
+  --bg:            #1a1a1a;
+  --surface:       #242424;
+  --surface-2:     #2e2e2e;
+  --text:          #e8e8e8;
+  --muted:         #a0a0a0;
+  --muted-light:   #808080;
+  --border:        #3a3a3a;
+  --primary:       #4cc97a;
+  --primary-light: #5ddb8a;
+  --primary-dark:  #2f9e57;
+  --primary-dim:   rgba(76,201,122,0.13);
+  --gradient:      linear-gradient(135deg, #06301a 0%, #0d4a26 60%, #14663a 100%);
+  --danger:        #fca5a5;
+  --danger-bg:     #3a1c1c;
+  --danger-border: #6b2a2a;
+  --shadow-sm:     0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:     0 8px 20px rgba(0,0,0,0.5);
+  --shadow-lg:     0 20px 48px rgba(0,0,0,0.6);
+}
+
+html.a11y-comfort {
+  --bg:            #f7f3ec;
+  --surface:       #fdf9f3;
+  --surface-2:     #f2ece2;
+  --text:          #3d3530;
+  --muted:         #6b5f55;
+  --border:        #e2d8c9;
+  --gradient:      linear-gradient(135deg, #2f4a28 0%, #3f6034 60%, #517a43 100%);
+}
+
+html.a11y-highcontrast {
+  --bg:            #ffffff;
+  --surface:       #ffffff;
+  --surface-2:     #f2f2f2;
+  --text:          #000000;
+  --muted:         #333333;
+  --muted-light:   #444444;
+  --border:        #000000;
+  --primary:       #005a25;
+  --primary-light: #005a25;
+  --primary-dark:  #003d18;
+  --primary-dim:   #e6f0e9;
+  --gradient:      none;
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     0 0 0 2px #000;
+}
+
+html.a11y-highcontrast .portal-header { background: #003d18; }
+html.a11y-highcontrast .portal-table-wrap,
+html.a11y-highcontrast .portal-filters,
+html.a11y-highcontrast .portal-stat,
+html.a11y-highcontrast .cal-form-card,
+html.a11y-highcontrast .cal-events-card,
+html.a11y-highcontrast .cal-view-card,
+html.a11y-highcontrast .cal-map-card { border: 2px solid #000; }
+html.a11y-highcontrast .portal-view-btn,
+html.a11y-highcontrast .cal-pill,
+html.a11y-highcontrast .portal-pag-btn { border: 2px solid #000; }
+
+/* Header picks up the site gradient in every mode that defines one */
+.portal-header { background-image: var(--gradient); }
+html.a11y-highcontrast .portal-header { background-image: none; }
+
+/* ============================================================
+   QUICK STATS
+   ============================================================ */
+
+.portal-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.1rem;
+}
+
+.portal-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.portal-stat::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--primary);
+}
+.portal-stat:nth-child(2)::before { background: var(--primary-light); }
+.portal-stat:nth-child(3)::before { background: var(--muted-light); }
+.portal-stat:nth-child(4)::before { background: var(--accent); }
+
+.portal-stat-value {
+  display: block;
+  font-size: 1.6rem; font-weight: 700; line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.portal-stat-label {
+  display: block; margin-top: 0.2rem;
+  font-size: 0.74rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+/* ============================================================
+   EXPORT MENU
+   ============================================================ */
+
+.portal-export-wrap { position: relative; }
+.portal-export-caret { font-size: 0.65rem; margin-left: 0.15rem; }
+
+.portal-export-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 300;
+  min-width: 250px; padding: 0.35rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.portal-export-opt {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  background: none; border: none; border-radius: var(--radius-sm);
+  font: inherit; color: var(--text); text-align: left; cursor: pointer;
+}
+.portal-export-opt i { width: 18px; color: var(--muted); font-size: 0.95rem; }
+.portal-export-opt:hover { background: var(--surface-2); }
+.portal-export-opt:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.portal-export-opt strong { display: block; font-size: 0.85rem; font-weight: 600; }
+.portal-export-opt em { display: block; font-style: normal; font-size: 0.76rem; color: var(--muted); }
+.portal-export-opt[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* ============================================================
+   SEARCH FIELD
+   ============================================================ */
+
+.portal-filter-group--search { min-width: 230px; flex: 1 1 230px; }
+
+.portal-search-wrap { position: relative; display: flex; align-items: center; }
+
+.portal-search-icon {
+  position: absolute; left: 0.65rem;
+  font-size: 0.78rem; color: var(--muted-light); pointer-events: none;
+}
+
+.portal-search-input { width: 100%; padding-left: 2rem !important; padding-right: 1.9rem !important; }
+.portal-search-input::-webkit-search-cancel-button { display: none; }
+
+.portal-search-clear {
+  position: absolute; right: 0.4rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  background: var(--surface-2); border: none; border-radius: 50%;
+  color: var(--muted); font-size: 0.68rem; cursor: pointer;
+}
+.portal-search-clear:hover { background: var(--border); color: var(--text); }
+.portal-search-clear:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+.portal-filter-select--sm { min-width: 78px; }
+
+/* ============================================================
+   SORTABLE TABLE HEADERS
+   ============================================================ */
+
+.portal-th-sort { padding: 0 !important; }
+
+.portal-sort-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  width: 100%; padding: 0.7rem 0.9rem;
+  background: none; border: none;
+  font: inherit; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: inherit; cursor: pointer;
+}
+.portal-sort-btn i { font-size: 0.7rem; opacity: 0.35; transition: opacity 0.15s ease; }
+.portal-sort-btn:hover { color: var(--primary); }
+.portal-sort-btn:hover i { opacity: 0.7; }
+.portal-sort-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+.portal-th-sort[aria-sort="ascending"]  .portal-sort-btn,
+.portal-th-sort[aria-sort="descending"] .portal-sort-btn { color: var(--primary); }
+.portal-th-sort[aria-sort="ascending"]  .portal-sort-btn i,
+.portal-th-sort[aria-sort="descending"] .portal-sort-btn i { opacity: 1; }
+
+/* Highlighted search matches inside table cells */
+.portal-mark { background: var(--accent-dim); color: inherit; border-radius: 2px; padding: 0 1px; }
+html.a11y-highcontrast .portal-mark { background: #ffec80; outline: 1px solid #000; }
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+
+.portal-toasts {
+  position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 800;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  max-width: min(360px, calc(100vw - 2.5rem));
+  pointer-events: none;
+}
+
+.portal-toast {
+  display: flex; align-items: flex-start; gap: 0.65rem;
+  padding: 0.8rem 0.95rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  font-size: 0.85rem; color: var(--text);
+  pointer-events: auto;
+  animation: toast-in 0.25s ease;
+}
+.portal-toast.is-error   { border-left-color: var(--danger); }
+.portal-toast.is-warn    { border-left-color: var(--accent); }
+.portal-toast i          { font-size: 0.95rem; color: var(--primary); margin-top: 0.1rem; }
+.portal-toast.is-error i { color: var(--danger); }
+.portal-toast.is-warn  i { color: #b45309; }
+.portal-toast-close {
+  margin-left: auto; background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 0.8rem; padding: 0 0.15rem;
+}
+.portal-toast-close:hover { color: var(--text); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   CALENDAR — layout
+   ============================================================ */
+
+.cal-layout {
+  display: grid;
+  /* Upcoming events on the LEFT, map + calendar on the right.
+     align-items: stretch (the default) lets the sidebar match the
+     workspace's height instead of stopping short of it. */
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.cal-main,
+.cal-side { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+
+/* The upcoming list is the only card in the sidebar now, so it takes
+   the full column height and scrolls internally rather than letting the
+   page grow. min-height: 0 is required or the flex child refuses to
+   shrink and the scroll never engages. */
+.cal-side > .cal-events-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.cal-side > .cal-events-card .cal-events-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.cal-card-count {
+  margin-left: auto;
+  font-size: 0.76rem; font-weight: 500; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.cal-card-count + .cal-refresh-btn { margin-left: 0.5rem; }
+
+/* ---- Category filter pills ---- */
+
+/* Toolbar row: category pills on the left, New Event on the right.
+   The button is a sibling of the filter group rather than inside it,
+   because "New Event" isn't a filter and shouldn't be announced as
+   part of a group labelled "Filter events by category". */
+.cal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+.cal-toolbar > .portal-export-btn { margin-left: auto; flex-shrink: 0; }
+
+.cal-filters {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.cal-pill {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font: inherit; font-size: 0.8rem; font-weight: 500;
+  color: var(--muted); cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.cal-pill:hover { border-color: var(--primary); color: var(--text); }
+.cal-pill:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.cal-pill.is-active {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.cal-pill-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted-light); }
+.cal-pill[data-cat="TOWN_HALL"]  .cal-pill-dot { background: var(--cat-town-hall); }
+.cal-pill[data-cat="VOLUNTEER"]  .cal-pill-dot { background: var(--cat-volunteer); }
+.cal-pill[data-cat="FUNDRAISER"] .cal-pill-dot { background: var(--cat-fundraiser); }
+.cal-pill[data-cat="CANVASS"]    .cal-pill-dot { background: var(--cat-canvass); }
+
+/* ---- Calendar card ---- */
+
+/* One box holding the map and the calendar. The regions inside are
+   separated by a divider rather than by a gap, so it reads as a single
+   workspace instead of two stacked panels. */
+.cal-workspace {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.cal-region + .cal-region { border-top: 1px solid var(--border); }
+
+/* The map sits at the top of the box, so its own corners must not
+   round independently of the container. */
+.cal-region-map .portal-event-map { border-radius: 0; }
+
+/* Kept so any stale markup or bookmarked CSS still renders sanely. */
+.cal-view-card,
+.cal-map-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.cal-calendar-loading {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 2.5rem 1.25rem; justify-content: center;
+  font-size: 0.87rem; color: var(--muted);
+}
+
+.portal-calendar { padding: 0.9rem 1.1rem 1.1rem; }
+
+/* ---- FullCalendar theming ----
+   FullCalendar v6 exposes its own custom properties, so the whole
+   widget can be themed from tokens without fighting its selectors. */
+
+.portal-calendar {
+  --fc-border-color:              var(--border);
+  --fc-page-bg-color:             var(--surface);
+  --fc-neutral-bg-color:          var(--surface-2);
+  --fc-today-bg-color:            var(--primary-dim);
+  --fc-now-indicator-color:       #dc2626;
+  --fc-button-text-color:         var(--text);
+  --fc-button-bg-color:           var(--surface-2);
+  --fc-button-border-color:       var(--border);
+  --fc-button-hover-bg-color:     var(--border);
+  --fc-button-hover-border-color: var(--border);
+  --fc-button-active-bg-color:    var(--primary);
+  --fc-button-active-border-color:var(--primary);
+  --fc-event-bg-color:            var(--primary);
+  --fc-event-border-color:        var(--primary);
+  --fc-event-text-color:          #fff;
+  --fc-highlight-color:           var(--primary-dim);
+  --fc-more-link-bg-color:        var(--surface-2);
+  --fc-more-link-text-color:      var(--text);
+  font-size: 0.86rem;
+}
+
+.portal-calendar .fc .fc-toolbar-title {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+}
+.portal-calendar .fc .fc-toolbar.fc-header-toolbar { margin-bottom: 0.9rem; gap: 0.5rem; flex-wrap: wrap; }
+.portal-calendar .fc .fc-button {
+  font-size: 0.78rem; font-weight: 500;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-sm);
+  text-transform: capitalize;
+  box-shadow: none;
+}
+.portal-calendar .fc .fc-button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; box-shadow: none; }
+.portal-calendar .fc .fc-button-primary:not(:disabled).fc-button-active { color: #fff; }
+.portal-calendar .fc .fc-col-header-cell-cushion {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted); padding: 0.5rem 0.25rem;
+}
+.portal-calendar .fc .fc-daygrid-day-number { font-size: 0.78rem; color: var(--text); padding: 0.3rem 0.4rem; }
+.portal-calendar .fc .fc-day-today .fc-daygrid-day-number { font-weight: 700; color: var(--primary); }
+.portal-calendar .fc .fc-daygrid-day.fc-day-other { background: var(--surface-2); }
+
+.portal-calendar .fc-event {
+  border-radius: 4px; border: none;
+  padding: 1px 3px; font-size: 0.74rem; font-weight: 500;
+  cursor: pointer;
+}
+.portal-calendar .fc-event:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
+.portal-calendar .fc-list-event:hover td { background: var(--primary-dim); }
+.portal-calendar .fc .fc-list-day-cushion { background: var(--surface-2); }
+.portal-calendar .fc .fc-list-empty { background: var(--surface); color: var(--muted); }
+
+/* Category colours for calendar events */
+.portal-calendar .fc-event.cat-TOWN_HALL  { background: var(--cat-town-hall); }
+.portal-calendar .fc-event.cat-VOLUNTEER  { background: var(--cat-volunteer); }
+.portal-calendar .fc-event.cat-FUNDRAISER { background: var(--cat-fundraiser); }
+.portal-calendar .fc-event.cat-CANVASS    { background: var(--cat-canvass); }
+.portal-calendar .fc-event.cat-NONE       { background: var(--muted); }
+.portal-calendar .fc-event.is-selected    { outline: 2px solid var(--text); outline-offset: 1px; }
+
+/* List view dots follow the same palette */
+.portal-calendar .fc-list-event.cat-TOWN_HALL  .fc-list-event-dot { border-color: var(--cat-town-hall); }
+.portal-calendar .fc-list-event.cat-VOLUNTEER  .fc-list-event-dot { border-color: var(--cat-volunteer); }
+.portal-calendar .fc-list-event.cat-FUNDRAISER .fc-list-event-dot { border-color: var(--cat-fundraiser); }
+.portal-calendar .fc-list-event.cat-CANVASS    .fc-list-event-dot { border-color: var(--cat-canvass); }
+
+/* ---- Map card ---- */
+
+.portal-event-map {
+  /* Taller now that it leads the workspace — staff scan the map first
+     to plan a day, then drop to the calendar for the schedule. */
+  height: 420px; width: 100%;
+  background: var(--surface-2);
+}
+
+.cal-map-note {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--muted);
+}
+.cal-map-note i { font-size: 0.8rem; }
+.cal-map-note.is-warn { color: #b45309; }
+.cal-map-note.is-warn i { color: #b45309; }
+
+/* Leaflet popups themed to match the portal */
+.portal-event-map .leaflet-popup-content-wrapper {
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.portal-event-map .leaflet-popup-content {
+  margin: 0.7rem 0.85rem; font-size: 0.82rem; line-height: 1.45;
+}
+.portal-event-map .leaflet-popup-content strong { font-size: 0.87rem; }
+.cal-map-popup-cat {
+  display: inline-block; margin-bottom: 0.3rem;
+  padding: 0.1rem 0.45rem; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: #fff;
+}
+.cal-map-popup-meta { color: var(--muted); font-size: 0.78rem; }
+
+/* Numbered markers, coloured by category */
+.cal-marker {
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 50% 50% 50% 4px;
+  transform: rotate(-45deg);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.35);
+  color: #fff; font-size: 0.7rem; font-weight: 700;
+}
+.cal-marker span { transform: rotate(45deg); }
+.cal-marker.cat-TOWN_HALL  { background: var(--cat-town-hall); }
+.cal-marker.cat-VOLUNTEER  { background: var(--cat-volunteer); }
+.cal-marker.cat-FUNDRAISER { background: var(--cat-fundraiser); }
+.cal-marker.cat-CANVASS    { background: var(--cat-canvass); }
+.cal-marker.cat-NONE       { background: var(--muted); }
+.cal-marker.is-active      { outline: 3px solid var(--accent); }
+
+/* ---- Event detail modal footer ---- */
+
+.cal-modal-footer { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+
+.cal-modal-locate,
+.cal-modal-open {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+}
+.cal-modal-locate {
+  background: var(--primary-dim); border: 1px solid var(--primary); color: var(--primary);
+}
+.cal-modal-locate:hover { background: var(--primary); color: #fff; }
+.cal-modal-open {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  margin-left: auto;
+}
+.cal-modal-open:hover { border-color: var(--primary); color: var(--primary); }
+.cal-modal-locate:focus-visible,
+.cal-modal-open:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .cal-layout { grid-template-columns: 1fr; }
+  /* Stacked, the map+calendar goes first: it's what staff came to look
+     at. The create form follows underneath rather than pushing the
+     schedule below a screenful of inputs. */
+  .cal-main { order: -1; }
+  .cal-side { order: 0; }
+}
+
+@media (max-width: 720px) {
+  .portal-stats { grid-template-columns: repeat(2, 1fr); }
+  .portal-stat-value { font-size: 1.3rem; }
+  .portal-event-map { height: 320px; }
+  .portal-calendar { padding: 0.6rem 0.7rem 0.8rem; font-size: 0.8rem; }
+  .portal-calendar .fc .fc-toolbar.fc-header-toolbar { justify-content: center; }
+  .portal-calendar .fc .fc-toolbar-title { font-size: 0.95rem; }
+  .portal-toasts { left: 1rem; right: 1rem; bottom: 1rem; max-width: none; }
+  .portal-export-menu { right: auto; left: 0; }
+}
+
+/* ============================================================
+   MOTION / PRINT
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-toast { animation: none; }
+  * { scroll-behavior: auto !important; }
+}
+
+@media print {
+  .portal-header, .portal-tabs, .portal-filters, .portal-pagination,
+  .portal-toasts, .cal-map-card, .cal-form-card, .portal-export-wrap,
+  .portal-session-bar, #dev-fixtures-banner { display: none !important; }
+  .portal-table-wrap { border: none; box-shadow: none; }
+  .cal-layout { grid-template-columns: 1fr; }
+}
+
+/* .cal-event-link is now a <button> (opens the detail modal) rather
+   than an <a>, so it needs the button resets the anchor didn't. */
+button.cal-event-link {
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1.4;
+}
+button.cal-event-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---- Colour-safe mode ----
+   base.css swaps the site palette to blue + amber for colour-vision
+   deficiency. Mirror that in the portal's own tokens, including the
+   event-category colours, which are otherwise green/purple-heavy and
+   hard to tell apart under deuteranopia. */
+html.a11y-colorsafe {
+  --primary:        #1455A4;
+  --primary-light:  #1a6bc7;
+  --primary-dark:   #0e3473;
+  --primary-dim:    rgba(20,85,164,0.10);
+  --accent:         #F9A825;
+  --accent-dim:     rgba(249,168,37,0.18);
+  --gradient:       linear-gradient(135deg, #0a2a6e 0%, #1455A4 60%, #1a6bc7 100%);
+  --cat-town-hall:  #1455A4;
+  --cat-volunteer:  #00838F;
+  --cat-fundraiser: #F9A825;
+  --cat-canvass:    #6A1B9A;
+}
+
+/* ---- Large text ----
+   base.css scales the root font size. The portal's table is the tight
+   spot, so give cells a little more room rather than letting rows
+   collide. */
+html.a11y-large .portal-table td,
+html.a11y-large .portal-table th { padding-top: 0.85rem; padding-bottom: 0.85rem; }
+html.a11y-large .portal-cell-truncate { max-width: none; white-space: normal; }
+html.a11y-large .portal-stat-value { font-size: 1.4rem; }
+
+/* ---- Reduce motion ---- */
+html.a11y-reduce-motion .portal-toast { animation: none; }
+html.a11y-reduce-motion .portal-view-btn,
+html.a11y-reduce-motion .cal-pill { transition: none; }
+
+/* ---- Underline / highlight links ---- */
+html.a11y-underline .portal-modal-body a { text-decoration: underline; }
+html.a11y-highlight-links .portal-modal-body a { background: var(--accent-dim); }
+
+/* ---- Enhanced focus ---- */
+html.a11y-focus .portal-view-btn:focus-visible,
+html.a11y-focus .portal-sort-btn:focus-visible,
+html.a11y-focus .cal-pill:focus-visible,
+html.a11y-focus .portal-tab:focus-visible {
+  outline: 3px solid var(--accent) !important;
+  outline-offset: 3px !important;
+}
+
+/* ---- Dyslexia-friendly fonts ----
+   base.css sets the family on body; the portal sets its own font on
+   several components, so let those inherit instead of overriding it. */
+html.a11y-dyslexia-od .portal-table,
+html.a11y-dyslexia-od .portal-modal,
+html.a11y-dyslexia-od .cal-input,
+html.a11y-dyslexia-bda .portal-table,
+html.a11y-dyslexia-bda .portal-modal,
+html.a11y-dyslexia-bda .cal-input { font-family: inherit; }
+
+/* The accessibility panel is fixed-position and must clear the portal
+   header (z-index 200) and modals (z-index ~700). base.css already
+   puts it at 9998; this just keeps the toast stack underneath it. */
+.portal-toasts { z-index: 800; }
+
+/* ============================================================
+   ARTICLES TAB
+   ============================================================ */
+
+.art-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.art-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.art-item-main { flex: 1; min-width: 0; }
+.art-item-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+
+.art-chip {
+  display: inline-block; padding: 0.12rem 0.5rem; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.art-chip-published { background: var(--primary-dim); color: var(--primary); }
+.art-chip-draft     { background: var(--surface-2); color: var(--muted); }
+.art-chip-featured  { background: var(--accent-dim); color: #8a6d00; }
+html.a11y-dark .art-chip-featured { color: var(--accent); }
+
+.art-item-cat { font-size: 0.74rem; color: var(--muted); }
+.art-item-title {
+  font-size: 1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.2rem; line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.art-item-summary {
+  font-size: 0.85rem; color: var(--muted); line-height: 1.45;
+  margin-bottom: 0.4rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.art-item-meta { font-size: 0.75rem; color: var(--muted-light); }
+.art-item-meta code { font-size: 0.72rem; color: var(--muted); }
+.art-item-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+
+/* ---- Buttons ---- */
+.art-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font: inherit; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.art-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.art-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+.art-btn-primary   { background: var(--primary); color: #fff; }
+.art-btn-primary:hover:not([disabled])   { background: var(--primary-dark); }
+.art-btn-secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+.art-btn-secondary:hover:not([disabled]) { border-color: var(--primary); color: var(--primary); }
+.art-btn-ghost     { background: none; color: var(--muted); border-color: var(--border); }
+.art-btn-ghost:hover:not([disabled])     { border-color: var(--primary); color: var(--primary); }
+.art-btn-danger    { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
+.art-btn-danger:hover:not([disabled])    { background: var(--danger); color: #fff; }
+
+/* ---- Editor bar ---- */
+.art-editor-bar {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  padding: 0.75rem 1rem; margin-bottom: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: sticky; top: var(--header-h); z-index: 150;
+}
+.art-back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: none; border: none; font: inherit; font-size: 0.85rem;
+  color: var(--muted); cursor: pointer;
+}
+.art-back-btn:hover { color: var(--primary); }
+.art-status-chip {
+  padding: 0.15rem 0.55rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.art-saved-hint { font-size: 0.76rem; color: var(--muted); }
+.art-saved-hint.is-dirty { color: #b45309; }
+.art-saved-hint.is-saved { color: var(--primary); }
+.art-editor-actions { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ---- Editor layout ---- */
+.art-editor-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 1.25rem; align-items: start;
+}
+.art-write-col, .art-side-col { display: flex; flex-direction: column; min-width: 0; }
+.art-write-col {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem; gap: 0.35rem;
+}
+.art-side-col { gap: 1rem; }
+
+.art-title-input { font-size: 1.05rem; font-weight: 600; }
+.art-req { color: var(--danger); }
+.art-hint { font-weight: 400; font-size: 0.74rem; color: var(--muted-light); text-transform: none; letter-spacing: 0; }
+
+.art-url-line { font-size: 0.78rem; color: var(--muted); margin: 0.15rem 0 0.6rem; }
+.art-url-line code { font-size: 0.76rem; color: var(--primary); }
+.art-edit-slug {
+  background: none; border: none; font: inherit; font-size: 0.76rem;
+  color: var(--muted); text-decoration: underline; cursor: pointer; margin-left: 0.35rem;
+}
+.art-edit-slug:hover { color: var(--primary); }
+.art-slug-edit { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.6rem; }
+.art-slug-prefix { font-size: 0.8rem; color: var(--muted); }
+
+.art-counter { font-size: 0.73rem; color: var(--muted-light); text-align: right; margin-top: 0.15rem; }
+
+/* ---- Toolbar ---- */
+.art-toolbar {
+  display: flex; align-items: center; gap: 0.15rem; flex-wrap: wrap;
+  padding: 0.4rem; margin: 0.7rem 0 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-bottom: none;
+}
+.art-tool {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  background: none; border: none; border-radius: 5px;
+  color: var(--muted); font-size: 0.8rem; cursor: pointer;
+}
+.art-tool:hover { background: var(--surface); color: var(--primary); }
+.art-tool:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.art-tool-sep { width: 1px; height: 18px; background: var(--border); margin: 0 0.25rem; }
+.art-tool-help { margin-left: auto; }
+
+.art-help {
+  padding: 0.85rem 1rem; font-size: 0.8rem; line-height: 1.5;
+  background: var(--primary-dim); color: var(--text);
+  border: 1px solid var(--border); border-bottom: none;
+}
+.art-help ul { margin: 0.5rem 0 0.5rem 1.1rem; }
+.art-help li { margin-bottom: 0.2rem; }
+.art-help code {
+  background: var(--surface); padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.76rem;
+}
+
+.art-body-input {
+  width: 100%; min-height: 420px; resize: vertical;
+  padding: 0.9rem 1rem;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font: inherit; font-size: 0.92rem; line-height: 1.65;
+}
+.art-body-input:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
+
+/* ---- Side panels ---- */
+.art-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem 1.1rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.art-panel-title {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted); margin-bottom: 0.5rem;
+}
+.art-check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-top: 0.7rem; cursor: pointer; }
+
+.art-preview {
+  max-height: 460px; overflow-y: auto;
+  font-size: 0.88rem; line-height: 1.6; color: var(--text);
+}
+.art-preview > *  { margin-bottom: 0.7rem; }
+.art-preview h2   { font-size: 1.05rem; font-weight: 700; margin-top: 1rem; }
+.art-preview h3   { font-size: 0.95rem; font-weight: 700; margin-top: 0.9rem; }
+.art-preview ul, .art-preview ol { margin-left: 1.2rem; }
+.art-preview li   { margin-bottom: 0.25rem; }
+.art-preview a    { color: var(--primary); }
+.art-preview img  { max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+.art-preview blockquote {
+  border-left: 3px solid var(--primary); padding-left: 0.85rem;
+  color: var(--muted); font-style: italic;
+}
+.art-preview pre {
+  background: var(--surface-2); padding: 0.7rem 0.85rem;
+  border-radius: var(--radius-sm); overflow-x: auto; font-size: 0.8rem;
+}
+.art-preview code { font-size: 0.82rem; }
+.art-preview-empty { color: var(--muted-light); font-style: italic; }
+
+.art-danger-panel { border-color: var(--danger-border); }
+.art-danger-text { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.7rem; }
+
+@media (max-width: 1100px) {
+  .art-editor-grid { grid-template-columns: 1fr; }
+  .art-side-col { order: -1; }
+  .art-preview { max-height: 260px; }
+}
+@media (max-width: 720px) {
+  .art-item { flex-direction: column; }
+  .art-item-actions { flex-direction: row; width: 100%; }
+  .art-editor-actions { width: 100%; }
+  .art-editor-actions .art-btn { flex: 1; }
+  .art-body-input { min-height: 320px; }
+}
+
+/* ---- New Event modal ----
+   The form was previously a 370px sidebar column, which clipped its
+   two-column rows. As a modal it gets the width it was designed for
+   and stops occupying a quarter of the screen when nobody is creating
+   an event. */
+.cal-form-modal { max-width: 720px; width: min(720px, calc(100vw - 2.5rem)); }
+
+.cal-form-modal-body { padding: 0; }
+
+/* The form card is inside a modal now — drop its own chrome so there
+   isn't a card border inside a card border. */
+.cal-form-modal .cal-form-card {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+/* Its header duplicates the modal title. */
+.cal-form-modal .cal-form-card > .cal-card-header { display: none; }
+
+@media (max-width: 1100px) {
+  .cal-layout { align-items: start; }
+  .cal-side > .cal-events-card { flex: 0 0 auto; }
+  .cal-side > .cal-events-card .cal-events-list { overflow-y: visible; max-height: 420px; }
+}
+
+@media (max-width: 720px) {
+  /* Stacked, the button goes full width under the pills rather than
+     being squeezed onto the end of a wrapped pill row. */
+  .cal-toolbar > .portal-export-btn {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
