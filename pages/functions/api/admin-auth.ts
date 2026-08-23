@@ -61,6 +61,8 @@ interface Env {
   SESSION_DURATION_HOURS?: string;
   MAX_LOGIN_ATTEMPTS?: string;
   LOCKOUT_MINUTES?: string;
+  /** Set to "1" to return exception messages to the client. Diagnostics only. */
+  DEBUG_ERRORS?: string;
 }
 
 export async function onRequest(context: {
@@ -96,9 +98,29 @@ export async function onRequest(context: {
         "The staff portal database schema is out of date. Run schema_audit.py " +
         "against this environment to see what is missing.", 503);
     }
+    if (/STORED_HASH_ITERATIONS_TOO_HIGH/.test(detail)) {
+      return jsonError(
+        "This account's password was stored with settings this platform " +
+        "cannot verify. Reset it with staff_account.py reset-password.", 503);
+    }
+    if (/pbkdf2|derivebits|iterations/i.test(detail)) {
+      return jsonError(
+        "Password verification failed at the platform level. The iteration " +
+        "count may exceed what Workers allows. Check the Worker logs.", 503);
+    }
     if (/D1_ERROR|SQLITE/i.test(detail)) {
       return jsonError(
         "The database rejected the request. Check the Worker logs for details.", 503);
+    }
+    // Last resort. The real message goes to the Worker log, not the
+    // browser -- this endpoint is public.
+    //
+    // Set DEBUG_ERRORS=1 in the Pages project to have the message
+    // returned here as well, when tailing logs is impractical. It is
+    // opt-in, off by default, and should be removed once diagnosed:
+    // an exception message can disclose internals.
+    if (env.DEBUG_ERRORS === "1") {
+      return jsonError(`Login failed: ${detail}`, 500);
     }
     return jsonError("Login failed due to a server error. Check the Worker logs.", 500);
   }
@@ -184,8 +206,13 @@ async function handleLogin(request: Request, env: Env): Promise<Response> {
   // ── 3. Password verification ──────────────────────────────
   //    Always run a verify (even for unknown accounts) so response
   //    timing doesn't leak whether the username exists.
+  //    The dummy MUST use the same iteration count as real hashes:
+  //    a different count would both leak the difference through timing
+  //    (defeating the point) and, above the platform cap, throw for
+  //    every unknown username instead of returning a clean 401.
   const dummyHash =
-    "0000000000000000:600000:0000000000000000000000000000000000000000000000000000000000000000";
+    `0000000000000000:${PBKDF2_ITERATIONS}:` +
+    "0000000000000000000000000000000000000000000000000000000000000000";
   const storedHash = account?.password_hash ?? dummyHash;
   const passwordOk = await verifyPassword(password, storedHash);
 
@@ -384,12 +411,30 @@ function generateToken(): string {
 }
 
 /**
- * Hash a password with PBKDF2-SHA-256 (600,000 iterations).
+/**
+ * Maximum PBKDF2 iterations Cloudflare Workers accepts. Exceeding it
+ * throws at deploy time only -- local dev does not enforce it.
+ */
+const PBKDF2_ITERATIONS = 100_000;
+
+/**
+ * Hash a password with PBKDF2-SHA-256.
  * Stored format: "<hex(salt)>:<iterations>:<hex(hash)>"
  */
 export async function hashPassword(password: string): Promise<string> {
   const salt       = crypto.getRandomValues(new Uint8Array(16));
-  const iterations = 600_000;
+  // Cloudflare Workers caps PBKDF2 at 100,000 iterations in its WebCrypto
+  // implementation and throws above it. Miniflare (wrangler pages dev) does
+  // NOT enforce the cap, so 600,000 works locally and fails only once
+  // deployed -- with a generic exception, since it is not a D1 error.
+  //
+  // OWASP recommends 600,000 for PBKDF2-SHA-256, so this is below current
+  // guidance and that is a real trade-off. It is acceptable here because
+  // staff_account.py generates 20-character passwords from a ~70-character
+  // alphabet (~120 bits). Offline cracking of that is infeasible whatever
+  // the KDF cost; iteration count matters most for human-chosen passwords.
+  // If accounts ever use hand-picked passwords, revisit this.
+  const iterations = PBKDF2_ITERATIONS;
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(password),
@@ -418,6 +463,15 @@ async function verifyPassword(password: string, stored: string): Promise<boolean
   try { salt = hexToBytes(saltHex); } catch { return false; }
   const iterations = parseInt(iterStr, 10);
   if (!iterations || iterations < 1) return false;
+
+  // A hash stored with more iterations than the platform allows can never
+  // be verified here. Surface it rather than letting deriveBits throw a
+  // generic error that looks like a server fault.
+  if (iterations > PBKDF2_ITERATIONS) {
+    throw new Error(
+      `STORED_HASH_ITERATIONS_TOO_HIGH: hash uses ${iterations} iterations, ` +
+      `this platform allows at most ${PBKDF2_ITERATIONS}. Reset the password.`);
+  }
 
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
