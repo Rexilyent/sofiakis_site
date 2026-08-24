@@ -80,6 +80,8 @@
         <i class="fas fa-newspaper" aria-hidden="true"></i>
         Articles
       </button>
+      <!-- Superadmin only. portal-staff.js removes this for other roles;
+           the API enforces it independently with a 403. -->
       <button class="portal-tab" id="tab-staff" data-tab="staff"
               aria-selected="false" role="tab" hidden>
         <i class="fas fa-user-shield" aria-hidden="true"></i>
@@ -516,7 +518,7 @@
     </div><!-- /section-articles -->
 
     <!-- ══════════════════════════════════════════
-         STAFF SECTION
+         STAFF SECTION (superadmin)
          ══════════════════════════════════════════ -->
     <div id="section-staff" hidden>
 
@@ -558,6 +560,23 @@
           <span class="portal-stat-label">Cancelled</span>
         </div>
       </div>
+
+      <!-- Existing accounts. Who actually HAS access, as opposed to
+           who has been invited. -->
+      <section class="cal-events-card" style="margin-bottom:1.25rem">
+        <div class="cal-card-header">
+          <i class="fas fa-users-gear" aria-hidden="true"></i>
+          <h2 class="cal-card-title">Staff Accounts</h2>
+          <span class="cal-card-count" id="staff-accounts-count"></span>
+        </div>
+        <div class="portal-loading" id="staff-accounts-loading" role="status">
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+          Loading accounts…
+        </div>
+        <ul class="art-list" id="staff-accounts-list" style="padding:0 1rem 1rem"></ul>
+      </section>
+
+      <h2 class="cal-card-title" style="margin-bottom:0.6rem">Invitations</h2>
 
       <div class="portal-loading" id="staff-loading" role="status">
         <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>

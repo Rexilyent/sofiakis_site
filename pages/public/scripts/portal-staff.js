@@ -47,6 +47,10 @@
   const listEl      = $("staff-list");
   const emailWarn   = $("staff-email-warning");
 
+  const acctLoading = $("staff-accounts-loading");
+  const acctListEl  = $("staff-accounts-list");
+  const acctCountEl = $("staff-accounts-count");
+
   const inviteBtn   = $("staff-invite-btn");
   const overlay     = $("staff-invite-overlay");
   const closeBtn    = $("staff-invite-close");
@@ -75,6 +79,7 @@
   document.addEventListener("portal:tab", e => {
     if (e.detail?.tab !== "staff") return;
     if (!initialised) { initialised = true; wire(); }
+    fetchAccounts();
     fetchInvites();
   });
 
@@ -89,6 +94,138 @@
     againBtn?.addEventListener("click", resetModal);
     copyBtn?.addEventListener("click", copyLink);
     emailEl?.addEventListener("keydown", e => { if (e.key === "Enter") sendInvite(); });
+  }
+
+
+  // ============================================================
+  //  STAFF ACCOUNTS
+  // ============================================================
+  //
+  //  Invitations show who was ASKED; this shows who actually has a
+  //  key. Role changes happen here.
+
+  const ROLE_LABEL = {
+    superadmin: "Superadmin",
+    admin:      "Admin",
+    viewer:     "Viewer"
+  };
+  const ROLE_HELP = {
+    superadmin: "Everything, including inviting staff and changing roles",
+    admin:      "Volunteers, calendar and articles",
+    viewer:     "Read-only"
+  };
+
+  let accounts = [];
+
+  async function fetchAccounts() {
+    show(acctLoading);
+    acctListEl.innerHTML = "";
+
+    try {
+      const res = await core().authFetch(`${API}?view=accounts`);
+      if (!res.ok) { hide(acctLoading); return; }
+      const data = await res.json();
+      accounts = data.accounts || [];
+      acctCountEl.textContent = `${data.counts.superadmin} superadmin \u00b7 ` +
+        `${data.counts.admin} admin \u00b7 ${data.counts.viewer} viewer`;
+      renderAccounts();
+    } catch {
+      hide(acctLoading);
+    }
+  }
+
+  function renderAccounts() {
+    hide(acctLoading);
+    acctListEl.innerHTML = "";
+
+    const soleSuperadmin =
+      accounts.filter(a => a.role === "superadmin").length <= 1;
+
+    for (const acct of accounts) {
+      const li = document.createElement("li");
+      li.className = "art-item";
+
+      // Demoting the only superadmin locks everyone out of staff
+      // management, so the control is disabled with the reason shown
+      // rather than letting the server reject it after the fact.
+      const isLastSuper = acct.role === "superadmin" && soleSuperadmin;
+
+      li.innerHTML = `
+        <div class="art-item-main">
+          <div class="art-item-head">
+            <span class="art-chip staff-role-${esc(acct.role)}">${esc(ROLE_LABEL[acct.role] || acct.role)}</span>
+            ${acct.is_you ? '<span class="art-chip staff-chip-you">You</span>' : ""}
+            ${acct.is_locked ? '<span class="art-chip staff-chip-revoked">Locked out</span>' : ""}
+          </div>
+          <h3 class="art-item-title"></h3>
+          <p class="art-item-meta">
+            ${esc(ROLE_HELP[acct.role] || "")}
+            ${acct.last_login_at ? `\u00b7 last signed in ${esc(formatDate(acct.last_login_at))}`
+                                 : "\u00b7 never signed in"}
+          </p>
+        </div>
+        <div class="art-item-actions">
+          <label class="sr-only" for="role-${esc(acct.staff_id)}">Role for ${esc(acct.username)}</label>
+          <select class="cal-input staff-role-select" id="role-${esc(acct.staff_id)}"
+                  data-username="${esc(acct.username)}" ${isLastSuper ? "disabled" : ""}>
+            <option value="viewer">Viewer</option>
+            <option value="admin">Admin</option>
+            <option value="superadmin">Superadmin</option>
+          </select>
+          ${isLastSuper
+            ? '<span class="staff-role-note">Only superadmin</span>'
+            : ""}
+        </div>`;
+
+      li.querySelector(".art-item-title").textContent = acct.username;
+      const select = li.querySelector("select");
+      select.value = acct.role;
+      select.addEventListener("change", () => changeRole(acct, select));
+      acctListEl.appendChild(li);
+    }
+  }
+
+  async function changeRole(acct, select) {
+    const next = select.value;
+    if (next === acct.role) return;
+
+    const warning = acct.is_you && next !== "superadmin"
+      ? `Change your OWN role from ${ROLE_LABEL[acct.role]} to ${ROLE_LABEL[next]}?\n\n` +
+        "You will lose access to this Staff tab on your next action."
+      : `Change ${acct.username} from ${ROLE_LABEL[acct.role]} to ${ROLE_LABEL[next]}?`;
+
+    if (!confirm(warning)) { select.value = acct.role; return; }
+
+    select.disabled = true;
+    try {
+      const res = await core().authFetch(API, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: acct.username, role: next })
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        core().toast?.(data.error || `Could not change the role (${res.status})`, "error", 9000);
+        select.value = acct.role;
+        return;
+      }
+
+      core().toast?.(`${acct.username} is now ${ROLE_LABEL[next]}.`);
+      if (data.self_demotion) {
+        core().toast?.("You changed your own role \u2014 reload to see the portal as it " +
+                       "now applies to you.", "warn", 10000);
+      }
+      fetchAccounts();
+
+    } catch (err) {
+      if (!/Session expired/.test(err.message)) {
+        core().toast?.("Couldn't reach the server.", "error");
+      }
+      select.value = acct.role;
+    } finally {
+      select.disabled = false;
+    }
   }
 
   // ============================================================

@@ -62,9 +62,16 @@ export async function onRequest(context: {
   }
 
   try {
+    const url = new URL(request.url);
+
     switch (request.method) {
-      case "GET":    return await handleList(env, session);
+      case "GET":
+        // ?view=accounts lists existing staff rather than invitations
+        return url.searchParams.get("view") === "accounts"
+          ? await handleListAccounts(env, session)
+          : await handleList(env, session);
       case "POST":   return await handleCreate(request, env, session);
+      case "PATCH":  return await handleSetRole(request, env, session);
       case "DELETE": return await handleRevoke(request, env, session);
       default:       return jsonError("Method not allowed", 405);
     }
@@ -118,6 +125,105 @@ async function handleList(env: Env, session: SessionContext): Promise<Response> 
   await logAccess(env, session, "list_invites", invites.length);
 
   return secureJson({ invites, counts, email_configured: !!env.RESEND_API_KEY });
+}
+
+// ============================================================
+//  STAFF ACCOUNTS
+// ============================================================
+//
+//  The portal could show who had been INVITED but not who actually
+//  has access, which is the more important question — an invitation
+//  is a request, an account is a key.
+
+async function handleListAccounts(env: Env, session: SessionContext): Promise<Response> {
+  // password_hash is never selected.
+  const { results } = await env.CORE_DB.prepare(`
+    SELECT staff_id, username, role, failed_attempts, locked_until,
+           last_login_at, created_at
+      FROM staff_accounts
+     ORDER BY username
+  `).all();
+
+  const accounts = (results ?? []).map((row: any) => ({
+    ...row,
+    is_you: row.username === session.username,
+    is_locked: !!(row.locked_until && row.locked_until > new Date().toISOString())
+  }));
+
+  const byRole = (r: string) =>
+    accounts.filter((a: { role: string }) => a.role === r).length;
+
+  await logAccess(env, session, "list_staff_accounts", accounts.length);
+
+  return secureJson({
+    accounts,
+    counts: {
+      total:      accounts.length,
+      superadmin: byRole("superadmin"),
+      admin:      byRole("admin"),
+      viewer:     byRole("viewer")
+    }
+  });
+}
+
+// ============================================================
+//  CHANGE ROLE
+// ============================================================
+
+async function handleSetRole(
+  request: Request, env: Env, session: SessionContext
+): Promise<Response> {
+  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+  if (!body) return jsonError("Invalid JSON body", 400);
+
+  const username = typeof body.username === "string" ? body.username.trim().toLowerCase() : "";
+  const role     = typeof body.role === "string" ? body.role : "";
+
+  if (!username) return jsonError("Missing username", 400);
+  if (!VALID_ROLES.includes(role)) {
+    return jsonError(`Role must be one of: ${VALID_ROLES.join(", ")}.`, 400);
+  }
+
+  const account = await env.CORE_DB
+    .prepare(`SELECT staff_id, username, role FROM staff_accounts WHERE username = ?`)
+    .bind(username)
+    .first<{ staff_id: string; username: string; role: string }>();
+
+  if (!account) return jsonError("No such staff account.", 404);
+  if (account.role === role) {
+    return secureJson({ success: true, username, role, unchanged: true });
+  }
+
+  // ── The lockout guard ───────────────────────────────────
+  //  Removing the last superadmin would leave nobody able to invite
+  //  staff or change roles — recoverable only through the break-glass
+  //  script. Refuse rather than let someone do it by accident.
+  if (account.role === "superadmin" && role !== "superadmin") {
+    const row = await env.CORE_DB
+      .prepare(`SELECT COUNT(*) AS n FROM staff_accounts WHERE role = 'superadmin'`)
+      .first<{ n: number }>();
+    if ((row?.n ?? 0) <= 1) {
+      return jsonError(
+        "This is the only superadmin. Promote someone else first, or nobody " +
+        "will be able to manage staff access.", 409);
+    }
+  }
+
+  await env.CORE_DB
+    .prepare(`UPDATE staff_accounts SET role = ? WHERE username = ?`)
+    .bind(role, username).run();
+
+  await logAccess(env, session, `set_role:${username}:${account.role}->${role}`, 1);
+
+  return secureJson({
+    success: true,
+    username,
+    role,
+    previous_role: account.role,
+    // Demoting yourself takes effect on the NEXT request, since the
+    // current session already resolved its role. Say so.
+    self_demotion: username === session.username && role !== "superadmin"
+  });
 }
 
 // ============================================================

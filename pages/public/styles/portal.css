@@ -2061,3 +2061,24 @@ html.a11y-dark .staff-chip-pending { color: var(--accent); }
 @media (max-width: 720px) {
   .staff-link-row { flex-direction: column; }
 }
+
+/* ---- Staff roles ---- */
+.staff-role-superadmin { background: var(--primary-dim); color: var(--primary); }
+.staff-role-admin      { background: rgba(20,85,164,0.12); color: #1455A4; }
+.staff-role-viewer     { background: var(--surface-2); color: var(--muted); }
+.staff-chip-you        { background: var(--accent-dim); color: #8a6d00; }
+html.a11y-dark .staff-role-admin { color: #7aa7e0; }
+html.a11y-dark .staff-chip-you   { color: var(--accent); }
+
+.staff-role-select { min-width: 130px; font-size: 0.82rem; padding: 0.35rem 0.5rem; }
+.staff-role-select:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Shown next to a disabled selector so the reason is visible rather
+   than the control just being dead. */
+.staff-role-note {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted-light);
+  text-align: center;
+  margin-top: 0.2rem;
+}

@@ -110,10 +110,41 @@ export async function onRequestGet(context: {
   const url    = new URL(request.url);
   const singleId = url.searchParams.get("id");
 
-  if (singleId) {
-    return handleSingleRecord(singleId, session, env, ipHash, nowIso);
+  // Any uncaught throw is returned by the runtime as a plain-text 500,
+  // which the portal can only report as "Server returned 500". Schema
+  // problems are by far the most likely cause here, and they need a
+  // completely different fix from a genuine server fault -- so name them.
+  try {
+    if (singleId) {
+      return await handleSingleRecord(singleId, session, env, ipHash, nowIso);
+    }
+    return await handleList(url, session, env, ipHash, nowIso);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("admin-volunteers failed:", detail);
+
+    if (/MISSING_VERIFIED_COLUMN/.test(detail)) {
+      return jsonError(
+        "The volunteers table has no verification column. Run schema_audit.py " +
+        "against this environment \u2014 the Worker log lists the columns it does have.",
+        503);
+    }
+    if (/no such table/i.test(detail)) {
+      return jsonError(
+        "A required table is missing from this database. Apply the migrations " +
+        "in migrations/ to this environment.", 503);
+    }
+    if (/no such column/i.test(detail)) {
+      return jsonError(
+        "This database's schema does not match what the portal expects. Run " +
+        "schema_audit.py to see what is missing.", 503);
+    }
+    if (/D1_ERROR|SQLITE/i.test(detail)) {
+      return jsonError(
+        "The database rejected the request. Check the Worker logs.", 503);
+    }
+    return jsonError("Failed to load records. Check the Worker logs.", 500);
   }
-  return handleList(url, session, env, ipHash, nowIso);
 }
 
 // ============================================================
@@ -128,10 +159,11 @@ async function handleSingleRecord(
   nowIso: string
 ): Promise<Response> {
   const db = env.CORE_DB!;
+  const vcol = await resolveVerifiedColumn(db);
 
   const row = await db
     .prepare(`SELECT volunteer_id, name, email, phone, zip,
-                     source_form, verified, created_at, updated_at
+                     source_form, ${vcol} AS verified, created_at, updated_at
               FROM   volunteers
               WHERE  volunteer_id = ?`)
     .bind(volunteerId)
@@ -177,6 +209,9 @@ async function handleList(
 ): Promise<Response> {
   const db = env.CORE_DB!;
 
+  // Which column holds the verification flag in THIS database.
+  const vcol = await resolveVerifiedColumn(db);
+
   // ── Parse query params ───────────────────────────────────────
   const page      = Math.max(1, parseInt(url.searchParams.get("page")     || "1",   10));
   const limit     = Math.min(100, Math.max(1,
@@ -198,7 +233,7 @@ async function handleList(
     bindings.push(sourceForm);
   }
   if (verifiedOnly) {
-    conditions.push("verified = 1");
+    conditions.push(`${vcol} = 1`);
   }
   if (since) {
     conditions.push("created_at >= ?");
@@ -225,7 +260,7 @@ async function handleList(
   //  phone and zip are AES-GCM ciphertext, so a ZIP-distribution chart
   //  is deliberately absent rather than quietly wrong.
   if (url.searchParams.get("stats") === "1") {
-    return await handleStats(db, where, bindings, session, ipHash);
+    return await handleStats(db, where, bindings, session, ipHash, vcol);
   }
 
   // ── Total count ──────────────────────────────────────────────
@@ -240,7 +275,7 @@ async function handleList(
   const rows = await db
     .prepare(
       `SELECT volunteer_id, name, email, phone, zip,
-              source_form, verified, created_at, updated_at
+              source_form, ${vcol} AS verified, created_at, updated_at
        FROM   volunteers
        ${where}
        ORDER  BY created_at DESC
@@ -374,6 +409,50 @@ async function safeDecrypt(
 }
 
 // ============================================================
+//  VERIFIED COLUMN RESOLUTION
+// ============================================================
+//
+//  This endpoint reads a "verified" flag, but the public
+//  verification flow (api/verify-email.ts) writes a column called
+//  "email_verified". Depending on when a given database was
+//  created, it may have one, the other, or both -- and querying
+//  the wrong name fails the whole request with
+//  "no such column", which surfaces as an opaque 500.
+//
+//  Rather than guess, ask the database. This is deliberately NOT
+//  cached in module scope: a Worker only ever binds one database so
+//  a cache would be correct in production, but it would also make
+//  this untestable and would silently outlive a schema change. A
+//  PRAGMA is negligible beside the main query and decrypting 50 rows.
+//
+//  email_verified is preferred when both exist: it is the one the
+//  public form actually maintains, so it is the one that reflects
+//  reality.
+// ============================================================
+
+async function resolveVerifiedColumn(db: D1Database): Promise<string> {
+  const { results } = await db.prepare(`PRAGMA table_info(volunteers)`).all();
+  const names = new Set((results ?? []).map((c: any) => c.name));
+
+  // PRAGMA returns an empty list for a table that does not exist rather
+  // than failing, so an absent table would otherwise be reported as a
+  // missing column -- which needs a completely different fix.
+  if (names.size === 0) {
+    throw new Error("no such table: volunteers");
+  }
+
+  if (names.has("email_verified")) return "email_verified";
+  if (names.has("verified"))       return "verified";
+  {
+    // Neither exists. Say which columns DO, so the fix is obvious.
+    throw new Error(
+      "MISSING_VERIFIED_COLUMN: the volunteers table has neither " +
+      "'email_verified' nor 'verified'. Columns present: " +
+      Array.from(names).join(", "));
+  }
+}
+
+// ============================================================
 //  AGGREGATE STATISTICS
 // ============================================================
 
@@ -384,7 +463,8 @@ async function handleStats(
   where: string,
   bindings: unknown[],
   session: SessionContext,
-  ipHash: string
+  ipHash: string,
+  vcol: string
 ): Promise<Response> {
 
   const nowIso = new Date().toISOString();
@@ -392,7 +472,7 @@ async function handleStats(
   // ── Headline counts ─────────────────────────────────────────
   const totals = await db.prepare(`
     SELECT COUNT(*)                                          AS total,
-           SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END)     AS verified,
+           SUM(CASE WHEN ${vcol} = 1 THEN 1 ELSE 0 END)     AS verified,
            SUM(CASE WHEN phone IS NOT NULL THEN 1 ELSE 0 END) AS with_phone,
            MIN(created_at)                                   AS first_signup,
            MAX(created_at)                                   AS latest_signup
@@ -412,7 +492,7 @@ async function handleStats(
   const daily = await db.prepare(`
     SELECT substr(created_at, 1, 10) AS day,
            COUNT(*)                  AS count,
-           SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END) AS verified
+           SUM(CASE WHEN ${vcol} = 1 THEN 1 ELSE 0 END) AS verified
       FROM volunteers ${where}
      GROUP BY day
      ORDER BY day ASC
@@ -433,7 +513,7 @@ async function handleStats(
   const interestWhere = where
     ? where.replace(/\bcreated_at\b/g, "v.created_at")
            .replace(/\bsource_form\b/g, "v.source_form")
-           .replace(/\bverified\b/g, "v.verified")
+           .replace(new RegExp(`\\b${vcol}\\b`, "g"), `v.${vcol}`)
     : "";
   const byInterest = await db.prepare(`
     SELECT i.interest AS label, COUNT(*) AS count
