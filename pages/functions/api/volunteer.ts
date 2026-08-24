@@ -147,11 +147,37 @@ export async function onRequestPost(context: {
     // ----------------------------------------
     // Validate form_type against known values
     // ----------------------------------------
-    const VALID_FORM_TYPES = ["volunteer_page", "issues_page", "unknown"] as const;
+    //  One value per page that carries a sign-up form. These MUST match
+    //  the data-form-type attributes in the markup:
+    //
+    //    public/volunteer.html  -> volunteer_page  (no attribute; the default)
+    //    public/index.html      -> homepage
+    //    public/issues.html     -> issues_page
+    //
+    //  and the filter options in public/portal.html. They were previously
+    //  out of step: the homepage sent "homepage_join" and the issues page
+    //  sent "issues_cta", neither of which was on this list, so both were
+    //  silently rewritten to "unknown" and the attribution was lost.
+    const VALID_FORM_TYPES = [
+      "volunteer_page", "homepage", "issues_page", "unknown"
+    ] as const;
     type FormType = typeof VALID_FORM_TYPES[number];
-    const safeFormType: FormType = VALID_FORM_TYPES.includes(form_type as FormType)
+
+    const formTypeRecognised = VALID_FORM_TYPES.includes(form_type as FormType);
+    const safeFormType: FormType = formTypeRecognised
       ? form_type as FormType
       : "unknown";
+
+    //  Falling back to "unknown" keeps the submission (never lose a
+    //  volunteer over a markup typo) but it silently destroys the
+    //  attribution, so make it visible in the logs rather than letting
+    //  it accumulate unnoticed the way it did before.
+    if (form_type && !formTypeRecognised) {
+      console.warn(
+        `Unrecognised form_type "${form_type}" recorded as "unknown". ` +
+        `Expected one of: ${VALID_FORM_TYPES.join(", ")}. ` +
+        "Check the data-form-type attribute on the submitting form.");
+    }
 
     // ----------------------------------------
     // Validate interests + languages against allowlists

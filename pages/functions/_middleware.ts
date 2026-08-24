@@ -22,11 +22,64 @@ export async function onRequest(context: {
   }
 
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  const key = await sha256(ip);
 
-  const LIMIT = 5;          // max requests
+  // -- Per-route-class limits ------------------------------------
+  //
+  //  A single limit across all of /api/ was written for the public
+  //  forms, where 5 submissions a minute from one IP is generous. The
+  //  staff portal is a different shape entirely: opening it fires
+  //  volunteers, calendar, articles and invitations, and every filter,
+  //  page change and refresh is another request. Staff were hitting
+  //  the limit before clicking anything.
+  //
+  //  Admin routes already require a valid session bound to an IP and
+  //  user-agent, so authentication is the real gate; the limit here is
+  //  a backstop against a runaway client, not an access control.
+  //
+  //  Buckets are keyed separately so portal traffic can never exhaust
+  //  the allowance that protects the public forms.
+
+  const path = url.pathname;
+  const isAdmin  = path.startsWith("/api/admin-");
+  const isSignup = path === "/api/staff-signup";
+
+  let LIMIT: number;
+  let bucket: string;
+
+  if (isAdmin) {
+    LIMIT = 120;            // authenticated staff; generous but bounded
+    bucket = "admin";
+  } else if (isSignup) {
+    LIMIT = 20;             // unauthenticated, but token-gated per attempt
+    bucket = "signup";
+  } else {
+    LIMIT = 5;              // public forms -- unchanged
+    bucket = "public";
+  }
+
+  const key = await sha256(bucket + ":" + ip);
   const WINDOW_SECONDS = 60; // per 60 seconds
 
+  // Everything below is wrapped: rate limiting is a safety net, not a
+  // correctness requirement. A missing rate_limits table or a transient
+  // D1 error previously threw here, which the runtime returned as a
+  // plain-text 500 for EVERY api route -- taking down the whole portal
+  // in order to enforce a limit. Failing open is the right trade.
+  try {
+    return await enforceLimit(env, key, LIMIT, WINDOW_SECONDS, next);
+  } catch (err) {
+    console.error("Rate limiter failed, allowing request:", err);
+    return next();
+  }
+}
+
+async function enforceLimit(
+  env: { CORE_DB?: any },
+  key: string,
+  LIMIT: number,
+  WINDOW_SECONDS: number,
+  next: () => Promise<Response>
+): Promise<Response> {
   const now = Date.now();
   const windowMs = WINDOW_SECONDS * 1000;
 

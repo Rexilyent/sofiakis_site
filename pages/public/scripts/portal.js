@@ -422,8 +422,14 @@
           throw new Error("Session expired");
         }
 
-        // Retry server-side hiccups and rate limits
-        if ((res.status >= 500 || res.status === 429) && attempt < retries) {
+        // Retry genuine server-side hiccups.
+        //
+        // 429 is deliberately NOT retried. Retrying a rate limit spends
+        // more of the allowance you have just exhausted -- one blocked
+        // request became three, which made the limit harder to recover
+        // from and looked like the portal was broken rather than
+        // throttled. Surface it instead and let the person decide.
+        if (res.status >= 500 && attempt < retries) {
           await sleep(backoffMs(attempt, res));
           continue;
         }
@@ -474,6 +480,14 @@
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+
+        if (res.status === 429) {
+          const wait = parseInt(res.headers.get("Retry-After") || "60", 10);
+          throw new Error(
+            `Too many requests in a short time. Wait about ${wait} seconds, ` +
+            "then use Retry.");
+        }
+
         throw new Error(data.error || `Server returned ${res.status}`);
       }
 
@@ -560,7 +574,7 @@
         <td class="td-phone">${val(v.phone, true)}</td>
         <td class="td-zip">${val(v.zip, true)}</td>
         <td class="td-interests">${renderInterests(v.interests)}</td>
-        <td>${esc(v.source_form || "—")}</td>
+        <td>${esc(sourceLabel(v.source_form))}</td>
         <td>${renderStatus(v.verified)}</td>
         <td style="white-space:nowrap;font-size:0.8rem;color:var(--muted)">
           ${formatDate(v.created_at)}
@@ -586,9 +600,25 @@
     showState("table");
   }
 
+  //  Stored source_form values are machine-readable; these are what
+  //  staff should read. "unknown" is shown as-is rather than dressed up:
+  //  those rows genuinely have no attribution, and implying otherwise
+  //  would be worse than admitting it.
+  const SOURCE_LABELS = {
+    volunteer_page: "Volunteer Page",
+    homepage:       "Home Page",
+    issues_page:    "Issues Page",
+    unknown:        "Unknown"
+  };
+
+  function sourceLabel(value) {
+    if (!value) return "—";
+    return SOURCE_LABELS[value] || value;
+  }
+
   function searchBlob(v) {
     return [
-      v.name, v.email, v.phone, v.zip, v.source_form,
+      v.name, v.email, v.phone, v.zip, v.source_form, sourceLabel(v.source_form),
       (v.interests || []).join(" ")
     ].filter(Boolean).join(" ").toLowerCase();
   }
@@ -628,7 +658,7 @@
       field("Interests",   v.interests?.length
               ? v.interests.map(i => `<span class="portal-interest-chip">${esc(i)}</span>`).join(" ")
               : nullVal()),
-      field("Source Form", esc(v.source_form || "—")),
+      field("Source Form", esc(sourceLabel(v.source_form))),
       field("Status",      renderStatus(v.verified)),
       field("Submitted",   esc(formatDate(v.created_at))),
       field("Updated",     esc(formatDate(v.updated_at))),
