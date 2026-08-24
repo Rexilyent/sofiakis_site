@@ -394,3 +394,53 @@ body {
 
   .login-title { font-size: 1.2rem; }
 }
+/* ============================================================
+   STAFF SIGN-UP  (staff-signup.html)
+   Reuses the login card; only the extras below are new.
+   ============================================================ */
+
+.signup-state { width: 100%; }
+
+.signup-hint {
+  font-size: 0.78rem;
+  color: var(--muted, #6E6E6E);
+  margin: -0.4rem 0 0.9rem;
+}
+
+/* Live password rules. Deliberately shown BEFORE submitting so
+   someone isn't told their password is wrong only afterwards. */
+.signup-rules {
+  list-style: none;
+  margin: 0.25rem 0 1.1rem;
+  padding: 0.75rem 0.9rem;
+  background: rgba(0, 128, 55, 0.04);
+  border: 1px solid rgba(0, 128, 55, 0.12);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.signup-rules li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--muted, #6E6E6E);
+  transition: color 0.15s ease;
+}
+
+.signup-rules li i {
+  font-size: 0.6rem;
+  width: 14px;
+  text-align: center;
+  color: #c4c4c4;
+}
+
+.signup-rules li.is-met { color: #0a5c28; }
+.signup-rules li.is-met i { font-size: 0.85rem; color: #008037; }
+
+@media (prefers-reduced-motion: reduce) {
+  .signup-rules li { transition: none; }
+}

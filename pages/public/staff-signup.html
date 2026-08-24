@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://alexandriasofiakis.com/login">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Set Up Your Account | Alexandria Sofiakis Staff Portal</title>
+	<link rel="icon" href="/assets/images/sofiakis_logo_32x32.png" type="image/x-icon">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+	<!-- Lexend font -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap">
+
+	<!-- No shared styles for the login page -->
+	<!-- Page-specific styles -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/styles/login.css">
+</head>
+<body class="login-page">
+
+  <div class="login-shell">
+    <div class="login-bg-accent login-bg-accent--tl" aria-hidden="true"></div>
+    <div class="login-bg-accent login-bg-accent--br" aria-hidden="true"></div>
+
+    <main class="login-card" role="main">
+
+      <div class="login-header">
+        <a href="/" class="login-logo-link" aria-label="Alexandria Sofiakis — go to public site">
+          <img src="/assets/images/sofiakis_logo_green_txt.png"
+               alt="Alexandria Sofiakis for IL-10" class="login-logo">
+        </a>
+        <span class="login-badge">
+          <i class="fas fa-user-plus" aria-hidden="true"></i>
+          Staff Portal
+        </span>
+      </div>
+
+      <!-- Checking the invitation -->
+      <div id="signup-checking" class="signup-state">
+        <p class="login-subtitle">
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+          Checking your invitation…
+        </p>
+      </div>
+
+      <!-- Invitation not usable -->
+      <div id="signup-invalid" class="signup-state" hidden>
+        <h1 class="login-title" id="signup-invalid-title">Invitation not valid</h1>
+        <div class="login-error" role="alert">
+          <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+          <span id="signup-invalid-text"></span>
+        </div>
+        <p class="login-footnote">
+          Ask the campaign technical team to send you a new invitation.
+        </p>
+      </div>
+
+      <!-- The form -->
+      <div id="signup-form-wrap" class="signup-state" hidden>
+        <h1 class="login-title">Set up your account</h1>
+        <p class="login-subtitle">
+          You’ve been invited as <strong id="signup-role">staff</strong>.
+          Choose a username and password — nobody else will see the password you pick.
+        </p>
+
+        <div class="login-error" id="signup-error" hidden role="alert">
+          <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+          <span id="signup-error-text"></span>
+        </div>
+
+        <form id="signup-form" novalidate>
+          <label class="login-label" for="signup-username">Username</label>
+          <div class="login-input-wrap">
+            <i class="fas fa-user login-input-icon" aria-hidden="true"></i>
+            <input type="text" id="signup-username" class="login-input"
+                   autocomplete="username" autocapitalize="none" spellcheck="false"
+                   maxlength="32" placeholder="e.g. alex.smith" required>
+          </div>
+          <p class="signup-hint">3–32 characters: letters, numbers, dot, underscore or hyphen.</p>
+
+          <label class="login-label" for="signup-password">Password</label>
+          <div class="login-input-wrap">
+            <i class="fas fa-key login-input-icon" aria-hidden="true"></i>
+            <input type="password" id="signup-password" class="login-input"
+                   autocomplete="new-password" required>
+            <button type="button" id="signup-toggle-pw" class="login-toggle-pw"
+                    aria-label="Show password">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <label class="login-label" for="signup-confirm">Confirm password</label>
+          <div class="login-input-wrap">
+            <i class="fas fa-key login-input-icon" aria-hidden="true"></i>
+            <input type="password" id="signup-confirm" class="login-input"
+                   autocomplete="new-password" required>
+          </div>
+
+          <ul class="signup-rules" id="signup-rules" aria-live="polite">
+            <li data-rule="length"><i class="fas fa-circle" aria-hidden="true"></i>
+                At least <span id="signup-minlen">12</span> characters</li>
+            <li data-rule="classes"><i class="fas fa-circle" aria-hidden="true"></i>
+                Three of: lowercase, uppercase, numbers, symbols</li>
+            <li data-rule="match"><i class="fas fa-circle" aria-hidden="true"></i>
+                Both passwords match</li>
+          </ul>
+
+          <button type="submit" class="login-btn" id="signup-btn">
+            <span class="login-btn-text">Create My Account</span>
+            <span class="login-btn-spinner" hidden>
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Done -->
+      <div id="signup-done" class="signup-state" hidden>
+        <h1 class="login-title">Account created</h1>
+        <p class="login-subtitle" id="signup-done-text"></p>
+        <a class="login-btn" href="/login.html" style="text-decoration:none;text-align:center">
+          Go to sign in
+        </a>
+      </div>
+
+    </main>
+
+    <footer class="login-footer">
+      <a href="/accessibility">Accessibility</a>
+      <a href="/privacy">Privacy Policy</a>
+      <span>Paid for by Alexandria Sofiakis</span>
+    </footer>
+  </div>
+
+  <!-- Dev only. Defines nothing unless served from localhost with ?dev=1. -->
+  <script src="/scripts/dev-fixtures.js" defer></script>
+  <script src="/scripts/staff-signup.js" defer></script>
+</body>
+</html>

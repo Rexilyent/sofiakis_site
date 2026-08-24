@@ -2036,3 +2036,28 @@ html.a11y-dark .art-chip-featured { color: var(--accent); }
     justify-content: center;
   }
 }
+
+/* ============================================================
+   STAFF ACCESS TAB
+   ============================================================ */
+
+.staff-chip-pending  { background: var(--accent-dim); color: #8a6d00; }
+.staff-chip-accepted { background: var(--primary-dim); color: var(--primary); }
+.staff-chip-expired  { background: var(--surface-2); color: var(--muted); }
+.staff-chip-revoked  { background: var(--danger-bg); color: var(--danger); }
+html.a11y-dark .staff-chip-pending { color: var(--accent); }
+
+/* The sign-up link is shown once and never again -- the server keeps
+   only its hash. Give it room and a monospace face so it can be read
+   aloud or checked against what was pasted. */
+.staff-link-row { display: flex; gap: 0.5rem; align-items: stretch; }
+.staff-link-row .cal-input {
+  flex: 1; min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+}
+.staff-link-row .art-btn { flex-shrink: 0; }
+
+@media (max-width: 720px) {
+  .staff-link-row { flex-direction: column; }
+}

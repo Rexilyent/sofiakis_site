@@ -80,6 +80,13 @@
         <i class="fas fa-newspaper" aria-hidden="true"></i>
         Articles
       </button>
+      <!-- Superadmin only. portal-staff.js removes this for other roles;
+           the API enforces it independently with a 403. -->
+      <button class="portal-tab" id="tab-staff" data-tab="staff"
+              aria-selected="false" role="tab" hidden>
+        <i class="fas fa-user-shield" aria-hidden="true"></i>
+        Staff
+      </button>
       <button class="portal-tab" id="tab-calendar" data-tab="calendar"
               aria-selected="false" role="tab">
         <i class="fas fa-calendar-days" aria-hidden="true"></i>
@@ -511,6 +518,67 @@
     </div><!-- /section-articles -->
 
     <!-- ══════════════════════════════════════════
+         STAFF SECTION (superadmin)
+         ══════════════════════════════════════════ -->
+    <div id="section-staff" hidden>
+
+      <div class="portal-page-head">
+        <div>
+          <h1 class="portal-page-title">Staff Access</h1>
+          <p class="portal-page-sub" id="staff-summary">Loading…</p>
+        </div>
+        <button class="portal-export-btn" id="staff-invite-btn">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+          Invite Someone
+        </button>
+      </div>
+
+      <div class="cal-banner cal-banner-error" id="staff-email-warning" hidden>
+        <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+        <div>
+          <strong>Email is not configured</strong>
+          <p>Invitations can still be created, but you’ll need to send the link
+             yourself. Set <code>RESEND_API_KEY</code> to send them automatically.</p>
+        </div>
+      </div>
+
+      <div class="portal-stats" id="staff-stats" hidden>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="staff-stat-pending">—</span>
+          <span class="portal-stat-label">Awaiting sign-up</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="staff-stat-accepted">—</span>
+          <span class="portal-stat-label">Accepted</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="staff-stat-expired">—</span>
+          <span class="portal-stat-label">Expired</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="staff-stat-revoked">—</span>
+          <span class="portal-stat-label">Cancelled</span>
+        </div>
+      </div>
+
+      <div class="portal-loading" id="staff-loading" role="status">
+        <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+        Loading invitations…
+      </div>
+
+      <div class="portal-fetch-error" id="staff-error" hidden role="alert">
+        <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+        <span id="staff-error-msg"></span>
+      </div>
+
+      <div class="portal-empty" id="staff-empty" hidden>
+        <i class="fas fa-user-shield" aria-hidden="true"></i>
+        <p>No invitations yet. Choose “Invite Someone” to add a staff member.</p>
+      </div>
+
+      <ul class="art-list" id="staff-list"></ul>
+    </div><!-- /section-staff -->
+    <!-- ══════════════════════════════════════════
          CALENDAR SECTION
          ══════════════════════════════════════════ -->
     <div id="section-calendar" hidden>
@@ -637,6 +705,77 @@
       </div>
       <div class="portal-modal-footer">
         <span class="portal-modal-watermark" id="modal-watermark"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Invite modal ── -->
+  <div class="portal-modal-overlay" id="staff-invite-overlay" hidden role="dialog"
+       aria-modal="true" aria-labelledby="staff-invite-title" tabindex="-1">
+    <div class="portal-modal">
+      <div class="portal-modal-header">
+        <h2 class="portal-modal-title" id="staff-invite-title">Invite a staff member</h2>
+        <button class="portal-modal-close" id="staff-invite-close" aria-label="Close">
+          <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="portal-modal-body">
+
+        <div class="cal-banner cal-banner-error" id="staff-invite-error" hidden role="alert">
+          <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+          <div><strong>Couldn’t send</strong><p id="staff-invite-error-msg"></p></div>
+        </div>
+
+        <div id="staff-invite-form">
+          <label class="cal-label" for="staff-invite-email">Email address <span class="art-req">*</span></label>
+          <input type="email" class="cal-input" id="staff-invite-email"
+                 placeholder="name@example.com" autocomplete="off">
+
+          <label class="cal-label" for="staff-invite-role">Role</label>
+          <select class="cal-input" id="staff-invite-role">
+            <option value="viewer">Viewer — read-only access</option>
+            <option value="admin" selected>Admin — volunteers, calendar, articles</option>
+            <option value="superadmin">Superadmin — all of the above, plus inviting staff</option>
+          </select>
+          <p class="art-counter" style="text-align:left">
+            They choose their own password. It is never seen by anyone else,
+            and the link expires in 72 hours.
+          </p>
+
+          <div class="cal-form-actions">
+            <button class="art-btn art-btn-primary" id="staff-invite-send">
+              <i class="fas fa-paper-plane" aria-hidden="true"></i>
+              <span id="staff-invite-send-label">Send Invitation</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="staff-invite-result" hidden>
+          <div class="cal-banner cal-banner-success">
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <div>
+              <strong id="staff-result-title">Invitation created</strong>
+              <p id="staff-result-msg"></p>
+            </div>
+          </div>
+          <label class="cal-label" for="staff-result-link">Sign-up link</label>
+          <div class="staff-link-row">
+            <input type="text" class="cal-input" id="staff-result-link" readonly>
+            <button class="art-btn art-btn-secondary" id="staff-copy-link">
+              <i class="fas fa-copy" aria-hidden="true"></i> Copy
+            </button>
+          </div>
+          <p class="art-counter" style="text-align:left">
+            Treat this like a password — anyone with it can create the account.
+            It works once and expires in 72 hours.
+          </p>
+          <div class="cal-form-actions">
+            <button class="art-btn art-btn-secondary" id="staff-invite-another">
+              Invite someone else
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -808,5 +947,6 @@
   <script src="/scripts/portal.js?v=3" defer></script>
   <script src="/scripts/portal-calendar.js?v=3" defer></script>
   <script src="/scripts/portal-articles.js?v=1" defer></script>
+  <script src="/scripts/portal-staff.js?v=1" defer></script>
 </body>
 </html>
