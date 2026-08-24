@@ -80,12 +80,12 @@
         <i class="fas fa-newspaper" aria-hidden="true"></i>
         Articles
       </button>
-      <!-- Superadmin only. portal-staff.js removes this for other roles;
-           the API enforces it independently with a 403. -->
-      <button class="portal-tab" id="tab-staff" data-tab="staff"
-              aria-selected="false" role="tab" hidden>
-        <i class="fas fa-user-shield" aria-hidden="true"></i>
-        Staff
+      <!-- Readable by any signed-in staff member; editing is superadmin
+           only, enforced server-side. -->
+      <button class="portal-tab" id="tab-team" data-tab="team"
+              aria-selected="false" role="tab">
+        <i class="fas fa-users-rectangle" aria-hidden="true"></i>
+        Team
       </button>
       <button class="portal-tab" id="tab-calendar" data-tab="calendar"
               aria-selected="false" role="tab">
@@ -521,18 +521,76 @@
     <!-- ══════════════════════════════════════════
          STAFF SECTION (superadmin)
          ══════════════════════════════════════════ -->
-    <div id="section-staff" hidden>
+    <div id="section-team" hidden>
 
       <div class="portal-page-head">
         <div>
-          <h1 class="portal-page-title">Staff Access</h1>
-          <p class="portal-page-sub" id="staff-summary">Loading…</p>
+          <h1 class="portal-page-title">Campaign Team</h1>
+          <p class="portal-page-sub" id="team-summary">Loading…</p>
         </div>
-        <button class="portal-export-btn" id="staff-invite-btn">
-          <i class="fas fa-envelope" aria-hidden="true"></i>
-          Invite Someone
-        </button>
+        <div class="team-head-actions">
+          <button class="portal-export-btn team-edit-only" id="team-add-btn" hidden>
+            <i class="fas fa-user-plus" aria-hidden="true"></i>
+            Add Person
+          </button>
+          <button class="portal-export-btn team-edit-only" id="staff-invite-btn" hidden>
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            Invite to Portal
+          </button>
+        </div>
       </div>
+
+      <!-- Directory stats -->
+      <div class="portal-stats" id="team-stats" hidden>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="team-stat-active">—</span>
+          <span class="portal-stat-label">Active</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="team-stat-onboarding">—</span>
+          <span class="portal-stat-label">Onboarding</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="team-stat-access">—</span>
+          <span class="portal-stat-label">Portal access</span>
+        </div>
+        <div class="portal-stat">
+          <span class="portal-stat-value" id="team-stat-former">—</span>
+          <span class="portal-stat-label">Former</span>
+        </div>
+      </div>
+
+      <div class="cal-filters" id="team-filters" role="group" aria-label="Filter the team directory">
+        <button class="cal-pill is-active" data-status="">Everyone</button>
+        <button class="cal-pill" data-status="active">Active</button>
+        <button class="cal-pill" data-status="onboarding">Onboarding</button>
+        <button class="cal-pill" data-status="prospect">Prospects</button>
+        <button class="cal-pill" data-status="former">Former</button>
+        <button class="cal-pill" data-access="none">No portal access</button>
+      </div>
+
+      <div class="portal-loading" id="team-loading" role="status">
+        <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+        Loading the team directory…
+      </div>
+
+      <div class="portal-fetch-error" id="team-error" hidden role="alert">
+        <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+        <span id="team-error-msg"></span>
+      </div>
+
+      <div class="portal-empty" id="team-empty" hidden>
+        <i class="fas fa-users-rectangle" aria-hidden="true"></i>
+        <p>Nobody listed yet. Choose “Add Person” to start the directory.</p>
+      </div>
+
+      <ul class="art-list" id="team-list"></ul>
+
+      <!-- Portal access detail, collapsed by default: it matters much
+           less often than the directory itself. -->
+      <details class="team-details" id="team-access-details">
+        <summary>Portal accounts and invitations</summary>
+        <div class="team-details-body">
 
       <div class="cal-banner cal-banner-error" id="staff-email-warning" hidden>
         <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
@@ -595,7 +653,9 @@
       </div>
 
       <ul class="art-list" id="staff-list"></ul>
-    </div><!-- /section-staff -->
+        </div>
+      </details>
+    </div><!-- /section-team -->
     <!-- ══════════════════════════════════════════
          CALENDAR SECTION
          ══════════════════════════════════════════ -->
@@ -730,6 +790,117 @@
       </div>
       <div class="portal-modal-footer">
         <span class="portal-modal-watermark" id="modal-watermark"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Team member modal ── -->
+  <div class="portal-modal-overlay" id="team-modal-overlay" hidden role="dialog"
+       aria-modal="true" aria-labelledby="team-modal-title" tabindex="-1">
+    <div class="portal-modal cal-form-modal">
+      <div class="portal-modal-header">
+        <h2 class="portal-modal-title" id="team-modal-title">Add a team member</h2>
+        <button class="portal-modal-close" id="team-modal-close" aria-label="Close">
+          <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="portal-modal-body">
+
+        <div class="cal-banner cal-banner-error" id="team-form-error" hidden role="alert">
+          <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+          <div><strong>Couldn’t save</strong><p id="team-form-error-msg"></p></div>
+        </div>
+
+        <label class="cal-label" for="team-name">Full name <span class="art-req">*</span></label>
+        <input type="text" class="cal-input" id="team-name" maxlength="120"
+               placeholder="e.g. Dana Ortiz">
+
+        <div class="cal-form-row">
+          <div>
+            <label class="cal-label" for="team-title">Role / title</label>
+            <input type="text" class="cal-input" id="team-title" maxlength="120"
+                   placeholder="e.g. Field Director">
+          </div>
+          <div>
+            <label class="cal-label" for="team-team">Team</label>
+            <select class="cal-input" id="team-team">
+              <option value="field">Field</option>
+              <option value="comms">Communications</option>
+              <option value="digital">Digital</option>
+              <option value="finance">Finance</option>
+              <option value="operations">Operations</option>
+              <option value="other" selected>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cal-form-row">
+          <div>
+            <label class="cal-label" for="team-engagement">Engagement</label>
+            <select class="cal-input" id="team-engagement">
+              <option value="staff" selected>Paid staff</option>
+              <option value="volunteer">Volunteer</option>
+              <option value="contractor">Contractor</option>
+              <option value="intern">Intern</option>
+            </select>
+          </div>
+          <div>
+            <label class="cal-label" for="team-status">Status</label>
+            <select class="cal-input" id="team-status">
+              <option value="prospect">Prospect</option>
+              <option value="onboarding">Onboarding</option>
+              <option value="active" selected>Active</option>
+              <option value="former">Former</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cal-form-row">
+          <div>
+            <label class="cal-label" for="team-email">
+              Email <span class="art-hint">used to send a portal invitation</span>
+            </label>
+            <input type="email" class="cal-input" id="team-email" autocomplete="off"
+                   placeholder="name@example.com">
+          </div>
+          <div>
+            <label class="cal-label" for="team-phone">Phone</label>
+            <input type="text" class="cal-input" id="team-phone" maxlength="40">
+          </div>
+        </div>
+
+        <div class="cal-form-row">
+          <div>
+            <label class="cal-label" for="team-started">Start date</label>
+            <input type="date" class="cal-input" id="team-started">
+          </div>
+          <div>
+            <label class="cal-label" for="team-ended">
+              End date <span class="art-hint" id="team-ended-hint"></span>
+            </label>
+            <input type="date" class="cal-input" id="team-ended">
+          </div>
+        </div>
+
+        <label class="cal-label" for="team-notes">Notes</label>
+        <textarea class="cal-textarea" id="team-notes" rows="3" maxlength="2000"
+                  placeholder="Operational notes — turf, availability, preferred contact…"></textarea>
+        <p class="team-notes-warning">
+          <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+          These notes are stored unencrypted and readable by anyone with database
+          access. Keep them operational — no reviews, compensation, medical or
+          immigration details.
+        </p>
+
+        <div class="cal-form-actions">
+          <button class="art-btn art-btn-danger" id="team-delete-btn" hidden>
+            <i class="fas fa-trash" aria-hidden="true"></i> Remove
+          </button>
+          <button class="art-btn art-btn-primary" id="team-save-btn">
+            <i class="fas fa-floppy-disk" aria-hidden="true"></i>
+            <span id="team-save-label">Add Person</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -972,6 +1143,7 @@
   <script src="/scripts/portal.js?v=3" defer></script>
   <script src="/scripts/portal-calendar.js?v=3" defer></script>
   <script src="/scripts/portal-articles.js?v=1" defer></script>
-  <script src="/scripts/portal-staff.js?v=1" defer></script>
+  <script src="/scripts/portal-staff.js?v=2" defer></script>
+  <script src="/scripts/portal-team.js?v=1" defer></script>
 </body>
 </html>

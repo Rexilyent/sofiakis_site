@@ -71,13 +71,13 @@
   // ── Show the tab only to superadmins ──────────────────────
   //  Runs on load rather than on tab switch, because the tab has to
   //  appear before anyone can click it.
-  (function revealForSuperadmin() {
-    const role = core().session?.role;
-    if (role === "superadmin" && tabBtn) tabBtn.hidden = false;
-  })();
+  //  The Team tab is visible to everyone; portal-team.js hides the
+  //  write controls for non-superadmins, and the API enforces it.
 
   document.addEventListener("portal:tab", e => {
-    if (e.detail?.tab !== "staff") return;
+    // The Staff tab became the Team tab; accounts and invitations now
+    // live in a collapsed section inside it.
+    if (e.detail?.tab !== "team") return;
     if (!initialised) { initialised = true; wire(); }
     fetchAccounts();
     fetchInvites();
@@ -281,9 +281,6 @@
 
   function renderList() {
     hide(loadingEl);
-    summaryEl.textContent = invites.length
-      ? `${invites.length} invitation${invites.length === 1 ? "" : "s"}`
-      : "No invitations yet.";
 
     listEl.innerHTML = "";
     if (!invites.length) { show(emptyEl); return; }

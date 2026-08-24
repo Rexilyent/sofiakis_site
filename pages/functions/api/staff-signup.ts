@@ -144,6 +144,22 @@ async function handleAccept(request: Request, env: Env): Promise<Response> {
      WHERE invite_id = ? AND accepted_at IS NULL
   `).bind(nowIso, staffId, invite.invite_id).run();
 
+  // Link the new login to their team record, if they have one. Matched
+  // on the INVITED address rather than anything the signer-up typed, so
+  // accepting an invitation cannot attach you to someone else's record.
+  //
+  // Best-effort: the directory is optional, and failing to link must
+  // never cost someone the account they just created.
+  try {
+    await env.CORE_DB.prepare(`
+      UPDATE team_members
+         SET staff_username = ?, updated_at = ?
+       WHERE lower(email) = ? AND staff_username IS NULL
+    `).bind(username, nowIso, invite.email.toLowerCase()).run();
+  } catch (err) {
+    console.error("Could not link team member to new account:", err);
+  }
+
   try {
     await env.CORE_DB.prepare(`
       INSERT INTO staff_access_log

@@ -2112,3 +2112,60 @@ html.a11y-dark .cal-source[data-state="published"] { color: var(--accent); }
 @media (max-width: 720px) {
   .cal-source { margin-left: 0.35rem; font-size: 0.66rem; }
 }
+
+/* ============================================================
+   TEAM DIRECTORY
+   ============================================================ */
+
+.team-head-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.team-status-active     { background: var(--primary-dim); color: var(--primary); }
+.team-status-onboarding { background: var(--accent-dim); color: #8a6d00; }
+.team-status-prospect   { background: rgba(20,85,164,0.12); color: #1455A4; }
+.team-status-former     { background: var(--surface-2); color: var(--muted); }
+html.a11y-dark .team-status-onboarding { color: var(--accent); }
+html.a11y-dark .team-status-prospect   { color: #7aa7e0; }
+
+.team-access-active  { background: var(--primary-dim); color: var(--primary); }
+.team-access-invited { background: var(--accent-dim); color: #8a6d00; }
+.team-access-none    { background: var(--surface-2); color: var(--muted-light); }
+html.a11y-dark .team-access-invited { color: var(--accent); }
+
+/* Portal accounts and invitations sit below the directory, collapsed:
+   they matter far less often than "who works here". */
+.team-details {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.team-details > summary {
+  padding: 0.85rem 1.1rem;
+  font-size: 0.85rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; list-style: none;
+}
+.team-details > summary::-webkit-details-marker { display: none; }
+.team-details > summary::before {
+  content: "\25b8"; display: inline-block; margin-right: 0.5rem;
+  transition: transform 0.15s ease;
+}
+.team-details[open] > summary::before { transform: rotate(90deg); }
+.team-details > summary:hover { color: var(--primary); }
+.team-details > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.team-details-body { padding: 0 1.1rem 1.1rem; border-top: 1px solid var(--border); }
+
+/* These notes are stored unencrypted, so the field says so where it is
+   used rather than only in the migration comments. */
+.team-notes-warning {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  margin-top: 0.4rem; padding: 0.6rem 0.75rem;
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem; line-height: 1.45; color: #7a5f00;
+}
+.team-notes-warning i { margin-top: 0.1rem; }
+html.a11y-dark .team-notes-warning { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .team-details > summary::before { transition: none; }
+}
