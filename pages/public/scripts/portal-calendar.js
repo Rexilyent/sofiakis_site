@@ -84,6 +84,8 @@
   const mapFitBtn     = document.getElementById("cal-map-fit");
   const filterHost    = document.getElementById("cal-filters");
   const upcomingCount = document.getElementById("cal-upcoming-count");
+  const sourceEl      = document.getElementById("cal-source");
+  const sourceTextEl  = document.getElementById("cal-source-text");
 
   // Event form (now inside a modal)
   const calFormOverlay = document.getElementById("cal-form-overlay");
@@ -230,7 +232,10 @@
         if (res.status === 429) {
           const loaded = await loadPublishedEvents(
             "The calendar service is rate limited right now.");
-          if (!loaded && viewCount) viewCount.textContent = "rate limited";
+          if (!loaded) {
+            if (viewCount) viewCount.textContent = "rate limited";
+            setDataSource("error", "Rate limited by the calendar service.");
+          }
           return;
         }
 
@@ -243,6 +248,7 @@
             setMapNote(detail || "Google Calendar is not available, and no published " +
                                  "schedule was found.", true);
             if (viewCount) viewCount.textContent = "unavailable";
+            setDataSource("error", detail);
           }
           return;
         }
@@ -251,6 +257,9 @@
 
       const data = await res.json();
       fetchedKeys.add(key);
+
+      // Reached the Google API successfully.
+      if (!readOnlyMode) setDataSource("live");
 
       for (const ev of (data.events || [])) {
         if (!ev.start) continue;
@@ -313,6 +322,34 @@
   }
 
 
+
+  // ============================================================
+  //  DATA SOURCE INDICATOR
+  // ============================================================
+  //
+  //  A populated calendar does not tell you WHERE the events came
+  //  from. Live Google data and the offline events.json copy look
+  //  identical once rendered, so a silent fallback could sit there for
+  //  weeks while everyone assumed the integration was fine — and any
+  //  event created elsewhere would simply never appear.
+  //
+  //  Shown in every state, not only on failure.
+
+  const SOURCE_STATES = {
+    checking:  { text: "Checking…",          title: "Contacting Google Calendar" },
+    live:      { text: "Google Calendar",     title: "Live data from the Google Calendar API" },
+    published: { text: "Published schedule",  title: "Offline copy from events.json — " +
+                                                     "the Google Calendar API is unavailable" },
+    error:     { text: "Unavailable",         title: "No events could be loaded" }
+  };
+
+  function setDataSource(state, detail) {
+    if (!sourceEl) return;
+    const meta = SOURCE_STATES[state] || SOURCE_STATES.error;
+    sourceEl.dataset.state = state;
+    if (sourceTextEl) sourceTextEl.textContent = meta.text;
+    sourceEl.title = detail ? `${meta.title}. ${detail}` : meta.title;
+  }
   // ============================================================
   //  PUBLISHED-SCHEDULE FALLBACK
   // ============================================================
@@ -384,6 +421,7 @@
       applyEvents();
       renderUpcoming();
       showReadOnlyNotice(reason);
+      setDataSource("published", reason);
       return true;
 
     } catch {

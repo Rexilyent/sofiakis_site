@@ -689,6 +689,13 @@
               <div class="cal-card-header">
                 <i class="fas fa-calendar-days" aria-hidden="true"></i>
                 <h2 class="cal-card-title">Calendar</h2>
+                <!-- Which source the events actually came from. Shown always,
+                     not just on failure: "it looks populated" is not the same
+                     as "the Google connection works". -->
+                <span class="cal-source" id="cal-source" data-state="checking">
+                  <span class="cal-source-dot" aria-hidden="true"></span>
+                  <span id="cal-source-text">Checking…</span>
+                </span>
                 <span class="cal-card-count" id="cal-view-count"></span>
                 <button class="cal-refresh-btn" id="cal-calendar-refresh" aria-label="Refresh calendar">
                   <i class="fas fa-rotate-right" aria-hidden="true"></i>
