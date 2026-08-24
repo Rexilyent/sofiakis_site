@@ -67,6 +67,7 @@
   let activeCats     = new Set(["ALL"]);
   let geocodeQueued  = false;
   let upcomingEvents = [];   // raw sidebar list, before category filtering
+  let readOnlyMode   = false; // showing published events, Google unavailable
   let modalEvent     = null;
 
   const core = () => window.PortalCore || {};
@@ -223,9 +224,26 @@
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+
+        // Google rate limiting is exactly what events.json exists to
+        // avoid, so use it here too rather than showing nothing.
+        if (res.status === 429) {
+          const loaded = await loadPublishedEvents(
+            "The calendar service is rate limited right now.");
+          if (!loaded && viewCount) viewCount.textContent = "rate limited";
+          return;
+        }
+
         if (res.status === 503) {
-          setMapNote("Google Calendar is not configured yet, so there are no events to show.", true);
-          if (viewCount) viewCount.textContent = "not configured";
+          // Fall back to the published schedule rather than showing an
+          // empty calendar next to a file that already has the events.
+          const detail = data.error || "";
+          const loaded = await loadPublishedEvents(detail);
+          if (!loaded) {
+            setMapNote(detail || "Google Calendar is not available, and no published " +
+                                 "schedule was found.", true);
+            if (viewCount) viewCount.textContent = "unavailable";
+          }
           return;
         }
         throw new Error(data.error || `Server returned ${res.status}`);
@@ -294,6 +312,100 @@
     renderMarkers();
   }
 
+
+  // ============================================================
+  //  PUBLISHED-SCHEDULE FALLBACK
+  // ============================================================
+  //
+  //  The site already ships /data/events.json, built from the ICS feed
+  //  by backend/tools/build_events.py, precisely so the public Events
+  //  page does not hammer the Google Calendar API. When the API is
+  //  unavailable here — unconfigured, misconfigured, or rate limited —
+  //  showing nothing wastes a perfectly good copy of the schedule.
+  //
+  //  It is READ-ONLY: creating an event still needs the API, so that is
+  //  disabled and said so, rather than failing on submit.
+  //
+  //  These entries already carry geocoded coords, so the map works
+  //  without any Nominatim lookups at all.
+
+  const PUBLISHED_EVENTS_URL = "/data/events.json";
+
+  async function loadPublishedEvents(reason) {
+    try {
+      const res = await fetch(PUBLISHED_EVENTS_URL);
+      if (!res.ok) return false;
+      const raw = await res.json();
+      if (!Array.isArray(raw) || !raw.length) return false;
+
+      readOnlyMode = true;
+
+      // Seed coords straight into the geocode cache so renderMarkers
+      // finds them without a lookup.
+      try {
+        const cache = loadCache();
+        let changed = false;
+        for (const e of raw) {
+          if (e.location && e.coords && typeof e.coords.lat === "number") {
+            if (!Object.prototype.hasOwnProperty.call(cache, e.location)) {
+              cache[e.location] = { lat: e.coords.lat, lon: e.coords.lon };
+              changed = true;
+            }
+          }
+        }
+        if (changed) saveCache(cache);
+      } catch { /* cache is an optimisation, not a requirement */ }
+
+      eventsById.clear();
+      raw.forEach((e, i) => {
+        if (!e.start) return;
+        // build_events.py puts the category in its own field rather than
+        // a [BRACKET] prefix, so map it across to the shared shape.
+        const cat = normalizeCat(e.category || "");
+        eventsById.set(`published-${i}`, {
+          id: `published-${i}`,
+          title: e.title || "(Untitled)",
+          cleanTitle: e.title || "(Untitled)",
+          category: cat,
+          start: e.start,
+          end: e.end || null,
+          all_day: !String(e.start).includes("T"),
+          location: e.location || null,
+          description: e.description || null,
+          html_link: e.url || null
+        });
+      });
+
+      upcomingEvents = Array.from(eventsById.values())
+        .filter(e => new Date(e.start) >= new Date())
+        .sort((a, b) => String(a.start).localeCompare(String(b.start)))
+        .slice(0, 20);
+
+      applyEvents();
+      renderUpcoming();
+      showReadOnlyNotice(reason);
+      return true;
+
+    } catch {
+      return false;
+    }
+  }
+
+  function showReadOnlyNotice(reason) {
+    if (calNewBtn) {
+      calNewBtn.disabled = true;
+      calNewBtn.title = "Event creation needs the Google Calendar API";
+    }
+    if (calEventsEmpty) calEventsEmpty.hidden = true;
+    if (calEventsError) {
+      calEventsErrorMsg.textContent =
+        "Showing the published schedule from the site’s events file. " +
+        (reason ? reason + " " : "") +
+        "Events cannot be created here until the Google Calendar connection works.";
+      calEventsError.hidden = false;
+    }
+    if (viewCount) viewCount.textContent = "published schedule";
+  }
   // ============================================================
   //  FILTER PILLS
   // ============================================================
@@ -727,6 +839,14 @@
 
   async function handleCreateEvent() {
     clearCalBanners();
+
+    if (readOnlyMode) {
+      showCalError(
+        "The calendar is showing the published schedule because the Google " +
+        "Calendar connection is unavailable. Events can’t be created until " +
+        "that is working.");
+      return;
+    }
     const esc = core().esc || (s => String(s ?? ""));
 
     const category = calCategory ? calCategory.value : "";
@@ -884,9 +1004,16 @@
 
       if (!res.ok) {
         if (res.status === 503) {
-          calEventsEmpty.hidden = false;
-          calEventsEmpty.textContent =
-            "Google Calendar is not configured yet. Add the required environment variables to enable this feature.";
+          // loadRange handles the fallback; if it already succeeded the
+          // list is populated, so don’t overwrite it with an error.
+          if (!readOnlyMode) {
+            const loaded = await loadPublishedEvents(data.error || "");
+            if (!loaded) {
+              calEventsEmpty.hidden = false;
+              calEventsEmpty.textContent = data.error ||
+                "Google Calendar is not available and no published schedule was found.";
+            }
+          }
         } else {
           calEventsErrorMsg.textContent = data.error || `Failed to load events (${res.status}).`;
           calEventsError.hidden = false;
