@@ -85,6 +85,56 @@ export async function onRequestGet(context: {
 }
 
 // ============================================================
+//  CONFIGURATION CHECK
+// ============================================================
+
+/**
+ * The list and create paths need the same three variables. They each
+ * carried their own copy of this check, which had already drifted --
+ * one told you to edit .dev.vars, the other environment variables --
+ * so improving one left the other stale. That is exactly the copy the
+ * portal was hitting.
+ *
+ * Returns a Response to send, or null when configuration is fine.
+ */
+function checkCalendarConfig(env: Env): Response | null {
+  // Name the variables that are ACTUALLY missing. Listing all three
+  // regardless is unhelpful when you believe you set them: the usual
+  // cause is one typo, or a Pages deployment predating the variable.
+  const missingVars = [
+    ["GOOGLE_SERVICE_ACCOUNT_EMAIL",       env.GOOGLE_SERVICE_ACCOUNT_EMAIL],
+    ["GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY],
+    ["GOOGLE_CALENDAR_ID",                 env.GOOGLE_CALENDAR_ID]
+  ].filter(([, value]) => !value).map(([name]) => name);
+
+  if (missingVars.length) {
+    console.warn("admin-calendar: missing env vars:", missingVars.join(", "));
+    return jsonError(
+      `Google Calendar is not configured \u2014 missing: ${missingVars.join(", ")}. ` +
+      "If you have set these in Cloudflare, redeploy: Pages applies environment " +
+      "variables only to deployments created after they were added.",
+      503,
+      { missing: missingVars }
+    );
+  }
+
+  // A key that survived copy-paste but lost its newlines is the other
+  // common failure, and it surfaces later as an opaque signing error.
+  const pk = env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY!;
+  if (!pk.includes("BEGIN") || !(pk.includes("\n") || pk.includes("\\n"))) {
+    console.warn("admin-calendar: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY looks malformed");
+    return jsonError(
+      "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY does not look like a PEM key. It must " +
+      "include the BEGIN/END lines and its newlines (literal, or escaped as \\n).",
+      503,
+      { missing: ["GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY"] }
+    );
+  }
+
+  return null;
+}
+
+// ============================================================
 //  HELPERS
 // ============================================================
 
@@ -111,15 +161,8 @@ async function handleCreateEvent(request: Request, env: Env): Promise<Response> 
   const session = await resolveSession(request, env.CORE_DB);
   if (!session)  return jsonError("Unauthorized", 401);
 
-  if (!env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
-      !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY ||
-      !env.GOOGLE_CALENDAR_ID) {
-    return jsonError(
-      "Google Calendar is not configured. Add GOOGLE_SERVICE_ACCOUNT_EMAIL, " +
-      "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, and GOOGLE_CALENDAR_ID to your environment variables.",
-      503
-    );
-  }
+  const configError = checkCalendarConfig(env);
+  if (configError) return configError;
 
   interface EventBody {
     title?:       string;
@@ -247,15 +290,8 @@ async function handleListEvents(request: Request, env: Env): Promise<Response> {
   const session = await resolveSession(request, env.CORE_DB);
   if (!session)  return jsonError("Unauthorized", 401);
 
-  if (!env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
-      !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY ||
-      !env.GOOGLE_CALENDAR_ID) {
-    return jsonError(
-      "Google Calendar is not configured. Add GOOGLE_SERVICE_ACCOUNT_EMAIL, " +
-      "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, and GOOGLE_CALENDAR_ID to your .dev.vars file.",
-      503
-    );
-  }
+  const configError = checkCalendarConfig(env);
+  if (configError) return configError;
 
   let accessToken: string;
   try {
@@ -513,6 +549,10 @@ function secureJsonResponse(data: unknown, status = 200): Response {
   });
 }
 
-function jsonError(message: string, status = 400): Response {
-  return secureJsonResponse({ error: message }, status);
+function jsonError(
+  message: string,
+  status = 400,
+  extra?: Record<string, unknown>
+): Response {
+  return secureJsonResponse({ error: message, ...(extra || {}) }, status);
 }
