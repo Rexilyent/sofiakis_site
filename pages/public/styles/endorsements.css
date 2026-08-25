@@ -397,83 +397,141 @@
 }
 
 /* ---------------------------
-	 Individual cards
-	 auto-fit so two cards center instead of hugging a dead 3rd column
+	 Individual person cards
+
+	 These are white cards sitting on the green section background, so
+	 their colours are deliberately HARD-CODED rather than using
+	 var(--text) / var(--primary). Those variables are reassigned by the
+	 html.a11y-dark theme (--text becomes #e8e8e8, --primary becomes
+	 #4cc97a), which would render near-white text on a white card.
+	 The section background is already hard-coded for the same reason.
 	 --------------------------- */
-.page-endorsements .anti-endorsement-cards {
+.page-endorsements .anti-person-cards {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+	grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
 	justify-content: center;
-	gap: 1.2rem;
+	align-items: stretch;
+	gap: 1.5rem;
 	margin-top: 1.2rem;
-	align-self: start;
 }
 
-.page-endorsements .anti-endorsement-card {
+.page-endorsements .anti-person-card {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	text-align: center;
+	height: 100%;
 
-	gap: 0.8rem;
+	background: #ffffff;
+	border-radius: 14px;
+	overflow: hidden; /* clips the photo to the rounded top corners */
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.page-endorsements .anti-endorsement-icon {
-	width: 200px;
-	height: 200px;
+.page-endorsements .anti-person-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+}
+
+/* ---------------------------
+	 Full-bleed photo across the top of the card
+	 --------------------------- */
+.page-endorsements .anti-person-photo {
+	width: 100%;
+	aspect-ratio: 4 / 3;
 	overflow: hidden;
+	background: #d9d9d9; /* shows if an image 404s, instead of collapsing */
+}
 
+.page-endorsements .anti-person-photo img {
+	width: 100%;
+	height: 100%;
+	display: block;
+
+	object-fit: cover;
+	/* Bias the crop upward so faces stay in frame on a landscape ratio.
+	   Tune per person below if a specific portrait crops badly. */
+	object-position: 50% 25%;
+}
+
+/* Per-person crop hooks — adjust these rather than the shared rule above */
+.page-endorsements .anti-person-photo.chaya-raichik img {
+	object-position: 50% 20%;
+}
+
+.page-endorsements .anti-person-photo.brad-schneider img {
+	object-position: 50% 18%;
+}
+
+/* Older browsers without aspect-ratio support */
+@supports not (aspect-ratio: 4 / 3) {
+	.page-endorsements .anti-person-photo {
+		height: 240px;
+	}
+}
+
+/* ---------------------------
+	 Card body
+	 --------------------------- */
+.page-endorsements .anti-person-body {
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex-direction: column;
+	flex: 1 1 auto;
+
+	padding: 1.25rem 1.35rem 1.5rem;
+	text-align: left;
 }
 
-.page-endorsements .anti-endorsement-icon img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+.page-endorsements .anti-person-card h4 {
+	color: #005a25; /* ~8.2:1 on white */
+	font-size: 1.4rem;
+	font-weight: 800;
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
+	margin: 0;
 }
 
-.page-endorsements .anti-endorsement-card .title-container {
-	font-size: 2rem;
-	font-weight: 600;
-	color: var(--accent);
+.page-endorsements .anti-person-role {
+	color: #4a4a4a;
+	font-size: 0.9rem;
+	font-weight: 700;
+	line-height: 1.4;
+	margin: 0.35rem 0 0.9rem;
 }
 
-.page-endorsements .anti-endorsement-card .title-container h4 {
+.page-endorsements .anti-person-card .description {
+	color: #111111;
+	font-size: 0.95rem;
+	line-height: 1.6;
 	margin: 0;
 }
 
 /* Cross-reference chip linking Schneider back to the AIPAC block */
-.page-endorsements .anti-endorsement-tag {
-	margin: -0.4rem 0 0;
+.page-endorsements .anti-person-tag {
+	margin: 0 0 0.9rem;
 }
 
-.page-endorsements .anti-endorsement-tag a {
+.page-endorsements .anti-person-tag a {
 	display: inline-block;
-	background: rgba(255, 255, 255, 0.15);
-	border: 1px solid rgba(255, 255, 255, 0.35);
+	background: #005a25;
 	border-radius: 999px;
-	padding: 0.2rem 0.7rem;
-	font-size: 0.78rem;
-	font-weight: 600;
-	letter-spacing: 0.04em;
+	padding: 0.25rem 0.75rem;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
 	text-transform: uppercase;
-	color: white;
+	color: #ffffff;
 	text-decoration: none;
 }
 
-.page-endorsements .anti-endorsement-tag a:hover,
-.page-endorsements .anti-endorsement-tag a:focus-visible {
-	background: rgba(255, 255, 255, 0.28);
-	color: var(--accent);
+.page-endorsements .anti-person-tag a:hover,
+.page-endorsements .anti-person-tag a:focus-visible {
+	background: #00792f;
 }
 
-.page-endorsements .anti-endorsement-card .description {
-	font-size: 0.95rem;
-	line-height: 1.6;
-	color: white;
-	margin: 0;
+.page-endorsements .anti-person-tag a:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 2px;
 }
 
 /* ===========================
@@ -498,10 +556,10 @@
     font-size: 1.75rem;
   }
 
-  /* Reduce anti-endorsement icon sizes */
-  .page-endorsements .anti-endorsement-icon {
-    width: 140px;
-    height: 140px;
+  /* Person photos are full-bleed now; give them a slightly taller ratio
+     on narrow screens so faces don't get cropped as tightly. */
+  .page-endorsements .anti-person-photo {
+    aspect-ratio: 5 / 4;
   }
 
 	.page-endorsements .anti-org {
@@ -517,8 +575,8 @@
 		font-size: 1.4rem;
 	}
 
-	.page-endorsements .anti-endorsement-card .title-container {
-		font-size: 1.5rem;
+	.page-endorsements .anti-person-card h4 {
+		font-size: 1.25rem;
 	}
 
   /* Tighten section padding */
