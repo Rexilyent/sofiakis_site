@@ -817,6 +817,25 @@
           <div><strong>Couldn’t save</strong><p id="team-form-error-msg"></p></div>
         </div>
 
+        <!-- Only shown while adding someone new -- see portal-team.js.
+             Prefills name/email/phone from an existing volunteer
+             sign-up instead of re-typing someone already in the
+             system. This is the spot that will point at the contacts
+             system once that migration ships. -->
+        <div class="team-volunteer-pick" id="team-volunteer-pick-row">
+          <button type="button" class="art-btn art-btn-secondary" id="team-pick-volunteer-btn">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i> Select from Volunteers
+          </button>
+          <span class="team-volunteer-picked" id="team-volunteer-picked" hidden>
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            Prefilled from <strong id="team-volunteer-picked-name"></strong>
+            <button type="button" class="team-volunteer-clear" id="team-volunteer-clear-btn"
+                    aria-label="Clear volunteer selection">
+              <i class="fas fa-xmark" aria-hidden="true"></i>
+            </button>
+          </span>
+        </div>
+
         <label class="cal-label" for="team-name">Full name <span class="art-req">*</span></label>
         <input type="text" class="cal-input" id="team-name" maxlength="120"
                placeholder="e.g. Dana Ortiz">
@@ -924,6 +943,47 @@
             <span id="team-save-label">Add Person</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Volunteer picker (used by "Add a team member") ── -->
+  <div class="portal-modal-overlay" id="team-volpick-overlay" hidden role="dialog"
+       aria-modal="true" aria-labelledby="team-volpick-title" tabindex="-1">
+    <div class="portal-modal cal-form-modal">
+      <div class="portal-modal-header">
+        <h2 class="portal-modal-title" id="team-volpick-title">Select from Volunteers</h2>
+        <button class="portal-modal-close" id="team-volpick-close" aria-label="Close">
+          <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="portal-modal-body">
+
+        <p class="art-hint" style="display:block;margin-bottom:0.75rem">
+          Picking someone here fills in their name, email and phone from their
+          volunteer sign-up. Nothing else changes until you save.
+        </p>
+
+        <input type="search" class="cal-input" id="team-volpick-search" autocomplete="off"
+               placeholder="Search the loaded volunteers by name or email…">
+
+        <div class="portal-loading" id="team-volpick-loading" role="status">
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i> Loading volunteers…
+        </div>
+        <div class="cal-banner cal-banner-error" id="team-volpick-error" hidden role="alert">
+          <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+          <span id="team-volpick-error-msg"></span>
+        </div>
+        <div class="portal-empty" id="team-volpick-empty" hidden>
+          <p>No volunteers match.</p>
+        </div>
+
+        <ul class="art-list" id="team-volpick-list" style="margin-top:0.75rem"></ul>
+
+        <button class="art-btn art-btn-ghost" id="team-volpick-more"
+                style="margin-top:0.75rem;width:100%" hidden>
+          Load more volunteers
+        </button>
       </div>
     </div>
   </div>

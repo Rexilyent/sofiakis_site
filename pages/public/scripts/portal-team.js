@@ -51,6 +51,17 @@
   let editingId = null;
   let linkableAccounts = [];
 
+  // ── Volunteer picker state ──────────────────────────────────
+  // The list is cached across modal opens within a session (it's a
+  // client-side convenience, not a source of truth) so re-opening the
+  // picker doesn't re-fetch and re-decrypt the same page needlessly.
+  const VOLUNTEERS_API      = "/api/admin-volunteers";
+  const VOL_PICK_PAGE_SIZE  = 100;
+  let volPickPage     = 1;
+  let volPickLoaded   = [];
+  let volPickHasNext  = true;
+  let volPickSelected = null;
+
   const $ = id => document.getElementById(id);
 
   const summaryEl  = $("team-summary");
@@ -88,6 +99,23 @@
   };
   const linkRow  = $("team-link-row");
   const linkHint = $("team-staff-account-hint");
+
+  // Volunteer picker
+  const volPickRow      = $("team-volunteer-pick-row");
+  const volPickBtn      = $("team-pick-volunteer-btn");
+  const volPickedBadge  = $("team-volunteer-picked");
+  const volPickedName   = $("team-volunteer-picked-name");
+  const volPickClearBtn = $("team-volunteer-clear-btn");
+
+  const volOverlay    = $("team-volpick-overlay");
+  const volCloseBtn   = $("team-volpick-close");
+  const volSearchEl   = $("team-volpick-search");
+  const volLoadingEl  = $("team-volpick-loading");
+  const volErrorEl    = $("team-volpick-error");
+  const volErrorMsgEl = $("team-volpick-error-msg");
+  const volEmptyEl    = $("team-volpick-empty");
+  const volListEl     = $("team-volpick-list");
+  const volMoreBtn    = $("team-volpick-more");
 
   const TEAM_LABEL = {
     field: "Field", comms: "Communications", digital: "Digital",
@@ -142,6 +170,19 @@
         renderList();
       });
     });
+
+    // Volunteer picker
+    volPickBtn?.addEventListener("click", openVolunteerPicker);
+    volPickClearBtn?.addEventListener("click", clearVolunteerSelection);
+    volCloseBtn?.addEventListener("click", closeVolunteerPicker);
+    volOverlay?.addEventListener("click", e => { if (e.target === volOverlay) closeVolunteerPicker(); });
+    document.addEventListener("keydown", e => {
+      // Closes the picker first if both are open, since it sits on
+      // top of the Add modal rather than replacing it.
+      if (e.key === "Escape" && volOverlay && !volOverlay.hidden) closeVolunteerPicker();
+    });
+    volSearchEl?.addEventListener("input", renderVolunteerPicker);
+    volMoreBtn?.addEventListener("click", loadMoreVolunteers);
   }
 
   // ============================================================
@@ -307,6 +348,13 @@
       if (showLink) populateLinkOptions(member);
     }
 
+    // "Select from Volunteers" only makes sense while adding someone
+    // new — editing an existing person's row isn't the place to
+    // re-prefill their name and email from a sign-up form.
+    if (volPickRow) volPickRow.hidden = !!member;
+    volPickSelected = null;
+    if (volPickedBadge) volPickedBadge.hidden = true;
+
     // Removing a record is only offered where it is actually allowed:
     // someone with a live login must lose the login first.
     const removable = !!member && member.portal_access === "none";
@@ -316,6 +364,182 @@
     document.body.style.overflow = "hidden";
     core().trapFocus?.(overlay);
     f.name.focus();
+  }
+
+  // ============================================================
+  //  VOLUNTEER PICKER
+  // ============================================================
+  //
+  //  Prefills the Add form from an existing volunteer sign-up rather
+  //  than re-typing someone who's already in the system. This talks
+  //  to /api/admin-volunteers, the same decrypted-server-side source
+  //  the Volunteers tab uses — search is client-side over whatever
+  //  page(s) are loaded, because volunteer fields are encrypted at
+  //  rest and there is no plaintext search to push down to SQL (see
+  //  the scope note at the top of portal.js).
+  //
+  //  NOTE FOR WHEN THE CONTACTS SPINE SHIPS: this is the one place
+  //  that would need to point at the new source instead — everything
+  //  else here just deals in {name, email, phone}.
+  //
+  //  Every role that can add a team member (team:write) currently
+  //  also has volunteers:read, so this doesn't hide itself based on
+  //  role — if that ever stops being true, the fetch below fails
+  //  closed with a plain error in the picker rather than breaking
+  //  the Add form itself.
+
+  function openVolunteerPicker() {
+    if (!volOverlay) return;
+    volOverlay.hidden = false;
+    document.body.style.overflow = "hidden";
+    core().trapFocus?.(volOverlay);
+    if (volSearchEl) volSearchEl.value = "";
+
+    if (volPickLoaded.length) {
+      renderVolunteerPicker();
+    } else {
+      volPickPage = 1;
+      fetchVolunteerPage();
+    }
+    volSearchEl?.focus();
+  }
+
+  function closeVolunteerPicker() {
+    if (!volOverlay || volOverlay.hidden) return;
+    volOverlay.hidden = true;
+    document.body.style.overflow = "";
+    core().releaseFocus?.(volOverlay);
+    volPickBtn?.focus();
+  }
+
+  async function fetchVolunteerPage() {
+    hide(volErrorEl); hide(volEmptyEl);
+    show(volLoadingEl);
+    if (volMoreBtn) volMoreBtn.hidden = true;
+
+    try {
+      const res = await core().authFetch(
+        `${VOLUNTEERS_API}?page=${volPickPage}&limit=${VOL_PICK_PAGE_SIZE}`);
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || `Server returned ${res.status}`);
+      }
+      const data = await res.json();
+      volPickLoaded = volPickLoaded.concat(data.volunteers || []);
+      volPickHasNext = !!data.pagination?.has_next;
+      hide(volLoadingEl);
+      renderVolunteerPicker();
+    } catch (err) {
+      hide(volLoadingEl);
+      if (/Session expired/.test(err.message)) return;
+      volErrorMsgEl.textContent = err.message || "Couldn't load volunteers.";
+      show(volErrorEl);
+    }
+  }
+
+  function loadMoreVolunteers() {
+    if (!volPickHasNext) return;
+    volPickPage++;
+    fetchVolunteerPage();
+  }
+
+  function renderVolunteerPicker() {
+    const term = (volSearchEl?.value || "").trim().toLowerCase();
+    const rows = term
+      ? volPickLoaded.filter(v =>
+          (v.name  || "").toLowerCase().includes(term) ||
+          (v.email || "").toLowerCase().includes(term))
+      : volPickLoaded;
+
+    volListEl.innerHTML = "";
+
+    if (!rows.length) {
+      emptyMsg(volPickLoaded.length
+        ? "Nobody loaded so far matches that search."
+        : "No volunteer records yet.");
+      show(volEmptyEl);
+    } else {
+      hide(volEmptyEl);
+    }
+
+    for (const v of rows) {
+      const li = document.createElement("li");
+      li.className = "art-item";
+      const meta = [
+        v.email || "No email on file",
+        v.phone || null,
+        v.zip   || null
+      ].filter(Boolean).join(" \u00b7 ");
+
+      li.innerHTML = `
+        <div class="art-item-main">
+          <div class="art-item-head">
+            <span class="art-chip ${v.verified ? "volpick-chip-verified" : "volpick-chip-unverified"}">
+              ${v.verified ? "Verified" : "Unverified"}
+            </span>
+            ${v.interests?.length
+              ? `<span class="art-item-cat">${esc(v.interests.slice(0, 3).join(", "))}</span>`
+              : ""}
+          </div>
+          <h3 class="art-item-title"></h3>
+          <p class="art-item-meta"></p>
+        </div>
+        <div class="art-item-actions">
+          <button class="art-btn art-btn-primary team-volpick-use">Use this person</button>
+        </div>`;
+
+      li.querySelector(".art-item-title").textContent = v.name || "(no name on file)";
+      li.querySelector(".art-item-meta").textContent  = meta;
+      li.querySelector(".team-volpick-use")
+        .addEventListener("click", () => selectVolunteer(v));
+      volListEl.appendChild(li);
+    }
+
+    // "Load more" pages in more records to search across; hidden
+    // while actively filtering since it wouldn't do anything useful
+    // for a search that's already scoped to what's loaded.
+    if (volMoreBtn) volMoreBtn.hidden = !!term || !volPickHasNext;
+  }
+
+  function emptyMsg(text) {
+    const p = volEmptyEl?.querySelector("p");
+    if (p) p.textContent = text;
+  }
+
+  function selectVolunteer(v) {
+    f.name.value  = v.name  || "";
+    f.email.value = v.email || "";
+    f.phone.value = v.phone || "";
+
+    // A light touch of context, editable like any other field —
+    // nothing here is stored anywhere the volunteer didn't already
+    // put it themselves. Only offered if Notes is still empty, so it
+    // never overwrites something staff already typed.
+    if (!f.notes.value.trim() && (v.source_form || v.interests?.length)) {
+      const bits = [];
+      if (v.source_form)      bits.push(`signed up via ${v.source_form}`);
+      if (v.interests?.length) bits.push(`interested in ${v.interests.join(", ")}`);
+      f.notes.value = `Started as a volunteer (${bits.join("; ")}).`;
+    }
+
+    volPickSelected = v;
+    if (volPickedBadge) {
+      volPickedName.textContent = v.name || v.email || "this volunteer";
+      volPickedBadge.hidden = false;
+    }
+
+    closeVolunteerPicker();
+    f.title.focus();
+    core().toast?.(`Prefilled from ${v.name || v.email || "the volunteer record"}.`);
+  }
+
+  function clearVolunteerSelection() {
+    volPickSelected = null;
+    if (volPickedBadge) volPickedBadge.hidden = true;
+    // Deliberately doesn't blank the name/email/phone fields back
+    // out — staff may already have edited them, and re-clearing
+    // would be a surprising thing for a "clear the badge" button to
+    // do. This only detaches the "sourced from a volunteer" label.
   }
 
   /**

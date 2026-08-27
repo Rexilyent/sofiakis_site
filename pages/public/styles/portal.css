@@ -2169,3 +2169,36 @@ html.a11y-dark .team-notes-warning { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .team-details > summary::before { transition: none; }
 }
+
+/* ============================================================
+   "SELECT FROM VOLUNTEERS"  (Add-person modal)
+   ============================================================ */
+
+.team-volunteer-pick {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+.team-volunteer-picked {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.8rem; color: var(--primary);
+  background: var(--primary-dim); border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem 0.35rem 0.7rem;
+}
+.team-volunteer-clear {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  color: inherit; opacity: 0.65; padding: 0.1rem; line-height: 1;
+}
+.team-volunteer-clear:hover { opacity: 1; }
+.team-volunteer-clear:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+@media (max-width: 720px) {
+  .team-volunteer-pick { flex-direction: column; align-items: stretch; }
+}
+
+/* Volunteer picker list -- reuses .art-item/.art-list from the
+   articles and team lists; these two chips are the only thing
+   specific to it. */
+.volpick-chip-verified   { background: var(--primary-dim); color: var(--primary); }
+.volpick-chip-unverified { background: var(--surface-2);   color: var(--muted); }
+
