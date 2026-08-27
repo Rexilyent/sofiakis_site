@@ -867,3 +867,21 @@ html.a11y-dark .page-home .home-join-form input:focus {
 html.a11y-dark .page-home .home-join-form .consent-label {
   color: rgba(200, 220, 210, 0.8);
 }
+
+/* =================================================
+   NIGHTMARE MODE
+   ================================================= */
+
+/* Must include this due to the home page banner image link
+   being loaded within the CSS itself */
+
+html.theme-nightmare .page-home .home-join-banner {
+  position: relative;
+  height: clamp(600px, 40vw, 800px);
+  overflow: hidden;
+
+  background-image: url('/assets/images/nightmare/home-banner.jpg');
+	background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

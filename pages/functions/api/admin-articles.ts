@@ -28,6 +28,8 @@ import {
   readingTime, safeUrl, type Article
 } from "../_lib/article-render";
 
+import { can, forbidden } from "../_lib/roles";
+
 interface Env {
   CORE_DB: D1Database;
 }
@@ -53,6 +55,13 @@ export async function onRequest(context: {
   if (!session) return jsonError("Unauthorized", 401);
 
   const url = new URL(request.url);
+
+  // Reading drafts is broader than editing them; publishing puts text
+  // on the public website, which is a different kind of mistake.
+  const needed = request.method === "GET" ? "articles:read" : "articles:write";
+  if (!can(session.role, needed)) {
+    return forbidden(needed, session.role);
+  }
 
   try {
     switch (request.method) {

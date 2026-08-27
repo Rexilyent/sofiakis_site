@@ -53,6 +53,8 @@
 //
 // ============================================================
 
+import { can, forbidden } from "../_lib/roles";
+
 interface Env {
   CORE_DB?:          D1Database;
   FIELD_ENCRYPT_KEY?: string;
@@ -109,6 +111,13 @@ export async function onRequestGet(context: {
   // ── Route: single record vs. paginated list ──────────────────
   const url    = new URL(request.url);
   const singleId = url.searchParams.get("id");
+
+  // Volunteer records are encrypted PII. Communications and viewer
+  // roles have no business reading them, so this is the gate rather
+  // than "is signed in".
+  if (!can(session.role, "volunteers:read")) {
+    return forbidden("volunteers:read", session.role);
+  }
 
   // Any uncaught throw is returned by the runtime as a plain-text 500,
   // which the portal can only report as "Server returned 500". Schema

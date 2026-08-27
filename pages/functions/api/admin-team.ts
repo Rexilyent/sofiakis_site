@@ -27,6 +27,8 @@
 //
 // ============================================================
 
+import { can, forbidden } from "../_lib/roles";
+
 interface Env {
   CORE_DB: D1Database;
 }
@@ -55,12 +57,17 @@ export async function onRequest(context: {
   if (!session) return jsonError("Unauthorized", 401);
 
   try {
-    // Reading is open to any signed-in staff member.
+    // Knowing who your colleagues are is ordinary information; hiding
+    // it just pushes people to keep private lists.
+    if (!can(session.role, "team:read")) {
+      return forbidden("team:read", session.role);
+    }
     if (request.method === "GET") return await handleList(env, session);
 
-    // Writing is not.
-    if (session.role !== "superadmin") {
-      return jsonError("Only a superadmin can change the team directory.", 403);
+    // Editing the directory drives who gets invited, so it is held
+    // to the same bar as granting access itself.
+    if (!can(session.role, "team:write")) {
+      return forbidden("team:write", session.role);
     }
 
     switch (request.method) {
@@ -153,7 +160,7 @@ async function handleList(env: Env, session: SessionContext): Promise<Response> 
     },
     // The client hides the write controls for non-superadmins; the
     // server enforces it regardless.
-    can_edit: session.role === "superadmin"
+    can_edit: can(session.role, "team:write")
   });
 }
 

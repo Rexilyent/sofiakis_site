@@ -193,7 +193,7 @@
 }
 .page-il10 .il10-body-header { margin-bottom: 1rem; }
 
-.page-il10 .il10-body-header h2{
+.page-il10 .il10-body-header h2 {
   color: var(--primary);
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 800;

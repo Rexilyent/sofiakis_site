@@ -1,0 +1,583 @@
+/* ============================================================
+   NIGHTMARE / HALLOWEEN SKIN
+   ------------------------------------------------------------
+   Site-wide decorative theme, activated by the `theme-nightmare`
+   class that nightmare.js puts on <html>.
+
+   LOAD ORDER: after base.css and after the page stylesheet.
+
+   ------------------------------------------------------------
+   THE :not() GUARD
+   ------------------------------------------------------------
+   Every rule is scoped to:
+
+     html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort)
+
+   This stylesheet loads last, so an unguarded `html.theme-nightmare .x`
+   would out-rank `html.a11y-dark .x` in base.css purely on source order.
+   That is the wrong outcome: a decorative skin must never override a
+   setting someone chose because they need it. High-contrast in
+   particular is a hard accessibility requirement, and comfort mode is a
+   deliberately warm LIGHT theme that this would otherwise stomp.
+
+   So the skin simply does not apply while any of those modes are on.
+   Turning the a11y mode off restores the skin with no further work.
+
+   Selectors are grouped with :is() to keep the guard from being
+   repeated dozens of times.
+
+   ------------------------------------------------------------
+   PALETTE
+   ------------------------------------------------------------
+   Deep purple surfaces with pumpkin-orange accents.
+     text on surface   #f2e9f5 on #4a1e6e   ~10.3:1  (AAA)
+     accent on surface #ff8c1a on #4a1e6e    ~4.8:1  (AA large — headings)
+     text on page bg   #f2e9f5 on #120d16    ~16:1   (AAA)
+   ============================================================ */
+
+/* ============================================================
+   1. PALETTE
+   Reassigning the base custom properties themes everything that
+   uses them. Only hardcoded colours need explicit rules below.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) {
+  --primary:       #4a1e6e;
+  --primary-light: #6a2f96;
+  --accent:        #ff8c1a;
+  --bg:            #120d16;
+  --text:          #f2e9f5;
+  --muted:         #a394ab;
+  --muted-dark:    #c4b6cb;
+  --shadow:        0 8px 20px rgba(0, 0, 0, 0.45);
+
+  /* Skin-local tokens. Not part of the base system — only rules in
+     this file reference them. */
+  --nm-surface:      #1b1220;
+  --nm-surface-high: #251830;
+  --nm-border:       #3a2a48;
+  --nm-border-soft:  rgba(255, 255, 255, 0.12);
+  --nm-pumpkin:      #ff8c1a;
+  --nm-pumpkin-deep: #a84c00;
+  --nm-blood:        #8a1f12;
+  --nm-toxic:        #7fc23a;
+}
+
+/* ============================================================
+   2. GLOBAL SURFACES
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) body {
+  background: #120d16;
+  color: #f2e9f5;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.site-header, .nav-drawer) {
+  background: rgba(18, 10, 26, 0.94);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .site-footer {
+  background: #0c0710;
+  border-top: 1px solid var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.nav-links a, .nav-drawer a) {
+  color: #f2e9f5;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.nav-links a:hover, .nav-links a.active) {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .nav-links a::after {
+  background: var(--nm-pumpkin);
+}
+
+/* Dropdown menus */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.dropdown-menu, .dropdown-content) {
+  background: var(--nm-surface-high);
+  border: 1px solid var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.dropdown-menu a:hover, .dropdown-content a:hover) {
+  background: #33204a;
+  color: var(--nm-pumpkin);
+}
+
+/* ============================================================
+   3. CARDS, PANELS AND LIGHT WRAPPERS
+   These hardcode #fff / #fafafa / #f7fbf7 in base.css, issues.css,
+   contact.css, volunteer.css, vote.css and verify-email.css.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(
+  .card,
+  .contact-form-wrapper,
+  .privacy-wrapper,
+  .a11y-wrapper,
+  .volunteer-form-section,
+  .about-body,
+  .issue-card,
+  .issues-intro,
+  .vote-card,
+  .verify-card,
+  .news-card,
+  .article-card,
+  .endorsement-card,
+  .money-tracker-card
+) {
+  background: var(--nm-surface);
+  color: #f2e9f5;
+  border-color: var(--nm-border);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.issue-card, .a11y-gap-card, .policy-section, .a11y-section) {
+  border-color: var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(h1, h2, h3, h4, h5) {
+  color: #f7f0fa;
+}
+
+/* Headings that sit on a primary-coloured band keep the accent */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.hero h1, .hero h2, .section-heading, .anti-endorsement-header h2) {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(a, .link) {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(a:hover, .link:hover) {
+  color: #ffab52;
+}
+
+/* ============================================================
+   4. BUTTONS
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .btn-primary {
+  background: var(--nm-pumpkin);
+  border-color: var(--nm-pumpkin);
+  color: #1a0d00;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .btn-primary:hover {
+  background: #ffa445;
+  border-color: #ffa445;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .btn-outline {
+  border-color: var(--nm-pumpkin);
+  color: var(--nm-pumpkin);
+  background: transparent;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .btn-outline:hover {
+  background: var(--nm-pumpkin);
+  color: #1a0d00;
+}
+
+/* ============================================================
+   5. FORMS
+   Contact, volunteer, verify-email and any future form.
+   Placeholder and validation states included — these are easy to
+   miss and fail badly on a dark surface.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="date"],
+  textarea,
+  select
+) {
+  background: var(--nm-surface-high);
+  color: #f2e9f5;
+  border-color: var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(input, textarea, select)::placeholder {
+  color: #9b8aa6;
+  opacity: 1;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(input, textarea, select):focus {
+  border-color: var(--nm-pumpkin);
+  outline-color: var(--nm-pumpkin);
+  box-shadow: 0 0 0 3px rgba(255, 140, 26, 0.28);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .contact-select-wrapper select {
+  background: var(--nm-surface-high);
+  color: #f2e9f5;
+  border-color: var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .contact-select-caret {
+  color: var(--nm-pumpkin);
+}
+
+/* Native dropdown list — inherits the page otherwise and can render
+   as white-on-white in some browsers. */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) select option {
+  background: var(--nm-surface-high);
+  color: #f2e9f5;
+}
+
+/* Checkboxes and radios */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(label, .field label, .form-label) {
+  color: #e4d8ea;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.field-hint, .form-hint, small) {
+  color: #a394ab;
+}
+
+/* Validation */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(input.invalid, textarea.invalid, select.invalid) {
+  border-color: #ff6b5a;
+  background: #2a1418;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.error-message, .field-error, .form-error) {
+  color: #ff8f80;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.success-message, .form-success) {
+  color: var(--nm-toxic);
+}
+
+/* Volunteer multi-select dropdown */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-volunteer .dropdown-option {
+  background: var(--nm-surface-high);
+  color: #f2e9f5;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-volunteer .dropdown-option:hover {
+  background: #33204a;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-volunteer .dropdown-option.is-selected {
+  background: #3d2555;
+  color: var(--nm-pumpkin);
+}
+
+/* ============================================================
+   6. LEAFLET MAPS  (IL-10 district map + events map)
+
+   Tiles are raster images, so they can only be darkened with a
+   filter. This is applied to the TILE PANE only — markers, popups
+   and the district boundary live in separate panes and would be
+   colour-inverted too if the filter were on .leaflet-container.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-container {
+  background: #0c0710;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(185deg) brightness(0.82) contrast(1.08) saturate(0.65);
+}
+
+/* District boundary glow — was blue */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-pane .leaflet-interactive {
+  filter: drop-shadow(0 0 7px rgba(255, 140, 26, 0.55));
+}
+
+/* Popups */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.leaflet-popup-content-wrapper, .leaflet-popup-tip) {
+  background: rgba(27, 18, 32, 0.94);
+  color: #f2e9f5;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-popup-content-wrapper {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-popup-content :is(a, h3, h4) {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-container a.leaflet-popup-close-button {
+  color: #a394ab;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-container a.leaflet-popup-close-button:hover {
+  color: var(--nm-pumpkin);
+}
+
+/* Zoom / layer controls */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.leaflet-bar a, .leaflet-control-layers) {
+  background: var(--nm-surface-high);
+  color: #f2e9f5;
+  border-color: var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-bar a:hover {
+  background: #33204a;
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-control-attribution {
+  background: rgba(12, 7, 16, 0.85);
+  color: #a394ab;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .leaflet-control-attribution a {
+  color: var(--nm-pumpkin);
+}
+
+/* Event markers and clusters — were #1f4ed8 blue */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .event-marker {
+  background: var(--nm-pumpkin);
+  border-color: #1b1220;
+  box-shadow: 0 0 12px rgba(255, 140, 26, 0.75);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large) {
+  background-color: rgba(255, 140, 26, 0.35);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(
+  .marker-cluster-small div,
+  .marker-cluster-medium div,
+  .marker-cluster-large div
+) {
+  background-color: rgba(168, 76, 0, 0.95);
+  color: #fff3e6;
+}
+
+/* ============================================================
+   7. FULLCALENDAR  (events page)
+
+   FullCalendar v6 is themed through its own custom properties, so
+   setting them on the calendar root covers grid, today shading,
+   list view and event chips in one go.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc {
+  --fc-page-bg-color:            transparent;
+  --fc-border-color:             #3a2a48;
+  --fc-neutral-bg-color:         #251830;
+  --fc-neutral-text-color:       #c4b6cb;
+  --fc-today-bg-color:           rgba(255, 140, 26, 0.14);
+  --fc-highlight-color:          rgba(255, 140, 26, 0.22);
+  --fc-non-business-color:       rgba(255, 255, 255, 0.04);
+
+  --fc-event-bg-color:           #6a2f96;
+  --fc-event-border-color:       #8b45c0;
+  --fc-event-text-color:         #f7f0fa;
+  --fc-event-selected-overlay-color: rgba(255, 140, 26, 0.28);
+
+  --fc-list-event-hover-bg-color: #251830;
+
+  color: #f2e9f5;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc .fc-toolbar-title {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc :is(.fc-col-header-cell-cushion, .fc-daygrid-day-number) {
+  color: #e4d8ea;
+}
+
+/* Days outside the current month */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc .fc-day-other .fc-daygrid-day-number {
+  color: #7c6d85;
+}
+
+/* Toolbar buttons — hardcoded rgba(255,255,255,.65) in events.css */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc .fc-button {
+  background: var(--nm-surface-high);
+  border-color: var(--nm-border);
+  color: #f2e9f5;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc .fc-button:hover {
+  background: #33204a;
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc :is(
+  .fc-button-primary:not(:disabled).fc-button-active,
+  .fc-button-primary:not(:disabled):active
+) {
+  background: var(--nm-pumpkin);
+  border-color: var(--nm-pumpkin);
+  color: #1a0d00;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .fc .fc-button:disabled {
+  background: #1b1220;
+  color: #7c6d85;
+  border-color: var(--nm-border);
+}
+
+/* Subscribe button — hardcoded yellow glass */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .calendar-header .glass-yellow {
+  background: rgba(255, 140, 26, 0.85);
+  border-color: rgba(255, 140, 26, 0.6);
+  color: #1a0d00;
+  box-shadow: 0 10px 24px rgba(255, 140, 26, 0.25), 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Details panel under the calendar */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .events-details {
+  border-top-color: var(--nm-border);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-events .events-content .card .events-details .events-details-header {
+  color: #f2e9f5;
+}
+
+/* ============================================================
+   8. ANTI-ENDORSEMENT PEOPLE CARDS
+   Moved here from endorsements.css so the whole skin lives in one
+   file. Re-tinted from the original warm-brown to match the
+   site-wide purple/pumpkin palette.
+   ============================================================ */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-card {
+  background: #150e1c;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-card:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-card h4 {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-role {
+  color: #a394ab;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-card .description {
+  color: #ede4f2;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-tag a {
+  background: var(--nm-blood);
+  color: #ffe9df;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(
+  .page-endorsements .anti-person-tag a:hover,
+  .page-endorsements .anti-person-tag a:focus-visible
+) {
+  background: #a82a19;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-photo {
+  background: #150e1c;
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-person-photo img {
+  transition: opacity 0.25s ease;
+}
+
+/* Organisation rows and group framing */
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-org {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .anti-endorsements {
+  background: rgba(30, 12, 46, 0.82);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) :is(
+  .page-endorsements .group-intro h3,
+  .page-endorsements .anti-org-body h4,
+  .page-endorsements .anti-org-facts dt,
+  .page-endorsements .group-throughline h4,
+  .page-endorsements .anti-org-more summary
+) {
+  color: var(--nm-pumpkin);
+}
+
+html.theme-nightmare:not(.a11y-dark):not(.a11y-highcontrast):not(.a11y-comfort) .page-endorsements .group-throughline {
+  border-left-color: var(--nm-pumpkin);
+}
+
+/* ============================================================
+   9. ACTIVATION TOAST
+   Not guarded — it must be visible whatever mode is active, since
+   it confirms the toggle actually fired.
+   ============================================================ */
+#nightmare-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  background: #1b1220;
+  color: #ffe9df;
+  border: 1px solid var(--nm-pumpkin, #ff8c1a);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+  animation: nightmare-toast-in 0.3s ease both;
+}
+
+#nightmare-toast[data-leaving] {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes nightmare-toast-in {
+  from { opacity: 0; transform: translate(-50%, 0.75rem); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ============================================================
+   10. REDUCED MOTION
+   Honours the OS setting and the site's own a11y toggle.
+   Nothing in this skin flashes, pulses or cycles colour —
+   photosensitivity is a real risk and horror themes are exactly
+   where it tends to creep in. Keep it that way.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html.theme-nightmare :is(.anti-person-photo img, .anti-person-card, .btn, .card) {
+    transition: none;
+  }
+
+  #nightmare-toast,
+  #nightmare-toast[data-leaving] {
+    animation: none;
+    transition: none;
+  }
+}
+
+html.a11y-reduce-motion :is(.anti-person-photo img, .anti-person-card),
+#nightmare-toast[data-no-motion],
+#nightmare-toast[data-no-motion][data-leaving] {
+  animation: none;
+  transition: none;
+}
+
+/* ============================================================
+   11. PRINT
+   Never print the skin — wastes ink and reads badly.
+   ============================================================ */
+@media print {
+  html.theme-nightmare body {
+    background: #fff;
+    color: #000;
+  }
+
+  #nightmare-toast { display: none !important; }
+}

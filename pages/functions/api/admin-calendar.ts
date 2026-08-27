@@ -57,6 +57,8 @@
 //
 // ============================================================
 
+import { can, forbidden } from "../_lib/roles";
+
 interface Env {
   CORE_DB?:                          D1Database;
   GOOGLE_SERVICE_ACCOUNT_EMAIL?:     string;
@@ -160,6 +162,10 @@ async function handleCreateEvent(request: Request, env: Env): Promise<Response> 
 
   const session = await resolveSession(request, env.CORE_DB);
   if (!session)  return jsonError("Unauthorized", 401);
+
+  if (!can(session.role, "calendar:write")) {
+    return forbidden("calendar:write", session.role);
+  }
 
   const configError = checkCalendarConfig(env);
   if (configError) return configError;
@@ -289,6 +295,10 @@ async function handleListEvents(request: Request, env: Env): Promise<Response> {
 
   const session = await resolveSession(request, env.CORE_DB);
   if (!session)  return jsonError("Unauthorized", 401);
+
+  if (!can(session.role, "calendar:read")) {
+    return forbidden("calendar:read", session.role);
+  }
 
   const configError = checkCalendarConfig(env);
   if (configError) return configError;

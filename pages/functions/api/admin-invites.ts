@@ -26,6 +26,8 @@
 //
 // ============================================================
 
+import { can, forbidden } from "../_lib/roles";
+
 interface Env {
   CORE_DB: D1Database;
   RESEND_API_KEY?: string;
@@ -56,9 +58,9 @@ export async function onRequest(context: {
   // Role gate. Deliberately 403 rather than 404: the caller is a
   // legitimate staff member, and telling them they lack permission is
   // more useful than pretending the endpoint doesn't exist.
-  if (session.role !== "superadmin") {
-    return jsonError(
-      "Only a superadmin can manage staff invitations.", 403);
+  // Granting access is the one action that hands someone else the keys.
+  if (!can(session.role, "staff:manage")) {
+    return forbidden("staff:manage", session.role);
   }
 
   try {
