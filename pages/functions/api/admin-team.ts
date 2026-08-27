@@ -13,9 +13,9 @@
 //  your colleagues are and what they do is ordinary information,
 //  and hiding it would just push people to keep private lists.
 //
-//  Changing it: superadmin only. The directory drives portal
-//  invitations, so write access to it is close to write access to
-//  who can log in.
+//  Changing it: the team:write capability (admin and superadmin
+//  roles). The directory drives portal invitations, so write access
+//  to it is held to a higher bar than most operational data.
 //
 //  ── WHAT THIS DELIBERATELY DOES NOT DO ────────────────────
 //
@@ -24,6 +24,15 @@
 //  invitation through /api/admin-invites, which they must accept
 //  by choosing their own password. Keeping those separate means a
 //  typo in the directory can never hand anyone a login.
+//
+//  The one exception is the staff_username LINK itself: a team:write
+//  caller can point a directory row at an EXISTING staff_accounts
+//  row, or clear that pointer. This is normally set automatically
+//  (matched on email when an invite is accepted) but has no way to
+//  happen if the invite went out directly and no team_members row
+//  existed yet to match against. Linking never creates an account or
+//  grants anything new — the account must already exist — it only
+//  repairs or changes which existing account a row points at.
 //
 // ============================================================
 
@@ -148,6 +157,24 @@ async function handleList(env: Env, session: SessionContext): Promise<Response> 
 
   await logAccess(env, session, "list_team", enriched.length);
 
+  // Accounts nobody has claimed yet, for the "link to a staff account"
+  // control in the edit modal. Only computed for callers who could
+  // actually use it — team:write, same bar as editing anything else
+  // in the directory. Note this is a smaller exposure than it looks:
+  // the username of an ALREADY-linked account is visible to any
+  // team:read caller below (it's part of `enriched`), so this just
+  // extends that to unclaimed ones, for people who can already write.
+  const canWrite = can(session.role, "team:write");
+  let linkableAccounts: { username: string; role: string }[] = [];
+  if (canWrite) {
+    const claimed = new Set(
+      (members ?? []).map((m: any) => m.staff_username).filter(Boolean)
+    );
+    linkableAccounts = (accounts ?? [])
+      .filter((a: any) => !claimed.has(a.username))
+      .map((a: any) => ({ username: a.username, role: a.role }));
+  }
+
   return secureJson({
     members: enriched,
     counts: {
@@ -160,7 +187,9 @@ async function handleList(env: Env, session: SessionContext): Promise<Response> 
     },
     // The client hides the write controls for non-superadmins; the
     // server enforces it regardless.
-    can_edit: can(session.role, "team:write")
+    can_edit: canWrite,
+    // Empty for callers who can't write anyway.
+    linkable_accounts: linkableAccounts
   });
 }
 
@@ -233,20 +262,42 @@ async function handleUpdate(
   if ("error" in parsed) return jsonError(parsed.error, 400);
   const m = parsed.value;
 
-  // staff_username is set by the invitation flow, not edited by hand --
-  // a typo here would silently detach someone from their login.
+  // staff_username is normally set automatically, matched on email
+  // when someone accepts an invitation. This lets it be set or
+  // cleared by hand too, for when an invite went out directly (by
+  // email, or via staff_account.py) and no team_members row existed
+  // yet for the match to attach to. Only touched when the caller
+  // explicitly sends the key, so a request that doesn't know about it
+  // (an older client, a script) can never detach someone from their
+  // login just by omitting a field.
+  let staffUsername = current.staff_username;
+  let linkChanged = false;
+  if (Object.prototype.hasOwnProperty.call(body, "staff_username")) {
+    const link = await resolveStaffUsernameLink(
+      body.staff_username, memberId, current.staff_username, env);
+    if ("error" in link) return jsonError(link.error, link.status ?? 400);
+    staffUsername = link.value;
+    linkChanged = staffUsername !== current.staff_username;
+  }
+
   await env.CORE_DB.prepare(`
     UPDATE team_members
        SET full_name = ?, email = ?, phone = ?, title = ?, team = ?,
            engagement = ?, status = ?, started_at = ?, ended_at = ?,
-           notes = ?, updated_at = ?, updated_by = ?
+           notes = ?, staff_username = ?, updated_at = ?, updated_by = ?
      WHERE member_id = ?
   `).bind(
     m.full_name, m.email, m.phone, m.title, m.team, m.engagement,
-    m.status, m.started_at, m.ended_at, m.notes,
+    m.status, m.started_at, m.ended_at, m.notes, staffUsername,
     new Date().toISOString(), session.username, memberId
   ).run();
 
+  if (linkChanged) {
+    await logAccess(
+      env, session,
+      `link_team_member:${memberId}:${current.staff_username ?? "none"}->${staffUsername ?? "none"}`,
+      1);
+  }
   await logAccess(env, session, `update_team_member:${m.full_name}`, 1);
 
   return secureJson({
@@ -254,9 +305,53 @@ async function handleUpdate(
     member_id: memberId,
     // Marking someone former does NOT revoke their login: that is a
     // separate, deliberate act. Tell the caller so it can prompt.
-    still_has_access: m.status === "former" && !!current.staff_username
-      ? current.staff_username : null
+    // Uses the just-saved value, not the old one — clearing the link
+    // and marking someone former in the same request should not warn
+    // about access that no longer exists.
+    still_has_access: m.status === "former" && !!staffUsername
+      ? staffUsername : null
   });
+}
+
+/**
+ * Validate a requested change to staff_username.
+ *
+ *   "" / not a string  -> clears the link (explicit unlink)
+ *   unchanged           -> passed through WITHOUT re-checking the
+ *                          account still exists, so an already
+ *                          orphaned link (the account behind it was
+ *                          deleted) can be saved untouched by an
+ *                          unrelated edit instead of being rejected
+ *   anything else        -> must name a real staff_accounts row, and
+ *                          that row must not already be claimed by a
+ *                          DIFFERENT team member
+ */
+async function resolveStaffUsernameLink(
+  raw: unknown, memberId: string, previous: string | null, env: Env
+): Promise<{ value: string | null } | { error: string; status?: number }> {
+  const value = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+
+  if (!value) return { value: null };
+  if (value === previous) return { value };
+
+  const account = await env.CORE_DB
+    .prepare(`SELECT username FROM staff_accounts WHERE username = ?`)
+    .bind(value).first<{ username: string }>();
+  if (!account) {
+    return { error: `No staff account called "${value}" exists.` };
+  }
+
+  const claimedBy = await env.CORE_DB
+    .prepare(`SELECT full_name FROM team_members WHERE staff_username = ? AND member_id != ?`)
+    .bind(value, memberId).first<{ full_name: string }>();
+  if (claimedBy) {
+    return {
+      error: `"${value}" is already linked to ${claimedBy.full_name}. Unlink them first.`,
+      status: 409
+    };
+  }
+
+  return { value };
 }
 
 // ============================================================

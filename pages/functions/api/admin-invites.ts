@@ -239,7 +239,7 @@ async function handleCreate(
   if (!body) return jsonError("Invalid JSON body", 400);
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  const role  = typeof body.role === "string" ? body.role : "admin";
+  const role  = typeof body.role === "string" ? body.role : "viewer";
 
   if (!isPlausibleEmail(email)) {
     return jsonError("Enter a valid email address.", 400);

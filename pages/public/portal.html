@@ -875,6 +875,23 @@
           </div>
         </div>
 
+        <!-- Only shown when editing an existing person, and only to
+             callers with team:write -- the API enforces that anyway,
+             but there's nothing useful to link for someone not yet
+             created, and this row is populated from data the server
+             only sends to writers. -->
+        <div class="cal-form-row" id="team-link-row" hidden>
+          <div>
+            <label class="cal-label" for="team-staff-account">
+              Linked staff account <span class="art-hint">who this record's portal access belongs to</span>
+            </label>
+            <select class="cal-input" id="team-staff-account">
+              <option value="">— No linked account —</option>
+            </select>
+            <p class="art-hint" id="team-staff-account-hint"></p>
+          </div>
+        </div>
+
         <div class="cal-form-row">
           <div>
             <label class="cal-label" for="team-started">Start date</label>

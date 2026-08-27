@@ -20,9 +20,20 @@
 //  choosing their own password — adding someone here creates a
 //  record and nothing else.
 //
-//  Editing is superadmin-only. The controls are hidden for anyone
-//  else as a courtesy; the API enforces it with a 403 regardless of
-//  what the browser believes.
+//  Editing requires the team:write capability (admin and superadmin
+//  roles). The controls are hidden for anyone else as a courtesy; the
+//  API enforces it with a 403 regardless of what the browser believes.
+//
+//  ── LINKING A STAFF ACCOUNT ────────────────────────────────
+//
+//  Accepting an invitation normally attaches the new account to a
+//  team_members row automatically, matched on email. That has
+//  nothing to match against if the row didn't exist yet — e.g. an
+//  invite sent directly rather than through "Invite to Portal" here.
+//  The "Linked staff account" field in the edit modal is the manual
+//  fallback: pick an existing, unclaimed account, or clear a stale
+//  one. It never creates an account — only /api/admin-invites (a
+//  separate, superadmin-only capability) can do that.
 //
 // ============================================================
 
@@ -38,6 +49,7 @@
   let statusFilter = "";
   let accessFilter = "";
   let editingId = null;
+  let linkableAccounts = [];
 
   const $ = id => document.getElementById(id);
 
@@ -71,8 +83,11 @@
     started:    $("team-started"),
     ended:      $("team-ended"),
     notes:      $("team-notes"),
-    endedHint:  $("team-ended-hint")
+    endedHint:  $("team-ended-hint"),
+    staffAccount: $("team-staff-account")
   };
+  const linkRow  = $("team-link-row");
+  const linkHint = $("team-staff-account-hint");
 
   const TEAM_LABEL = {
     field: "Field", comms: "Communications", digital: "Digital",
@@ -146,6 +161,7 @@
       const data = await res.json();
       members = data.members || [];
       canEdit = !!data.can_edit;
+      linkableAccounts = data.linkable_accounts || [];
 
       // Hide the write controls for people who can't use them, rather
       // than showing buttons that will 403.
@@ -283,6 +299,14 @@
       f.endedHint.textContent = f.status.value === "former" ? "required" : "";
     }
 
+    // Only meaningful for an existing row, and only populated from
+    // data the server sends to team:write callers in the first place.
+    if (linkRow) {
+      const showLink = canEdit && !!member;
+      linkRow.hidden = !showLink;
+      if (showLink) populateLinkOptions(member);
+    }
+
     // Removing a record is only offered where it is actually allowed:
     // someone with a live login must lose the login first.
     const removable = !!member && member.portal_access === "none";
@@ -292,6 +316,47 @@
     document.body.style.overflow = "hidden";
     core().trapFocus?.(overlay);
     f.name.focus();
+  }
+
+  /**
+   * Build the "Linked staff account" options: the member's own
+   * current link first (even if orphaned, so leaving it untouched on
+   * save doesn't read as a different choice), then every account
+   * nobody else has claimed.
+   */
+  function populateLinkOptions(member) {
+    if (!f.staffAccount) return;
+    f.staffAccount.innerHTML = '<option value="">\u2014 No linked account \u2014</option>';
+
+    const seen = new Set();
+    const addOption = (username, label) => {
+      if (!username || seen.has(username)) return;
+      seen.add(username);
+      const opt = document.createElement("option");
+      opt.value = username;
+      opt.textContent = label;
+      f.staffAccount.appendChild(opt);
+    };
+
+    if (member?.staff_username) {
+      addOption(member.staff_username, member.orphaned_link
+        ? `${member.staff_username} (account removed)`
+        : `${member.staff_username}${member.portal_role ? ` \u2014 ${member.portal_role}` : ""}`);
+    }
+    for (const acct of linkableAccounts) {
+      addOption(acct.username, `${acct.username} \u2014 ${acct.role}`);
+    }
+
+    f.staffAccount.value = member?.staff_username || "";
+
+    if (linkHint) {
+      linkHint.textContent = member?.orphaned_link
+        ? "This login no longer exists. Pick a current account, or choose " +
+          "\u201cNo linked account\u201d to clear it."
+        : (!linkableAccounts.length && !member?.staff_username
+            ? "No unclaimed staff accounts to link \u2014 invite them first."
+            : "");
+    }
   }
 
   function closeModal() {
@@ -329,7 +394,16 @@
       ended_at:   f.ended.value || null,
       notes:      f.notes.value.trim()
     };
-    if (editingId) payload.member_id = editingId;
+    if (editingId) {
+      payload.member_id = editingId;
+      // Only sent when editing, and only when the row is actually
+      // shown -- omitting the key entirely leaves an existing link
+      // untouched server-side, which matters if this ever gets
+      // called from a path that doesn't render the link control.
+      if (linkRow && !linkRow.hidden && f.staffAccount) {
+        payload.staff_username = f.staffAccount.value;
+      }
+    }
 
     saveBtn.disabled = true;
     try {
