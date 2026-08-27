@@ -144,6 +144,23 @@
   });
 
   function wire() {
+    // Startup assertion: catches a partial deploy (JS shipped, HTML
+    // didn't, or vice versa) the moment the tab loads rather than
+    // waiting for someone to click the one button that's affected.
+    const REQUIRED_VOLPICK_IDS = [
+      "team-volunteer-pick-row", "team-pick-volunteer-btn",
+      "team-volpick-overlay", "team-volpick-close", "team-volpick-search",
+      "team-volpick-loading", "team-volpick-error", "team-volpick-error-msg",
+      "team-volpick-empty", "team-volpick-list", "team-volpick-more"
+    ];
+    const missing = REQUIRED_VOLPICK_IDS.filter(id => !$(id));
+    if (missing.length) {
+      console.error(
+        `[portal-team] Volunteer-picker markup is missing from this page: ${missing.join(", ")}. ` +
+        "\"Select from Volunteers\" will show an error instead of opening until portal.html is redeployed."
+      );
+    }
+
     addBtn?.addEventListener("click", () => openModal(null));
     closeBtn?.addEventListener("click", closeModal);
     overlay?.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
@@ -389,7 +406,20 @@
   //  the Add form itself.
 
   function openVolunteerPicker() {
-    if (!volOverlay) return;
+    if (!volOverlay) {
+      // Silent no-ops are the worst kind of bug to chase -- say
+      // exactly what's missing instead of just doing nothing.
+      console.error(
+        "[portal-team] #team-volpick-overlay is missing from the DOM. " +
+        "The volunteer-picker markup didn't deploy with this page -- " +
+        "check portal.html for the block between #team-modal-overlay " +
+        "and the invite modal."
+      );
+      core().toast?.(
+        "Couldn't open the volunteer picker \u2014 its markup isn't on this " +
+        "page. Check the browser console for details.", "error", 8000);
+      return;
+    }
     volOverlay.hidden = false;
     document.body.style.overflow = "hidden";
     core().trapFocus?.(volOverlay);
