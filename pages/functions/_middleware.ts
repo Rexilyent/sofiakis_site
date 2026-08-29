@@ -7,6 +7,21 @@ export async function onRequest(context: {
 
   const url = new URL(request.url);
 
+	// Canonical host enforcement
+	//
+	// Pages serves this project on *.pages.dev as well as the custom
+	// domain. Zone-level proections (WAF rules, Access, Bot Fight Mode)
+	// do not apply to *.pages.dev, so that hostname is a second, less
+	// defended copy of the portal. Redirect it to the canonical origin
+	// rather than serving from it.
+	const PAGES_DEV_HOST = "sofiakissite.pages.dev"
+
+	if (url.hostname === PAGES_DEV_HOST) {
+		url.hostname = "alexandriasofiakis.com";
+		url.protocol = "https:";
+		return Response.redirect(url.toString(), 301);
+	}
+
   // Only protect API routes
   if (!url.pathname.startsWith("/api/")) {
     return next();
