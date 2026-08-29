@@ -2,63 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Events for Alexandria Sofiakis for Illinois' 10th Congressional District">
-    <meta name="author" content="Alexandria Sofiakis">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Events for Alexandria Sofiakis for Illinois' 10th Congressional District"/>
+    <meta name="author" content="Alexandria Sofiakis"/>
     <title>Events | Alexandria Sofiakis for IL-10</title>
-		<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon"/>
 
 		<!-- SEO Tags -->
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Alexandria Sofiakis for IL-10" />
-		<meta property="og:description" content="Stay updated with the latest events and appearances for Alexandria Sofiakis. Use the filters to find what matters most to you." />
-		<meta property="og:url" content="https://alexandriasofiakis.com/events">
-		<meta property="og:image" content="https://alexandriasofiakis.com/assets/images/og-home.jpg" />
-		<meta property="og:site_name" content="Alexandria Sofiakis for IL-10" />
+		<meta property="og:type" content="website"/>
+		<meta property="og:title" content="Alexandria Sofiakis for IL-10"/>
+		<meta property="og:description" content="Stay updated with the latest events and appearances for Alexandria Sofiakis. Use the filters to find what matters most to you."/>
+		<meta property="og:url" content="https://alexandriasofiakis.com/events"/>
+		<meta property="og:image" content="https://alexandriasofiakis.com/assets/images/og-home.jpg"/>
+		<meta property="og:site_name" content="Alexandria Sofiakis for IL-10"/>
 
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content="Alexandria Sofiakis for IL-10" />
-		<meta name="twitter:description" content="Stay updated with the latest events and appearances for Alexandria Sofiakis. Use the filters to find what matters most to you." />
-		<meta name="twitter:image" content="https://alexandriasofiakis.com/assets/images/og-home.jpg" />
-		<meta name="twitter:site" content="@SofiakisGreen" />
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:title" content="Alexandria Sofiakis for IL-10"/>
+		<meta name="twitter:description" content="Stay updated with the latest events and appearances for Alexandria Sofiakis. Use the filters to find what matters most to you."/>
+		<meta name="twitter:image" content="https://alexandriasofiakis.com/assets/images/og-home.jpg"/>
+		<meta name="twitter:site" content="@SofiakisGreen"/>
 
 		<!-- Canonical URL -->
-		<link rel="canonical" href="https://alexandriasofiakis.com/events">
+		<link rel="canonical" href="https://alexandriasofiakis.com/events"/>
 
     <!-- Font Styles -->
     <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+			integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
 
     <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+      integrity=""
+      crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
 
 		<!-- Leaflet CSS -->
-		<link rel="stylesheet"
-  					href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  	<link rel="stylesheet" 
+    	href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    	integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    	crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
 
 		<!-- MarkerCluster CSS -->
 		<link rel="stylesheet"
-  					href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  		href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+			integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
+			
 		<link rel="stylesheet"
-  					href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  		href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+			integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
 
 		<!-- FullCalendar CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+    <link rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+		  integrity=""
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"/>
 
-    <link rel="stylesheet" href="/styles/base.css">
-		<link rel="stylesheet" href="/styles/events.css">
+    <link rel="stylesheet" href="/styles/base.css"/>
+		<link rel="stylesheet" href="/styles/events.css"/>
 		<!-- Nightmare Mode Styles -->
 		<link rel="stylesheet" href="/styles/nightmare.css">
 
 		<!-- Leaflet JS -->
-		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  	<script
+    	src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    	integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    	crossorigin="anonymous">
+  </script>
 
 		<!-- MarkerCluster JS -->
-		<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
+		<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+		  defer
+			integrity="sha256-Hk4dIpcqOSb0hZjgyvFOP+cEmDXUKKNE/tT542ZbNQg="
+			crossorigin="anonymous">
+		</script>
 
 		<!-- FullCalendar JS -->
-		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
+		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" 
+		  defer
+			integrity=""
+			crossorigin="anonymous">
+		</script>
 
 		<!-- Base Scripts -->
 		<script src="/scripts/base.js" defer></script>
