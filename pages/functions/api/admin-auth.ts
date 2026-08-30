@@ -174,38 +174,42 @@ async function handleLogin(request: Request, env: Env): Promise<Response> {
       locked_until: string | null;
     } | null;
 
-  // ── 2. Brute-force lockout check ──────────────────────────
-  //    (Run even when account is null to avoid username enumeration
-  //     via timing differences — we'll also do a dummy verify below.)
+    // ── 2. Resolve lock state (but don't act on it yet) ───────
+  //    Previously this returned 429 "Account temporarily locked"
+  //    immediately, before any password check. Six bad guesses
+  //    against a REAL username produced that distinctive 429, while
+  //    six against a nonexistent one kept returning 401 forever --
+  //    a clean enumeration oracle, and a denial-of-service primitive
+  //    against any named staff member (five bad guesses locks them
+  //    out; repeat on a loop and they're locked out indefinitely).
+  //
+  //    The fix: compute whether the account is locked, but don't
+  //    reveal it until AFTER the password has been verified below.
+  //    Only someone who actually knows the password ever sees the
+  //    lockout message -- that's not an oracle, it's just telling
+  //    the legitimate owner why they can't log in.
+  let isLocked = false;
   if (account?.locked_until) {
     const lockedUntil = new Date(account.locked_until);
     if (now < lockedUntil) {
-      const retryAfterSecs = Math.ceil((lockedUntil.getTime() - now.getTime()) / 1000);
-      return new Response(
-        JSON.stringify({ error: "Account temporarily locked. Too many failed attempts." }),
-        {
-          status: 429,
-          headers: {
-            "Content-Type": "application/json",
-            "Retry-After": retryAfterSecs.toString()
-          }
-        }
-      );
+      isLocked = true;
+    } else {
+      // Lock window expired — reset counters so this attempt is
+      // evaluated fresh.
+      await env.CORE_DB
+        .prepare(`UPDATE staff_accounts
+                  SET failed_attempts = 0, locked_until = NULL
+                  WHERE staff_id = ?`)
+        .bind(account.staff_id)
+        .run();
+      account.failed_attempts = 0;
+      account.locked_until    = null;
     }
-    // Lock window expired — reset counters
-    await env.CORE_DB
-      .prepare(`UPDATE staff_accounts
-                SET failed_attempts = 0, locked_until = NULL
-                WHERE staff_id = ?`)
-      .bind(account.staff_id)
-      .run();
-    account.failed_attempts = 0;
-    account.locked_until    = null;
   }
 
   // ── 3. Password verification ──────────────────────────────
-  //    Always run a verify (even for unknown accounts) so response
-  //    timing doesn't leak whether the username exists.
+  //    Always run a verify (even for unknown accounts, even for
+  //    locked ones) so response timing doesn't leak account state.
   //    The dummy MUST use the same iteration count as real hashes:
   //    a different count would both leak the difference through timing
   //    (defeating the point) and, above the platform cap, throw for
@@ -217,8 +221,11 @@ async function handleLogin(request: Request, env: Env): Promise<Response> {
   const passwordOk = await verifyPassword(password, storedHash);
 
   if (!account || !passwordOk) {
-    // Increment failure counter on real accounts
-    if (account) {
+    // Wrong password, unknown username, and a wrong password against
+    // an already-locked account all return the exact same response.
+    // Skip bumping the counter for an account that's already locked
+    // -- it changes nothing and is just an extra write.
+    if (account && !isLocked) {
       const newCount = (account.failed_attempts ?? 0) + 1;
       const lockUntil = newCount >= maxAttempts
         ? new Date(now.getTime() + lockoutMins * 60 * 1000).toISOString()
@@ -231,6 +238,25 @@ async function handleLogin(request: Request, env: Env): Promise<Response> {
         .run();
     }
     return jsonError("Invalid username or password", 401);
+  }
+
+  // The password was correct. This branch is unreachable without
+  // already knowing the credential, so revealing lock state here
+  // discloses nothing to a guesser -- it's just telling the account
+  // owner why they still can't get in.
+  if (isLocked) {
+    const lockedUntil = new Date(account.locked_until!);
+    const retryAfterSecs = Math.ceil((lockedUntil.getTime() - now.getTime()) / 1000);
+    return new Response(
+      JSON.stringify({ error: "Account temporarily locked. Too many failed attempts." }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": retryAfterSecs.toString()
+        }
+      }
+    );
   }
 
   // ── 4. Reset failure counter on success ───────────────────
