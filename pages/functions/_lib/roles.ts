@@ -38,6 +38,14 @@ export type Capability =
   | "volunteers:read"      // view the list and individual records
   | "volunteers:export"    // download CSV — data leaves the portal
   | "volunteers:write"     // add or amend a record (e.g. signed up at a door)
+  // Removal is split in two because the two acts carry different risk.
+  // A soft delete stamps deleted_at and is reversible by anyone who can
+  // reach the database; a purge destroys the row and everything hanging
+  // off it, with no undo and no way to reconstruct what was there.
+  // Folding both into "volunteers:write" would mean every field
+  // organiser who can add a doorstep signup could also erase the file.
+  | "volunteers:delete"    // mark a record deleted — reversible
+  | "volunteers:purge"     // permanently erase a record — irreversible
   // Articles publish to the public website.
   | "articles:read"
   | "articles:write"       // create and edit drafts
@@ -52,6 +60,7 @@ export type Capability =
 
 export const ALL_CAPABILITIES: Capability[] = [
   "volunteers:read", "volunteers:export", "volunteers:write",
+  "volunteers:delete", "volunteers:purge",
   "articles:read", "articles:write", "articles:publish",
   "calendar:read", "calendar:write",
   "team:read", "team:write",
@@ -94,8 +103,15 @@ export const ROLES: RoleDefinition[] = [
     label: "Field",
     description:
       "Volunteer records and the events calendar. Can add volunteers signed up " +
-      "at the door. Cannot publish to the website.",
+      "at the door. Cannot remove records or publish to the website.",
     rank: 30,
+    // Deliberately no volunteers:delete. Supporters who want out have the
+    // self-service flow at /delete-me, which needs no staff at all; the
+    // portal path is for requests that arrive by phone or post, and those
+    // reach the office rather than a canvasser. A field login is the most
+    // widely issued and most easily lost credential here, and mass
+    // deletion of the volunteer file is not a power it needs to carry.
+    // Widen this if the office finds itself relaying requests.
     capabilities: [
       "volunteers:read", "volunteers:export", "volunteers:write",
       "calendar:read", "calendar:write",
@@ -105,9 +121,18 @@ export const ROLES: RoleDefinition[] = [
   {
     name: "admin",
     label: "Admin",
-    description: "Everything operational. Cannot invite staff or change roles.",
+    description:
+      "Everything operational, including removing volunteer records. " +
+      "Cannot permanently erase records, invite staff, or change roles.",
     rank: 40,
-    capabilities: ALL_CAPABILITIES.filter(c => c !== "staff:manage")
+    // NOTE: this is a subtractive list, so any capability added to
+    // ALL_CAPABILITIES lands on admin automatically unless it is named
+    // here. volunteers:purge is excluded deliberately — an irreversible
+    // erase is not an operational task, and letting it arrive by
+    // default is exactly the silent grant this file exists to prevent.
+    capabilities: ALL_CAPABILITIES.filter(
+      c => c !== "staff:manage" && c !== "volunteers:purge"
+    )
   },
   {
     name: "superadmin",

@@ -1,0 +1,224 @@
+/* =====================================================
+	 DATA DELETION REQUEST
+	 =====================================================
+	 Shared by the modal (opened from the sign-up forms) and the
+	 standalone /delete-me page. Uses the tokens already defined in
+	 base.css — no new colours are introduced here.
+	 ===================================================== */
+
+/* -----------------------------------------------------
+	 Trigger link under the sign-up forms
+	 ----------------------------------------------------- */
+
+.dr-trigger {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	font-size: 0.85rem;
+	color: var(--muted-dark);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.dr-trigger:hover,
+.dr-trigger:focus-visible {
+	color: var(--text);
+}
+
+/* -----------------------------------------------------
+	 Modal shell
+	 ----------------------------------------------------- */
+
+.dr-modal {
+	width: min(520px, calc(100vw - 2rem));
+	padding: 2rem;
+	border: none;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	background: #fff;
+	color: var(--text);
+}
+
+.dr-modal::backdrop {
+	background: rgba(0, 0, 0, 0.55);
+}
+
+.dr-modal-close {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.75rem;
+	background: none;
+	border: none;
+	font-size: 1.75rem;
+	line-height: 1;
+	color: var(--muted);
+	cursor: pointer;
+}
+
+.dr-modal-close:hover,
+.dr-modal-close:focus-visible {
+	color: var(--text);
+}
+
+/* -----------------------------------------------------
+	 Standalone page
+	 ----------------------------------------------------- */
+
+.delete-me-page {
+	max-width: 620px;
+	margin: 4rem auto;
+	padding: 0 1.25rem 4rem;
+}
+
+#delete-me-page {
+	background: #fff;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: 2.5rem 2rem;
+	text-align: center;
+}
+
+/* -----------------------------------------------------
+	 Shared content
+	 ----------------------------------------------------- */
+
+.dr-heading {
+	margin: 0 0 0.75rem;
+	font-size: 1.35rem;
+	color: var(--text);
+}
+
+.dr-intro {
+	margin: 0 0 1.5rem;
+	font-size: 0.95rem;
+	line-height: 1.55;
+	color: var(--muted-dark);
+}
+
+.dr-icon {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.dr-form {
+	text-align: left;
+}
+
+.dr-field {
+	margin-bottom: 1.1rem;
+}
+
+.dr-field label {
+	display: block;
+	margin-bottom: 0.35rem;
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+.dr-field input {
+	width: 100%;
+	padding: 0.65rem 0.8rem;
+	border: 1px solid #cfcfcf;
+	border-radius: 8px;
+	font: inherit;
+	font-size: 1rem;
+	background: #fff;
+	color: var(--text);
+}
+
+.dr-field input:focus-visible {
+	outline: 2px solid var(--primary-light);
+	outline-offset: 1px;
+	border-color: var(--primary-light);
+}
+
+/* The code is read off one screen and typed into another, so give it
+	 room to breathe and a face where 5 and S look different. */
+.dr-code-input {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.dr-hint {
+	margin: 0.35rem 0 0;
+	font-size: 0.8rem;
+	color: var(--muted);
+}
+
+.dr-warning {
+	margin: 0 0 1.1rem;
+	padding: 0.75rem 0.9rem;
+	border-left: 3px solid #b00020;
+	background: rgba(176, 0, 32, 0.06);
+	border-radius: 4px;
+	font-size: 0.88rem;
+	line-height: 1.5;
+	color: var(--text);
+}
+
+.dr-turnstile {
+	margin: 0 0 1rem;
+	min-height: 65px;
+}
+
+.dr-message {
+	margin: 0 0 1rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--muted-dark);
+	min-height: 1.2em;
+}
+
+.dr-message.is-error {
+	color: #b00020;
+}
+
+.dr-actions {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.dr-submit:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Confirming deletion is destructive; the button should not look like
+	 the same friendly green as "sign me up". */
+.dr-danger {
+	background: #b00020;
+}
+
+.dr-danger:hover {
+	background: #8c0019;
+}
+
+/* -----------------------------------------------------
+	 Mobile — override only, base styles untouched
+	 ----------------------------------------------------- */
+
+@media (max-width: 640px) {
+	.dr-modal {
+		padding: 1.5rem 1.15rem;
+	}
+
+	#delete-me-page {
+		padding: 1.75rem 1.15rem;
+	}
+
+	.delete-me-page {
+		margin: 2rem auto;
+	}
+
+	.dr-actions {
+		flex-direction: column;
+	}
+
+	.dr-actions .btn {
+		width: 100%;
+	}
+}
