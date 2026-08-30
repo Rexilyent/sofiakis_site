@@ -66,6 +66,31 @@ function escapeAttr(input: string): string {
 }
 
 /**
+ * JSON.stringify a value for embedding inside a <script type="application/ld+json">
+ * block.
+ *
+ * JSON.stringify() alone is NOT safe here: it escapes quotes and
+ * backslashes but leaves "<" and "/" untouched, so a title of
+ * `Q3</script><script>...` closes the JSON-LD element and opens an
+ * attacker-controlled one — the HTML parser looks for the literal
+ * string "</script" before any JS/JSON parsing happens at all.
+ *
+ * \u003c is valid JSON and renders identically to "<", so escaping it
+ * closes the hole with zero visible change. "/" is additionally
+ * escaped as a second layer in case a future refactor pulls this
+ * value into an inline-JS context instead of JSON-LD. U+2028/U+2029
+ * are escaped too since they're legal in JSON strings but not inside
+ * unquoted JS string literals, in case this is ever reused there.
+ */
+function jsonLdValue(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\//g, "\\/")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
+/**
  * Only allow URLs that cannot execute script. Relative paths and
  * anchors are fine; http/https/mailto/tel are fine; everything else
  * (javascript:, data:, vbscript:, file:) is rejected.
@@ -389,17 +414,17 @@ ${imageAbs ? `  <meta name="twitter:image" content="${escapeAttr(imageAbs)}" />\
   {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    "headline": ${JSON.stringify(article.title)},
-    "datePublished": ${JSON.stringify(dateOnly)},
+    "headline": ${jsonLdValue(article.title)},
+    "datePublished": ${jsonLdValue(dateOnly)},
     "author": {
       "@type": "Person",
-      "name": ${JSON.stringify(article.author ?? "Campaign Team")}
+      "name": ${jsonLdValue(article.author ?? "Campaign Team")}
     },
     "publisher": {
       "@type": "Organization",
-      "name": ${JSON.stringify(SITE_NAME)}
+      "name": ${jsonLdValue(SITE_NAME)}
     },
-    "mainEntityOfPage": ${JSON.stringify(url)}
+    "mainEntityOfPage": ${jsonLdValue(url)}
   }
   </script>
 

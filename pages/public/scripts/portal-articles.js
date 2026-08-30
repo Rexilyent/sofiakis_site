@@ -443,20 +443,58 @@
     }
   }
 
-  function openFullPreview() {
+    function openFullPreview() {
     if (!originalSlug) {
       core().toast?.("Save the article once first, then you can see the full preview.", "warn");
       return;
     }
     // The preview endpoint needs the Authorization header, so fetch it
-    // and open the result in a blank tab rather than linking directly.
+    // and open the result in a new tab rather than linking directly.
     core().authFetch(`${API}?slug=${encodeURIComponent(originalSlug)}&preview=1`)
       .then(res => res.text())
       .then(html => {
         const w = window.open("", "_blank");
         if (!w) { core().toast?.("Allow pop-ups to use the full preview.", "warn"); return; }
-        w.document.write(html);
-        w.document.close();
+
+        // Sever the opener link immediately. This tab's wrapper document
+        // shares our origin, but nothing in it — or in the sandboxed
+        // iframe below — should be able to reach back into the portal
+        // window via window.opener.
+        try { w.opener = null; } catch { /* best effort; not fatal */ }
+
+        // The article HTML is a preview of possibly-unpublished content
+        // and hasn't necessarily been through every hardening pass the
+        // public site gets, so it is never written directly into this
+        // tab's document (that was the old document.write(html) call,
+        // which handed it the portal's own origin — including
+        // sessionStorage and window.opener). Instead it goes into a
+        // sandboxed iframe with allow-same-origin deliberately left out,
+        // which gives it an opaque origin: any script in there, hostile
+        // or not, cannot read this tab's storage, cannot touch the
+        // wrapper document, and cannot reach the portal window.
+        w.document.title = "Article Preview";
+        const style = w.document.createElement("style");
+        style.textContent = "html,body{margin:0;height:100%}iframe{border:0;width:100%;height:100%;display:block}";
+        w.document.head.appendChild(style);
+
+        // allow-same-origin is intentionally absent — see comment above.
+        // allow-scripts keeps base.js/share.js working for nav + share
+        // buttons inside the preview; allow-popups lets those share
+        // links still open in a new tab.
+        const iframe = w.document.createElement("iframe");
+        iframe.setAttribute("sandbox", "allow-scripts allow-popups");
+        w.document.body.appendChild(iframe);
+
+        // Dropping allow-same-origin also drops normal same-origin URL
+        // resolution, so the article's root-relative asset paths
+        // (/scripts/base.js, /styles/news.css, ...) need an explicit
+        // base to resolve against. This only affects where subresources
+        // are fetched from, not the iframe's scripting privileges.
+        const withBase = html.replace(
+          /<head(\s[^>]*)?>/i,
+          (m) => `${m}<base href="${location.origin}/">`
+        );
+        iframe.srcdoc = withBase;
       })
       .catch(() => core().toast?.("Preview failed.", "error"));
   }
