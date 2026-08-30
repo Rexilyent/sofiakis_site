@@ -328,30 +328,28 @@ async function handlePurge(
   // audit records.
   const emailHash = row.email_hash;
 
-  // ── Delete children first, then the parent ───────────────────
+    // ── Delete children first, then the parent — atomically ──────
   //  Named explicitly rather than relying on ON DELETE CASCADE. See
   //  point 5 in the header. deletion_verifications is included even
   //  though its rows are inert once consumed — they carry an
   //  email_hash, and erasing somebody should not leave that behind.
-  for (const table of [
-    "volunteer_interests",
-    "volunteer_languages",
-    "volunteer_submissions",
-    "deletion_verifications"
-  ]) {
-    await db
-      .prepare(`DELETE FROM ${table} WHERE volunteer_id = ?`)
-      .bind(volunteerId)
-      .run();
-  }
+  //
+  //  db.batch() runs every statement as one atomic transaction. The
+  //  previous version issued five sequential .run() calls: if the
+  //  isolate died partway through, a purge could leave some child
+  //  tables cleared and others (or the parent row itself) still
+  //  present — silently defeating the "no orphaned PII" guarantee
+  //  this function exists to provide.
+  const batchResults = await db.batch([
+    db.prepare(`DELETE FROM volunteer_interests    WHERE volunteer_id = ?`).bind(volunteerId),
+    db.prepare(`DELETE FROM volunteer_languages    WHERE volunteer_id = ?`).bind(volunteerId),
+    db.prepare(`DELETE FROM volunteer_submissions  WHERE volunteer_id = ?`).bind(volunteerId),
+    db.prepare(`DELETE FROM deletion_verifications WHERE volunteer_id = ?`).bind(volunteerId),
+    db.prepare(`DELETE FROM volunteers             WHERE volunteer_id = ?`).bind(volunteerId),
+  ]);
 
-  const res = await db
-    .prepare(`DELETE FROM volunteers WHERE volunteer_id = ?`)
-    .bind(volunteerId)
-    .run();
-
-  const removed = res?.meta?.changes ?? 0;
-
+  const removed = batchResults[batchResults.length - 1]?.meta?.changes ?? 0;
+	
   // deletion_requests has no foreign key to volunteers, so this line
   // survives the erasure it describes. That is the point of it.
   await logDeletionRequest(db, {
