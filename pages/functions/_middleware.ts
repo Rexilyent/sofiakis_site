@@ -55,13 +55,28 @@ export async function onRequest(context: {
   //  the allowance that protects the public forms.
 
   const path = url.pathname;
-  const isAdmin  = path.startsWith("/api/admin-");
-  const isSignup = path === "/api/staff-signup";
+
+  // /api/admin-auth is the one route in the /api/admin- family that is
+  // NOT authenticated by definition -- it's how a session is obtained
+  // in the first place. It must be checked BEFORE the isAdmin prefix
+  // match below, or it inherits the 120/minute portal allowance meant
+  // for already-authenticated staff traffic. A credential-spraying
+  // script would get 120 login attempts per IP per minute instead of
+  // the 5 every other public route gets. Per-account lockout (see
+  // admin-auth.ts) caps attempts against any ONE username, but does
+  // nothing against spraying one password across many usernames --
+  // this is the control that actually stops that.
+  const isAdminAuth = path === "/api/admin-auth";
+  const isAdmin      = !isAdminAuth && path.startsWith("/api/admin-");
+  const isSignup     = path === "/api/staff-signup";
 
   let LIMIT: number;
   let bucket: string;
 
-  if (isAdmin) {
+  if (isAdminAuth) {
+    LIMIT  = 10;             // unauthenticated by definition; deliberately tight
+    bucket = "admin-auth";
+  } else if (isAdmin) {
     LIMIT = 120;            // authenticated staff; generous but bounded
     bucket = "admin";
   } else if (isSignup) {
@@ -75,26 +90,51 @@ export async function onRequest(context: {
   const key = await sha256(bucket + ":" + ip);
   const WINDOW_SECONDS = 60; // per 60 seconds
 
-  // Everything below is wrapped: rate limiting is a safety net, not a
+  /** Second, longer-window cap on top of the per-minute one for the
+   * login endpoint specifically, so a slow spray -- a handful of
+   * guesses a minute, staying under the 10/minute limit -- still gets
+   * caught within the hour. */
+  const ADMIN_AUTH_HOURLY_LIMIT = 50;
+  const ADMIN_AUTH_HOURLY_WINDOW_SECONDS = 3600;
+
+    // Everything below is wrapped: rate limiting is a safety net, not a
   // correctness requirement. A missing rate_limits table or a transient
   // D1 error previously threw here, which the runtime returned as a
   // plain-text 500 for EVERY api route -- taking down the whole portal
   // in order to enforce a limit. Failing open is the right trade.
   try {
-    return await enforceLimit(env, key, LIMIT, WINDOW_SECONDS, next);
+    const blocked = await checkLimit(env, key, LIMIT, WINDOW_SECONDS);
+    if (blocked) return blocked;
+
+    if (isAdminAuth) {
+      const hourlyKey = await sha256("admin-auth-hourly:" + ip);
+      const hourlyBlocked = await checkLimit(
+        env, hourlyKey, ADMIN_AUTH_HOURLY_LIMIT, ADMIN_AUTH_HOURLY_WINDOW_SECONDS
+      );
+      if (hourlyBlocked) return hourlyBlocked;
+    }
+
+    return next();
   } catch (err) {
     console.error("Rate limiter failed, allowing request:", err);
     return next();
   }
 }
 
-async function enforceLimit(
+/**
+ * Checks (and records) one request against one bucket/window.
+ * Returns a 429 Response if the caller is over the limit, or null if
+ * the request should proceed. Does NOT call next() itself -- unlike
+ * the previous single-check version, callers may need to run more
+ * than one independent check (e.g. a per-minute AND a per-hour cap)
+ * before deciding whether to let the request through.
+ */
+async function checkLimit(
   env: { CORE_DB?: any },
   key: string,
   LIMIT: number,
-  WINDOW_SECONDS: number,
-  next: () => Promise<Response>
-): Promise<Response> {
+  WINDOW_SECONDS: number
+): Promise<Response | null> {
   const now = Date.now();
   const windowMs = WINDOW_SECONDS * 1000;
 
@@ -112,7 +152,7 @@ async function enforceLimit(
       .bind(key, 1, new Date(now).toISOString())
       .run();
 
-    return next();
+    return null;
   }
 
   const windowStart = new Date(existing.window_start).getTime();
@@ -126,7 +166,7 @@ async function enforceLimit(
       .bind(1, new Date(now).toISOString(), key)
       .run();
 
-    return next();
+    return null;
   }
 
   if (existing.count >= LIMIT) {
@@ -148,7 +188,7 @@ async function enforceLimit(
     .bind(key)
     .run();
 
-  return next();
+  return null;
 }
 
 // ------------------
