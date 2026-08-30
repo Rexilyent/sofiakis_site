@@ -54,6 +54,20 @@
   border-bottom: 1px solid #e4e4e4;
 }
 
+.contact-info-delete-me {
+  font-size: 1rem;
+  color: var(--muted);
+	line-height: 1.75;
+  margin-bottom: 2rem;
+	padding-bottom: 1.75rem;
+	border-bottom: 1px solid #e4e4e4;
+}
+
+.contact-info-delete-me a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 .contact-info-list {
   list-style: none;
   padding: 0;

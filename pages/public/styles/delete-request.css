@@ -87,7 +87,7 @@
 .dr-heading {
 	margin: 0 0 0.75rem;
 	font-size: 1.35rem;
-	color: var(--text);
+	color: var(--primary);
 }
 
 .dr-intro {
