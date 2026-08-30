@@ -174,7 +174,8 @@ async function handleSingleRecord(
     .prepare(`SELECT volunteer_id, name, email, phone, zip,
                      source_form, ${vcol} AS verified, created_at, updated_at
               FROM   volunteers
-              WHERE  volunteer_id = ?`)
+              WHERE  volunteer_id = ?
+							AND    deleted_at IS NULL`)
     .bind(volunteerId)
     .first() as VolunteerRow | null;
 
@@ -236,6 +237,13 @@ async function handleList(
   // ── Build WHERE clause ───────────────────────────────────────
   const conditions: string[] = [];
   const bindings:   unknown[] = [];
+
+  // Always exclude soft-deleted records. Not user-controlled --
+  // there's no legitimate reason for staff to see a volunteer after
+  // deletion was requested, so this isn't a filter the caller can opt
+  // out of. Every downstream consumer of `where`/`bindings` (the count
+  // query, the page query, and handleStats below) inherits this.
+  conditions.push("deleted_at IS NULL");
 
   if (sourceForm) {
     conditions.push("source_form = ?");

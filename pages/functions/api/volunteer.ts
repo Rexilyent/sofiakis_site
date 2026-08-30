@@ -324,7 +324,9 @@ export async function onRequestPost(context: {
     let volunteerId: string;
 
     const existing = await env.CORE_DB
-      .prepare(`SELECT volunteer_id FROM volunteers WHERE email_hash = ?`)
+      .prepare(`SELECT volunteer_id FROM volunteers
+				        WHERE  email_hash = ?
+						    AND    deleted_at IS NULL`)
       .bind(emailDigest)
       .first();
 

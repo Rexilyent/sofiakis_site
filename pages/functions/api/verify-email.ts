@@ -48,7 +48,9 @@ export async function onRequestGet(context: {
   // -----------------------------
   const volunteer = await env.CORE_DB
     .prepare(
-      `SELECT email_verified FROM volunteers WHERE volunteer_id = ?`
+      `SELECT email_verified FROM volunteers
+			 WHERE  volunteer_id = ?
+			   AND    deleted_at IS NULL`
     )
     .bind(submission.volunteer_id)
     .first();
