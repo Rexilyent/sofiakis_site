@@ -161,6 +161,17 @@ async function handleCreate(request: Request, env: Env, session: SessionContext)
   if ("error" in parsed) return jsonError(parsed.error, 400);
   const a = parsed.value;
 
+	// articles:write lets someone create/edit a draft; making it visible
+  // on the public site is a separate, checked action -- see H6 in the
+  // security review. This is currently a no-op for every real role
+  // (everyone holding articles:write also holds articles:publish today),
+  // but validate() will accept status:"published" from anyone who can
+  // reach this endpoint at all, so the gate has to live here rather than
+  // rely on that coincidence holding forever.
+  if (a.status === "published" && !can(session.role, "articles:publish")) {
+    return forbidden("articles:publish", session.role);
+  }
+
   const existing = await env.CORE_DB
     .prepare(`SELECT slug FROM articles WHERE slug = ?`)
     .bind(a.slug)
@@ -220,6 +231,14 @@ async function handleUpdate(request: Request, env: Env, session: SessionContext)
   const parsed = validate(body, { requireSlug: true });
   if ("error" in parsed) return jsonError(parsed.error, 400);
   const a = parsed.value;
+
+	// Same gate as handleCreate -- see the comment there. Applies whether
+  // this edit is what newly publishes the article or just re-saves an
+  // already-published one; either way the request lands with
+  // status:"published", so either way it needs articles:publish.
+  if (a.status === "published" && !can(session.role, "articles:publish")) {
+    return forbidden("articles:publish", session.role);
+  }
 
   // Renaming the slug changes a public URL. Allowed, but never
   // silently over the top of a different existing article.

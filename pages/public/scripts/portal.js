@@ -764,7 +764,7 @@
 
       while (page <= MAX_EXPORT_PAGES) {
         const params = new URLSearchParams({
-          page: String(page), limit: String(EXPORT_PAGE_SIZE), ...activeFilters
+          page: String(page), limit: String(EXPORT_PAGE_SIZE), export: "1", ...activeFilters
         });
         const res = await authFetch(`${VOLUNTEERS_API}?${params}`);
         if (!res.ok) throw new Error(`Server returned ${res.status}`);

@@ -26,7 +26,7 @@
 //
 // ============================================================
 
-import { can, forbidden } from "../_lib/roles";
+import { can, forbidden, ROLES, ROLE_NAMES, isValidRole } from "../_lib/roles";
 
 interface Env {
   CORE_DB: D1Database;
@@ -155,16 +155,13 @@ async function handleListAccounts(env: Env, session: SessionContext): Promise<Re
   const byRole = (r: string) =>
     accounts.filter((a: { role: string }) => a.role === r).length;
 
-  await logAccess(env, session, "list_staff_accounts", accounts.length);
+  const counts: Record<string, number> = { total: accounts.length };
+  for (const name of ROLE_NAMES) counts[name] = byRole(name);
 
   return secureJson({
     accounts,
-    counts: {
-      total:      accounts.length,
-      superadmin: byRole("superadmin"),
-      admin:      byRole("admin"),
-      viewer:     byRole("viewer")
-    }
+    counts,
+    roles: ROLES.map(r => ({ name: r.name, label: r.label, description: r.description }))
   });
 }
 
@@ -244,8 +241,8 @@ async function handleCreate(
   if (!isPlausibleEmail(email)) {
     return jsonError("Enter a valid email address.", 400);
   }
-  if (!VALID_ROLES.includes(role)) {
-    return jsonError(`Role must be one of: ${VALID_ROLES.join(", ")}.`, 400);
+  if (!isValidRole(role)) {
+    return jsonError(`Role must be one of: ${ROLE_NAMES.join(", ")}.`, 400);
   }
 
   // Inviting someone who already has an account is almost always a

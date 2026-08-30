@@ -119,6 +119,24 @@ export async function onRequestGet(context: {
     return forbidden("volunteers:read", session.role);
   }
 
+	// Bulk export ("download every matching record", not just the page
+  // on screen) is a materially different action from browsing a table
+  // -- see H6 in the security review. Nothing in the request used to
+  // distinguish the two, so anyone with volunteers:read already had
+  // export. The frontend's "export all" flow sends ?export=1 when it
+  // walks every page; require volunteers:export for that specifically.
+  //
+  // This is a policy gate, not a hard technical wall: someone with only
+  // volunteers:read could still page through everything by hand with a
+  // large `limit`. What this closes is the distinction the role table
+  // claims to draw actually existing in code, and making bulk export an
+  // intentional, checked, auditable action rather than an accident of
+  // the API's shape.
+
+	if (url.searchParams.get("export") === "1" && !can(session.role, "volunteers:export")) {
+    return forbidden("volunteers:export", session.role);
+  }
+
   // Any uncaught throw is returned by the runtime as a plain-text 500,
   // which the portal can only report as "Server returned 500". Schema
   // problems are by far the most likely cause here, and they need a
