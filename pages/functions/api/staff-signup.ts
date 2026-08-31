@@ -130,19 +130,60 @@ async function handleAccept(request: Request, env: Env): Promise<Response> {
   const nowIso  = new Date().toISOString();
   const hash    = await hashPassword(password);
 
-  await env.CORE_DB.prepare(`
-    INSERT INTO staff_accounts
-      (staff_id, username, password_hash, role, failed_attempts, locked_until, created_at)
-    VALUES (?, ?, ?, ?, 0, NULL, ?)
-  `).bind(staffId, username, hash, invite.role, nowIso).run();
-
-  // Burn the invitation. Done after the account insert so a failure
-  // there leaves the link usable rather than stranding the person.
-  await env.CORE_DB.prepare(`
+  // Burn the invite FIRST, and check the write actually landed, before
+  // creating anything. The previous order -- insert the account, then
+  // UPDATE ... WHERE accepted_at IS NULL -- let two concurrent requests
+  // carrying the same token both pass lookupUsableInvite before either
+  // write landed, so both created accounts at the invited role. The
+  // second UPDATE then quietly matched zero rows, leaving that second
+  // account invisible in the invitation trail (see H7 in the security
+  // review). A D1 UPDATE that matches nothing doesn't throw -- it just
+  // reports meta.changes: 0 -- so this has to be an explicit check
+  // between two sequential statements, not something db.batch() can
+  // paper over: batching the burn and the insert together would still
+  // let the losing request's insert run, since a 0-row UPDATE isn't a
+  // batch failure.
+  const claim = await env.CORE_DB.prepare(`
     UPDATE staff_invites
        SET accepted_at = ?, accepted_staff_id = ?
      WHERE invite_id = ? AND accepted_at IS NULL
   `).bind(nowIso, staffId, invite.invite_id).run();
+
+  if ((claim.meta?.changes ?? 0) === 0) {
+    // Someone else's request won the race (or revoked/expired between
+    // lookupUsableInvite above and this UPDATE). Same generic message
+    // as every other invalid-invite path -- this shouldn't be
+    // distinguishable from "the token was just bad".
+    return jsonError(
+      "This invitation link is not valid. It may have expired, already been " +
+      "used, or been cancelled. Ask the campaign for a new one.", 400);
+  }
+
+  try {
+    await env.CORE_DB.prepare(`
+      INSERT INTO staff_accounts
+        (staff_id, username, password_hash, role, failed_attempts, locked_until, created_at)
+      VALUES (?, ?, ?, ?, 0, NULL, ?)
+    `).bind(staffId, username, hash, invite.role, nowIso).run();
+  } catch (err) {
+    // We already won the invite claim above, so an insert failure here
+    // (most likely the UNIQUE constraint on username -- two different
+    // tokens racing for the same desired username) must not strand the
+    // invite in a claimed-but-unusable state. Roll it back to unaccepted,
+    // scoped to our own claim so this can never clobber a different,
+    // legitimate acceptance.
+    await env.CORE_DB.prepare(`
+      UPDATE staff_invites
+         SET accepted_at = NULL, accepted_staff_id = NULL
+       WHERE invite_id = ? AND accepted_staff_id = ?
+    `).bind(invite.invite_id, staffId).run();
+
+    const detail = err instanceof Error ? err.message : String(err);
+    if (/UNIQUE constraint failed.*username/i.test(detail)) {
+      return jsonError("That username is already taken. Please choose another.", 409);
+    }
+    throw err; // anything else falls through to onRequest's generic 500
+  }
 
   // Link the new login to their team record, if they have one. Matched
   // on the INVITED address rather than anything the signer-up typed, so
