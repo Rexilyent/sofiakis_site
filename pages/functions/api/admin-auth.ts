@@ -7,6 +7,9 @@
 //  POST  /api/admin-auth   — authenticate with username + password
 //                            returns a short-lived session token
 //  DELETE /api/admin-auth  — invalidate the current session (logout)
+//  DELETE /api/admin-auth?everywhere=1
+//                          — invalidate EVERY live session on this
+//                            account (suspected token compromise)
 //
 // ============================================================
 //  REQUIRED ENVIRONMENT VARIABLES (Cloudflare Worker Secrets)
@@ -312,20 +315,36 @@ async function handleLogout(request: Request, env: Env): Promise<Response> {
   const ip     = request.headers.get("CF-Connecting-IP") || "unknown";
   const ipHash = await sha256(ip);
 
-  await env.CORE_DB
-    .prepare(`UPDATE staff_sessions SET invalidated_at = ? WHERE session_id = ?`)
-    .bind(nowIso, session.sessionId)
+  // ?everywhere=1 signs out every live session on this account, not
+  // just the one making this request -- for a suspected token
+  // compromise (lost device, shared computer, etc.) where the person
+  // may not currently be signed in on the device that's actually at
+  // risk. See H8 in the security review.
+  const everywhere = new URL(request.url).searchParams.get("everywhere") === "1";
+
+  const result = await env.CORE_DB
+    .prepare(
+      everywhere
+        ? `UPDATE staff_sessions SET invalidated_at = ?
+            WHERE staff_id = ? AND invalidated_at IS NULL`
+        : `UPDATE staff_sessions SET invalidated_at = ? WHERE session_id = ?`
+    )
+    .bind(nowIso, everywhere ? session.staffId : session.sessionId)
     .run();
 
   await logAccess(env.CORE_DB, {
     staffId:    session.staffId,
     sessionId:  session.sessionId,
-    action:     "logout",
+    action:     everywhere ? "logout_everywhere" : "logout",
     ipHash,
     accessedAt: nowIso
   });
 
-  return jsonResponse({ success: true, message: "Logged out successfully." });
+  return jsonResponse({
+    success: true,
+    message: everywhere ? "Signed out of every device." : "Logged out successfully.",
+    sessions_invalidated: result.meta?.changes ?? 1
+  });
 }
 
 // ============================================================
@@ -367,7 +386,8 @@ export async function resolveSession(
               JOIN   staff_accounts a ON a.staff_id = s.staff_id
               WHERE  s.token_hash     = ?
                 AND  s.invalidated_at IS NULL
-                AND  s.expires_at     > ?`)
+                AND  s.expires_at     > ?
+                AND  a.disabled_at IS NULL`)
     .bind(tokenHash, now)
     .first() as {
       session_id: string;

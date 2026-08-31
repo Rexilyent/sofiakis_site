@@ -525,6 +525,7 @@ async function resolveSession(request: Request, db: D1Database): Promise<Session
      WHERE s.token_hash = ?
        AND s.invalidated_at IS NULL
        AND s.expires_at > ?
+       AND a.disabled_at IS NULL
   `).bind(await sha256Hex(token), new Date().toISOString())
     .first<{ session_id: string; staff_id: string; ip_hash: string;
              ua_hash: string; username: string; role: string }>();

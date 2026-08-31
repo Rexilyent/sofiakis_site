@@ -2,9 +2,11 @@
 //  ADMIN INVITES  —  /api/admin-invites
 // ============================================================
 //
-//  GET    /api/admin-invites          — list invitations
-//  POST   /api/admin-invites          — create one and email it
-//  DELETE /api/admin-invites?id=<id>  — revoke an unused invitation
+//  GET    /api/admin-invites                — list invitations
+//  POST   /api/admin-invites                — create one and email it
+//  PATCH  /api/admin-invites                — change an existing account's role
+//  DELETE /api/admin-invites?id=<id>        — revoke an unused invitation
+//  DELETE /api/admin-invites?username=<u>   — disable a staff account (H8)
 //
 //  ── AUTHORISATION ─────────────────────────────────────────
 //
@@ -74,8 +76,9 @@ export async function onRequest(context: {
           : await handleList(env, session);
       case "POST":   return await handleCreate(request, env, session);
       case "PATCH":  return await handleSetRole(request, env, session);
-      case "DELETE": return await handleRevoke(request, env, session);
-      default:       return jsonError("Method not allowed", 405);
+      case "DELETE": return url.searchParams.get("username")
+          ? await handleDisableAccount(request, env, session,url)
+          : await handleRevoke(request, env, session);
     }
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
@@ -398,6 +401,85 @@ async function handleRevoke(
 }
 
 // ============================================================
+//  DISABLE ACCOUNT  (H8 — the offboarding path that didn't exist)
+// ============================================================
+//
+//  A disabled_at flag rather than a hard DELETE, for two reasons:
+//
+//  1. staff_sessions and staff_access_log both reference
+//     staff_accounts with ON DELETE RESTRICT, so a hard delete was
+//     never actually possible while any session or log entry existed
+//     for that person anyway -- the schema itself rules it out.
+//  2. A flag preserves the audit trail. "Who had access, and when did
+//     it end" is exactly the kind of question an offboarding process
+//     needs to be able to answer later.
+//
+//  Every resolveSession copy across the API now filters on
+//  disabled_at IS NULL, so a disabled account cannot ride an existing
+//  token even if its sessions somehow survived -- but this handler
+//  also invalidates them directly, in the same atomic batch as the
+//  disable itself, so there's no window where the flag is set but a
+//  live token still works (or the reverse, if only one write lands).
+
+async function handleDisableAccount(
+  request: Request, env: Env, session: SessionContext, url: URL
+): Promise<Response> {
+  const username = (url.searchParams.get("username") || "").trim().toLowerCase();
+  if (!username) return jsonError("Missing username", 400);
+
+  const account = await env.CORE_DB
+    .prepare(`SELECT staff_id, username, role, disabled_at
+                FROM staff_accounts WHERE username = ?`)
+    .bind(username)
+    .first<{ staff_id: string; username: string; role: string; disabled_at: string | null }>();
+
+  if (!account) return jsonError("No such staff account.", 404);
+  if (account.disabled_at) {
+    return secureJson({ success: true, already_disabled: true });
+  }
+
+  // Same lockout guard as handleSetRole: disabling the last active
+  // superadmin would leave nobody able to invite staff, change roles,
+  // or disable anyone else -- recoverable only through the break-glass
+  // script. Refuse rather than let someone do it by accident.
+  if (account.role === "superadmin") {
+    const row = await env.CORE_DB
+      .prepare(`SELECT COUNT(*) AS n FROM staff_accounts
+                 WHERE role = 'superadmin' AND disabled_at IS NULL`)
+      .first<{ n: number }>();
+    if ((row?.n ?? 0) <= 1) {
+      return jsonError(
+        "This is the only active superadmin. Promote someone else first, or " +
+        "nobody will be able to manage staff access.", 409);
+    }
+  }
+
+  const nowIso = new Date().toISOString();
+
+  await env.CORE_DB.batch([
+    env.CORE_DB.prepare(`
+      UPDATE staff_accounts SET disabled_at = ?, disabled_by = ? WHERE staff_id = ?
+    `).bind(nowIso, session.username, account.staff_id),
+    env.CORE_DB.prepare(`
+      UPDATE staff_sessions SET invalidated_at = ?
+       WHERE staff_id = ? AND invalidated_at IS NULL
+    `).bind(nowIso, account.staff_id),
+  ]);
+
+  await logAccess(env, session, `disable_account:${username}`, 1);
+
+  return secureJson({
+    success: true,
+    username,
+    disabled_at: nowIso,
+    // Disabling yourself invalidates the session making this very
+    // request -- your next action will get a 401. Not blocked (that's
+    // a legitimate way to self-offboard), just worth surfacing.
+    self_disable: username === session.username
+  });
+}
+
+// ============================================================
 //  HELPERS
 // ============================================================
 
@@ -484,6 +566,7 @@ async function resolveSession(request: Request, db: D1Database): Promise<Session
      WHERE s.token_hash = ?
        AND s.invalidated_at IS NULL
        AND s.expires_at > ?
+       AND a.disabled_at IS NULL
   `).bind(await sha256Hex(token), new Date().toISOString())
     .first<{ session_id: string; staff_id: string; ip_hash: string;
              ua_hash: string; username: string; role: string }>();

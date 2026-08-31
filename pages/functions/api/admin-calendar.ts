@@ -511,7 +511,8 @@ async function resolveSession(request: Request, db: D1Database): Promise<Session
               JOIN   staff_accounts a ON a.staff_id = s.staff_id
               WHERE  s.token_hash     = ?
                 AND  s.invalidated_at IS NULL
-                AND  s.expires_at     > ?`)
+                AND  s.expires_at     > ?
+                AND  a.disabled_at IS NULL`)
     .bind(tokenHash, now)
     .first() as { session_id: string; staff_id: string; ip_hash: string; ua_hash: string; username: string; role: string; } | null;
 
